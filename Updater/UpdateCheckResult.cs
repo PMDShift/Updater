@@ -15,25 +15,24 @@
 
 namespace PMDCP.Updater
 {
+    using PMDCP.Updater.Linker;
     using System;
     using System.Collections.Generic;
-    using System.Text;
-
-    using PMDCP.Updater.Linker;
 
     public class UpdateCheckResult : MarshalByRefObject, IUpdateCheckResult
     {
         #region Fields
 
-        string updateURI;
-        string updateDirectory;
-        List<IPackageInfo> packagesToUpdate;
+        private string updateURI;
+        private string updateDirectory;
+        private List<IPackageInfo> packagesToUpdate;
 
         #endregion Fields
 
         #region Constructors
 
-        public UpdateCheckResult(string updateURI, string updateDirectory) {
+        public UpdateCheckResult(string updateURI, string updateDirectory)
+        {
             this.updateURI = updateURI;
             this.updateDirectory = updateDirectory;
             packagesToUpdate = new List<IPackageInfo>();
@@ -43,18 +42,21 @@ namespace PMDCP.Updater
 
         #region Properties
 
-        public string UpdateURI {
+        public string UpdateURI
+        {
             get { return updateURI; }
         }
 
         #endregion Properties
 
-        public List<IPackageInfo> PackagesToUpdate {
+        public List<IPackageInfo> PackagesToUpdate
+        {
             get { return packagesToUpdate; }
             set { packagesToUpdate = value; }
         }
 
-        public string UpdateDirectory {
+        public string UpdateDirectory
+        {
             get { return updateDirectory; }
         }
     }

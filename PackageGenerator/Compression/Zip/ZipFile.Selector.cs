@@ -1,20 +1,20 @@
 // ZipFile.Selector.cs
 // ------------------------------------------------------------------
 //
-// Copyright (c) 2009 Dino Chiesa and Microsoft Corporation.  
+// Copyright (c) 2009 Dino Chiesa and Microsoft Corporation.
 // All rights reserved.
 //
 // This code module is part of DotNetZip, a zipfile class library.
 //
 // ------------------------------------------------------------------
 //
-// This code is licensed under the Microsoft Public License. 
+// This code is licensed under the Microsoft Public License.
 // See the file License.txt for the license details.
 // More info on: http://dotnetzip.codeplex.com
 //
 // ------------------------------------------------------------------
 //
-// last saved (in emacs): 
+// last saved (in emacs):
 // Time-stamp: <2009-November-11 05:55:04>
 //
 // ------------------------------------------------------------------
@@ -26,25 +26,23 @@
 // When using DotNetZip on .NET 3.5, the LINQ query/selection will be superior.
 //
 // These methods are segregated into a different module to facilitate easy exclusion for those
-// people who wish to have a smaller library without this function. 
-// 
+// people who wish to have a smaller library without this function.
+//
 // ------------------------------------------------------------------
 
-
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Ionic.Zip
 {
-
     partial class ZipFile
     {
         /// <summary>
         /// Adds to the ZipFile a set of files from the disk that conform to the
         /// specified criteria.
         /// </summary>
-        /// 
+        ///
         /// <remarks>
         /// <para>
         ///   This method selects files from the the current working directory matching
@@ -93,7 +91,7 @@ namespace Ionic.Zip
         ///   the pattern.  A pattern of "'* *.*'" will match all files that have spaces
         ///   in the filename.  The full criteria string for that would be "name = '*
         ///   *.*'" .
-        /// </para> 
+        /// </para>
         ///
         ///
         /// <para>
@@ -105,49 +103,49 @@ namespace Ionic.Zip
         ///     <term>criteria</term>
         ///     <description>Files retrieved</description>
         ///   </listheader>
-        /// 
+        ///
         ///   <item>
         ///     <term>name != *.xls </term>
         ///     <description>any file with an extension that is not .xls
         ///     </description>
         ///   </item>
-        ///   
+        ///
         ///   <item>
         ///     <term>name = *.mp3 </term>
         ///     <description>any file with a .mp3 extension.
         ///     </description>
         ///   </item>
-        ///   
+        ///
         ///   <item>
         ///     <term>*.mp3</term>
         ///     <description>(same as above) any file with a .mp3 extension.
         ///     </description>
         ///   </item>
-        ///   
+        ///
         ///   <item>
         ///     <term>attributes = A </term>
         ///     <description>all files whose attributes include the Archive bit.
         ///     </description>
         ///   </item>
-        ///   
+        ///
         ///   <item>
         ///     <term>attributes != H </term>
         ///     <description>all files whose attributes do not include the Hidden bit.
         ///     </description>
         ///   </item>
-        ///   
+        ///
         ///   <item>
         ///     <term>mtime > 2009-01-01</term>
         ///     <description>all files with a last modified time after January 1st, 2009.
         ///     </description>
         ///   </item>
-        ///   
+        ///
         ///   <item>
         ///     <term>size > 2gb</term>
         ///     <description>all files whose uncompressed size is greater than 2gb.
         ///     </description>
         ///   </item>
-        /// 
+        ///
         /// </list>
         ///
         /// <para>
@@ -182,7 +180,7 @@ namespace Ionic.Zip
         /// treated as a pattern to match for the filename.  Therefore a string like "*.xls"
         /// will be equivalent to specifying "name = *.xls".
         /// </para>
-        /// 
+        ///
         /// <para>
         /// There is no logic in this method that insures that the file inclusion criteria are
         /// internally consistent.  For example, it's possible to specify criteria that says
@@ -191,11 +189,11 @@ namespace Ionic.Zip
         /// this method does not detect such logical inconsistencies. The caller is
         /// responsible for insuring the criteria are sensible.
         /// </para>
-        /// 
+        ///
         /// </remarks>
-        /// 
+        ///
         /// <example>
-        /// This example zips up all *.csv files in the current working directory. 
+        /// This example zips up all *.csv files in the current working directory.
         /// <code>
         /// using (ZipFile zip = new ZipFile())
         /// {
@@ -222,12 +220,12 @@ namespace Ionic.Zip
         /// <summary>
         /// Adds to the ZipFile a set of files from the disk that conform to the specified criteria.
         /// </summary>
-        /// 
+        ///
         /// <remarks>
         /// <para>
         /// This method selects files from the the current working directory matching the specified
-        /// criteria, and adds them to the ZipFile.  If <c>recurseDirectories</c> is true, files are also 
-        /// selected from subdirectories, and the directory structure in the filesystem is reproduced 
+        /// criteria, and adds them to the ZipFile.  If <c>recurseDirectories</c> is true, files are also
+        /// selected from subdirectories, and the directory structure in the filesystem is reproduced
         /// in the zip archive, rooted at the directory specified by <c>directoryOnDisk</c>.
         /// </para>
         ///
@@ -238,7 +236,7 @@ namespace Ionic.Zip
         /// </remarks>
         ///
         /// <example>
-        /// This example zips up all *.xml files in the current working directory, or any 
+        /// This example zips up all *.xml files in the current working directory, or any
         /// subdirectory, that are larger than 1mb.
         /// <code>
         /// using (ZipFile zip = new ZipFile())
@@ -256,9 +254,9 @@ namespace Ionic.Zip
         /// End Using
         /// </code>
         /// </example>
-        /// 
+        ///
         /// <param name="selectionCriteria">The criteria for file selection</param>
-        /// 
+        ///
         /// <param name="recurseDirectories">
         /// If true, the file selection will recurse into subdirectories.
         /// </param>
@@ -270,14 +268,14 @@ namespace Ionic.Zip
         /// <summary>
         /// Adds to the ZipFile a set of files from the disk that conform to the specified criteria.
         /// </summary>
-        /// 
+        ///
         /// <remarks>
         /// This method selects files from the the specified disk directory matching the specified
         /// criteria, and adds them to the ZipFile.  The search does not recurse into
         /// subdirectores.  For details on the syntax for the selectionCriteria parameter, see <see
         /// cref="AddSelectedFiles(String)"/>.
         /// </remarks>
-        /// 
+        ///
         /// <example>
         /// This example zips up all *.xml files larger than 1mb in the directory given by "d:\rawdata".
         /// <code>
@@ -296,9 +294,9 @@ namespace Ionic.Zip
         /// End Using
         /// </code>
         /// </example>
-        /// 
+        ///
         /// <param name="selectionCriteria">The criteria for file selection</param>
-        /// 
+        ///
         /// <param name="directoryOnDisk">
         /// The name of the directory on the disk from which to select files.
         /// </param>
@@ -307,11 +305,10 @@ namespace Ionic.Zip
             this.AddSelectedFiles(selectionCriteria, directoryOnDisk, null, false);
         }
 
-
         /// <summary>
         /// Adds to the ZipFile a set of files from the disk that conform to the specified criteria.
         /// </summary>
-        /// 
+        ///
         /// <remarks>
         /// This method selects files from the the specified disk directory matching the specified
         /// selection criteria, and adds them to the ZipFile.  If <c>recurseDirectories</c> is true,
@@ -320,7 +317,7 @@ namespace Ionic.Zip
         /// <c>directoryOnDisk</c>. For details on the syntax for the selectionCriteria parameter,
         /// see <see cref="AddSelectedFiles(String)"/>.
         /// </remarks>
-        /// 
+        ///
         /// <example>
         /// This example zips up all *.csv files in the "files" directory, or any subdirectory, that
         /// have been saved since 2009 February 14th.
@@ -340,13 +337,13 @@ namespace Ionic.Zip
         /// End Using
         /// </code>
         /// </example>
-        /// 
+        ///
         /// <param name="selectionCriteria">The criteria for file selection</param>
         ///
         /// <param name="directoryOnDisk">
         /// The name of the directory on the disk from which to select files.
         /// </param>
-        /// 
+        ///
         /// <param name="recurseDirectories">
         /// If true, the file selection will recurse into subdirectories.
         /// </param>
@@ -355,12 +352,11 @@ namespace Ionic.Zip
             this.AddSelectedFiles(selectionCriteria, directoryOnDisk, null, recurseDirectories);
         }
 
-
         /// <summary>
         /// Adds to the ZipFile a selection of files from the disk that conform to the
         /// specified criteria.
         /// </summary>
-        /// 
+        ///
         /// <remarks>
         /// This method selects files from the specified disk directory matching the specified
         /// selection criteria, and adds those files to the ZipFile, using the specified directory
@@ -368,7 +364,7 @@ namespace Ionic.Zip
         /// the syntax for the selectionCriteria parameter, see <see
         /// cref="AddSelectedFiles(String)" />.
         /// </remarks>
-        /// 
+        ///
         /// <example>
         /// This example zips up all *.psd files in the "photos" directory that have been saved
         /// since 2009 February 14th, and puts them all in a zip file, using the directory name of
@@ -389,7 +385,7 @@ namespace Ionic.Zip
         /// End Using
         /// </code>
         /// </example>
-        /// 
+        ///
         /// <param name="selectionCriteria">The criteria for selection of files to Add</param>
         ///
         /// <param name="directoryOnDisk">
@@ -413,7 +409,7 @@ namespace Ionic.Zip
         /// <summary>
         /// Adds to the ZipFile a selection of files from the disk that conform to the specified criteria.
         /// </summary>
-        /// 
+        ///
         /// <remarks>
         /// This method selects files from the specified disk directory that match the specified
         /// selection criteria, and adds those files to the ZipFile, using the specified directory
@@ -423,9 +419,9 @@ namespace Ionic.Zip
         /// syntax for the selectionCriteria parameter, see <see
         /// cref="AddSelectedFiles(String)" />.
         /// </remarks>
-        /// 
+        ///
         /// <example>
-        /// This example zips up all files that are NOT *.pst files, in the current working 
+        /// This example zips up all files that are NOT *.pst files, in the current working
         /// directory and any subdirectories.
         /// <code>
         /// using (ZipFile zip = new ZipFile())
@@ -447,7 +443,7 @@ namespace Ionic.Zip
         /// <param name="directoryOnDisk">
         /// The name of the directory on the disk from which to select files.
         /// </param>
-        /// 
+        ///
         /// <param name="directoryPathInArchive">
         /// Specifies a directory path to use to override any path in the FileName.  This path may,
         /// or may not, correspond to a real directory in the current filesystem.  If the files
@@ -475,7 +471,7 @@ namespace Ionic.Zip
         /// Updates the ZipFile with a selection of files from the disk that conform to
         /// the specified criteria.
         /// </summary>
-        /// 
+        ///
         /// <remarks>
         /// This method selects files from the specified disk directory that match the
         /// specified selection criteria, and Updates the <c>ZipFile</c> with those
@@ -492,7 +488,7 @@ namespace Ionic.Zip
         /// <param name="directoryOnDisk">
         /// The name of the directory on the disk from which to select files.
         /// </param>
-        /// 
+        ///
         /// <param name="directoryPathInArchive">
         /// Specifies a directory path to use to override any path in the FileName.  This path may,
         /// or may not, correspond to a real directory in the current filesystem.  If the files
@@ -524,8 +520,7 @@ namespace Ionic.Zip
                                                bool recurseDirectories,
                                                bool wantUpdate)
         {
-
-        //List<string> filesToAdd = null;
+            //List<string> filesToAdd = null;
             if (directoryOnDisk == null && (Directory.Exists(selectionCriteria)))
             {
                 //if (Verbose) StatusMessageTextWriter.WriteLine("adding selection '{0}' from dir '{1}'...",
@@ -546,7 +541,7 @@ namespace Ionic.Zip
             Ionic.FileSelector ff = new Ionic.FileSelector(selectionCriteria,
                                                            AddDirectoryWillTraverseReparsePoints);
             var filesToAdd = ff.SelectFiles(directoryOnDisk, recurseDirectories);
-                
+
             if (Verbose) StatusMessageTextWriter.WriteLine("found {0} files...", filesToAdd.Count);
 
             OnAddStarted();
@@ -573,12 +568,10 @@ namespace Ionic.Zip
             OnAddCompleted();
         }
 
-
-
         /// <summary>
         /// Retrieve entries from the zipfile by specified criteria.
         /// </summary>
-        /// 
+        ///
         /// <remarks>
         /// <para>
         /// This method allows callers to retrieve the collection of entries from the zipfile
@@ -592,7 +585,7 @@ namespace Ionic.Zip
         /// For details on the syntax for the selectionCriteria parameter, see <see
         /// cref="AddSelectedFiles(String)"/>.
         /// </para>
-        /// 
+        ///
         /// <para>
         /// This method is intended for use with a ZipFile that has been read from storage.
         /// When creating a new ZipFile, this method will work only after the ZipArchive has
@@ -601,11 +594,11 @@ namespace Ionic.Zip
         /// saved will deliver undefined results.
         /// </para>
         /// </remarks>
-        /// 
+        ///
         /// <exception cref="System.Exception">
         /// Thrown if selectionCriteria has an invalid syntax.
         /// </exception>
-        /// 
+        ///
         /// <example>
         /// This example selects all the PhotoShop files from within an archive, and extracts them
         /// to the current working directory.
@@ -639,11 +632,10 @@ namespace Ionic.Zip
             return ff.SelectEntries(this);
         }
 
-
         /// <summary>
         /// Retrieve entries from the zipfile by specified criteria.
         /// </summary>
-        /// 
+        ///
         /// <remarks>
         /// <para>
         /// This method allows callers to retrieve the collection of entries from the zipfile
@@ -657,7 +649,7 @@ namespace Ionic.Zip
         /// For details on the syntax for the selectionCriteria parameter, see <see
         /// cref="AddSelectedFiles(String)"/>.
         /// </para>
-        /// 
+        ///
         /// <para>
         /// This method is intended for use with a ZipFile that has been read from storage.
         /// When creating a new ZipFile, this method will work only after the ZipArchive has
@@ -666,11 +658,11 @@ namespace Ionic.Zip
         /// saved will deliver undefined results.
         /// </para>
         /// </remarks>
-        /// 
+        ///
         /// <exception cref="System.Exception">
         /// Thrown if selectionCriteria has an invalid syntax.
         /// </exception>
-        /// 
+        ///
         /// <example>
         /// <code>
         /// using (ZipFile zip1 = ZipFile.Read(ZipFileName))
@@ -698,12 +690,12 @@ namespace Ionic.Zip
         /// </code>
         /// </example>
         /// <param name="selectionCriteria">the string that specifies which entries to select</param>
-        /// 
+        ///
         /// <param name="directoryPathInArchive">
-        /// the directory in the archive from which to select entries. If null, then 
-        /// all directories in the archive are used. 
+        /// the directory in the archive from which to select entries. If null, then
+        /// all directories in the archive are used.
         /// </param>
-        /// 
+        ///
         /// <returns>a collection of ZipEntry objects that conform to the inclusion spec</returns>
         public ICollection<ZipEntry> SelectEntries(String selectionCriteria, string directoryPathInArchive)
         {
@@ -712,12 +704,10 @@ namespace Ionic.Zip
             return ff.SelectEntries(this, directoryPathInArchive);
         }
 
-
-
         /// <summary>
         /// Remove entries from the zipfile by specified criteria.
         /// </summary>
-        /// 
+        ///
         /// <remarks>
         /// <para>
         /// This method allows callers to remove the collection of entries from the zipfile
@@ -731,7 +721,7 @@ namespace Ionic.Zip
         /// For details on the syntax for the selectionCriteria parameter, see <see
         /// cref="AddSelectedFiles(String)"/>.
         /// </para>
-        /// 
+        ///
         /// <para>
         /// This method is intended for use with a ZipFile that has been read from storage.
         /// When creating a new ZipFile, this method will work only after the ZipArchive has
@@ -740,11 +730,11 @@ namespace Ionic.Zip
         /// saved will deliver undefined results.
         /// </para>
         /// </remarks>
-        /// 
+        ///
         /// <exception cref="System.Exception">
         /// Thrown if selectionCriteria has an invalid syntax.
         /// </exception>
-        /// 
+        ///
         /// <example>
         /// This example removes all entries in a zip file that were modified prior to January 1st, 2008.
         /// <code>
@@ -762,7 +752,7 @@ namespace Ionic.Zip
         ///     zip1.RemoveEntries("mtime &lt; 2008-01-01")
         ///     ' do not forget to save the archive!
         ///     zip1.Save
-        /// End Using 
+        /// End Using
         /// </code>
         /// </example>
         /// <param name="selectionCriteria">the string that specifies which entries to select</param>
@@ -774,12 +764,11 @@ namespace Ionic.Zip
             return selection.Count;
         }
 
-
         /// <summary>
-        /// Remove entries from the zipfile by specified criteria, and within the specified 
+        /// Remove entries from the zipfile by specified criteria, and within the specified
         /// path in the archive.
         /// </summary>
-        /// 
+        ///
         /// <remarks>
         /// <para>
         /// This method allows callers to remove the collection of entries from the zipfile
@@ -793,7 +782,7 @@ namespace Ionic.Zip
         /// For details on the syntax for the selectionCriteria parameter, see <see
         /// cref="AddSelectedFiles(String)"/>.
         /// </para>
-        /// 
+        ///
         /// <para>
         /// This method is intended for use with a ZipFile that has been read from storage.
         /// When creating a new ZipFile, this method will work only after the ZipArchive has
@@ -802,11 +791,11 @@ namespace Ionic.Zip
         /// saved will deliver undefined results.
         /// </para>
         /// </remarks>
-        /// 
+        ///
         /// <exception cref="System.Exception">
         /// Thrown if selectionCriteria has an invalid syntax.
         /// </exception>
-        /// 
+        ///
         /// <example>
         /// <code>
         /// using (ZipFile zip1 = ZipFile.Read(ZipFileName))
@@ -823,14 +812,14 @@ namespace Ionic.Zip
         ///     zip1.RemoveEntries("mtime &lt; 2008-01-01", "documents")
         ///     ' a call to ZipFile.Save will make the modifications permanent
         ///     zip1.Save
-        /// End Using 
+        /// End Using
         /// </code>
         /// </example>
-        /// 
+        ///
         /// <param name="selectionCriteria">the string that specifies which entries to select</param>
         /// <param name="directoryPathInArchive">
-        /// the directory in the archive from which to select entries. If null, then 
-        /// all directories in the archive are used. 
+        /// the directory in the archive from which to select entries. If null, then
+        /// all directories in the archive are used.
         /// </param>
         /// <returns>the number of entries removed</returns>
         public int RemoveSelectedEntries(String selectionCriteria, string directoryPathInArchive)
@@ -840,23 +829,22 @@ namespace Ionic.Zip
             return selection.Count;
         }
 
-
         /// <summary>
         /// Selects and Extracts a set of Entries from the ZipFile.
         /// </summary>
         ///
         /// <remarks>
         /// <para>
-        /// The entries are extracted into the current working directory. 
+        /// The entries are extracted into the current working directory.
         /// </para>
-        /// 
+        ///
         /// <para>
         /// If any of the files to be extracted already exist, then the action taken is as
         /// specified in the <see cref="ZipEntry.ExtractExistingFile"/> property on the
         /// corresponding ZipEntry instance.  By default, the action taken in this case is to
         /// throw an exception.
         /// </para>
-        /// 
+        ///
         /// <para>
         /// For information on the syntax of the selectionCriteria string,
         /// see <see cref="AddSelectedFiles(String)" />.
@@ -864,7 +852,7 @@ namespace Ionic.Zip
         /// </remarks>
         ///
         /// <example>
-        /// This example shows how extract all XML files modified after 15 January 2009. 
+        /// This example shows how extract all XML files modified after 15 January 2009.
         /// <code>
         /// using (ZipFile zip = ZipFile.Read(zipArchiveName))
         /// {
@@ -884,7 +872,6 @@ namespace Ionic.Zip
             }
         }
 
-
         /// <summary>
         /// Selects and Extracts a set of Entries from the ZipFile.
         /// </summary>
@@ -895,16 +882,16 @@ namespace Ionic.Zip
         /// overwrite an existing filesystem file, the action taken is as specified in the
         /// <paramref name="extractExistingFile"/> parameter.
         /// </para>
-        /// 
+        ///
         /// <para>
-        /// For information on the syntax of the string describing the entry selection criteria, 
+        /// For information on the syntax of the string describing the entry selection criteria,
         /// see <see cref="AddSelectedFiles(String)" />.
-        /// </para> 
+        /// </para>
         /// </remarks>
         ///
         /// <example>
-        /// This example shows how extract all XML files modified after 15 January 2009, 
-        /// overwriting any existing files. 
+        /// This example shows how extract all XML files modified after 15 January 2009,
+        /// overwriting any existing files.
         /// <code>
         /// using (ZipFile zip = ZipFile.Read(zipArchiveName))
         /// {
@@ -913,7 +900,7 @@ namespace Ionic.Zip
         /// }
         /// </code>
         /// </example>
-        /// 
+        ///
         /// <param name="selectionCriteria">the selection criteria for entries to extract.</param>
         ///
         /// <param name="extractExistingFile">
@@ -928,32 +915,31 @@ namespace Ionic.Zip
             }
         }
 
-
         /// <summary>
         /// Selects and Extracts a set of Entries from the ZipFile.
         /// </summary>
         ///
         /// <remarks>
         /// <para>
-        /// The entries are selected from the specified directory within the archive, and then 
-        /// extracted into the current working directory. 
+        /// The entries are selected from the specified directory within the archive, and then
+        /// extracted into the current working directory.
         /// </para>
-        /// 
+        ///
         /// <para>
         /// If any of the files to be extracted already exist, then the action taken is as
         /// specified in the <see cref="ZipEntry.ExtractExistingFile"/> property on the
         /// corresponding ZipEntry instance.  By default, the action taken in this case is to
         /// throw an exception.
         /// </para>
-        /// 
+        ///
         /// <para>
-        /// For information on the syntax of the string describing the entry selection criteria, 
+        /// For information on the syntax of the string describing the entry selection criteria,
         /// see <see cref="AddSelectedFiles(String)" />.
-        /// </para> 
+        /// </para>
         /// </remarks>
-        /// 
+        ///
         /// <example>
-        /// This example shows how extract all XML files modified after 15 January 2009, 
+        /// This example shows how extract all XML files modified after 15 January 2009,
         /// and writes them to the "unpack" directory.
         /// <code>
         /// using (ZipFile zip = ZipFile.Read(zipArchiveName))
@@ -966,8 +952,8 @@ namespace Ionic.Zip
         /// <param name="selectionCriteria">the selection criteria for entries to extract.</param>
         ///
         /// <param name="directoryPathInArchive">
-        /// the directory in the archive from which to select entries. If null, then 
-        /// all directories in the archive are used. 
+        /// the directory in the archive from which to select entries. If null, then
+        /// all directories in the archive are used.
         /// </param>
         ///
         /// <seealso cref="ExtractSelectedEntries(String,String,String,ExtractExistingFileAction)"/>
@@ -980,7 +966,6 @@ namespace Ionic.Zip
             }
         }
 
-
         /// <summary>
         /// Selects and Extracts a set of Entries from the ZipFile.
         /// </summary>
@@ -991,20 +976,20 @@ namespace Ionic.Zip
         /// extracted already exist, an exception will be thrown.
         /// </para>
         /// <para>
-        /// For information on the syntax of the string describing the entry selection criteria, 
+        /// For information on the syntax of the string describing the entry selection criteria,
         /// see <see cref="AddSelectedFiles(String)" />.
-        /// </para> 
+        /// </para>
         /// </remarks>
         ///
         /// <param name="selectionCriteria">the selection criteria for entries to extract.</param>
         ///
         /// <param name="directoryInArchive">
-        /// the directory in the archive from which to select entries. If null, then 
-        /// all directories in the archive are used. 
+        /// the directory in the archive from which to select entries. If null, then
+        /// all directories in the archive are used.
         /// </param>
-        /// 
+        ///
         /// <param name="extractDirectory">
-        /// the directory on the disk into which to extract. It will be created 
+        /// the directory on the disk into which to extract. It will be created
         /// if it does not exist.
         /// </param>
         public void ExtractSelectedEntries(String selectionCriteria, string directoryInArchive, string extractDirectory)
@@ -1016,7 +1001,6 @@ namespace Ionic.Zip
             }
         }
 
-
         /// <summary>
         /// Selects and Extracts a set of Entries from the ZipFile.
         /// </summary>
@@ -1027,23 +1011,23 @@ namespace Ionic.Zip
         /// overwrite an existing filesystem file, the action taken is as specified in the
         /// <paramref name="extractExistingFile"/> parameter.
         /// </para>
-        /// 
+        ///
         /// <para>
-        /// For information on the syntax of the string describing the entry selection criteria, 
+        /// For information on the syntax of the string describing the entry selection criteria,
         /// see <see cref="AddSelectedFiles(String)" />.
-        /// </para> 
+        /// </para>
         /// </remarks>
         ///
         /// <example>
-        /// This example shows how extract all files  with an XML extension or with  a size larger than 100,000 bytes, 
-        /// and puts them in the unpack directory.  For any files that already exist in 
+        /// This example shows how extract all files  with an XML extension or with  a size larger than 100,000 bytes,
+        /// and puts them in the unpack directory.  For any files that already exist in
         /// that destination directory, they will not be overwritten.
         /// <code>
         /// using (ZipFile zip = ZipFile.Read(zipArchiveName))
         /// {
         ///   zip.ExtractSelectedEntries("name = *.xml  or  size &gt; 100000",
-        ///                              null, 
-        ///                              "unpack", 
+        ///                              null,
+        ///                              "unpack",
         ///                              ExtractExistingFileAction.DontOverwrite);
         /// }
         /// </code>
@@ -1054,16 +1038,16 @@ namespace Ionic.Zip
         /// <param name="extractDirectory">
         /// The directory on the disk into which to extract. It will be created if it does not exist.
         /// </param>
-        /// 
+        ///
         /// <param name="directoryPathInArchive">
-        /// The directory in the archive from which to select entries. If null, then 
-        /// all directories in the archive are used. 
+        /// The directory in the archive from which to select entries. If null, then
+        /// all directories in the archive are used.
         /// </param>
-        /// 
+        ///
         /// <param name="extractExistingFile">
         /// The action to take if extraction would overwrite an existing file.
         /// </param>
-        /// 
+        ///
         public void ExtractSelectedEntries(String selectionCriteria, string directoryPathInArchive, string extractDirectory, ExtractExistingFileAction extractExistingFile)
         {
             foreach (ZipEntry e in SelectEntries(selectionCriteria, directoryPathInArchive))
@@ -1072,12 +1056,8 @@ namespace Ionic.Zip
                 e.Extract(extractDirectory, extractExistingFile);
             }
         }
-
     }
-
 }
-
-
 
 namespace Ionic
 {
@@ -1085,7 +1065,6 @@ namespace Ionic
     {
         internal abstract bool Evaluate(Ionic.Zip.ZipEntry entry);
     }
-
 
     internal partial class NameCriterion : SelectionCriterion
     {
@@ -1097,7 +1076,6 @@ namespace Ionic
             return _Evaluate(transformedFileName);
         }
     }
-
 
     internal partial class SizeCriterion : SelectionCriterion
     {
@@ -1117,18 +1095,20 @@ namespace Ionic
                 case WhichTime.atime:
                     x = entry.AccessedTime;
                     break;
+
                 case WhichTime.mtime:
                     x = entry.ModifiedTime;
                     break;
+
                 case WhichTime.ctime:
                     x = entry.CreationTime;
                     break;
+
                 default: throw new ArgumentException("??time");
             }
             return _Evaluate(x);
         }
     }
-
 
     internal partial class AttributesCriterion : SelectionCriterion
     {
@@ -1138,7 +1118,6 @@ namespace Ionic
             return _Evaluate(fileAttrs);
         }
     }
-
 
     internal partial class CompoundCriterion : SelectionCriterion
     {
@@ -1151,10 +1130,12 @@ namespace Ionic
                     if (result)
                         result = Right.Evaluate(entry);
                     break;
+
                 case LogicalConjunction.OR:
                     if (!result)
                         result = Right.Evaluate(entry);
                     break;
+
                 case LogicalConjunction.XOR:
                     result ^= Right.Evaluate(entry);
                     break;
@@ -1162,8 +1143,6 @@ namespace Ionic
             return result;
         }
     }
-
-
 
     public partial class FileSelector
     {
@@ -1177,7 +1156,7 @@ namespace Ionic
         /// Retrieve the ZipEntry items in the ZipFile that conform to the specified criteria.
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// <para>
         /// This method applies the criteria set in the FileSelector instance (as described in
         /// the <see cref="FileSelector.SelectionCriteria"/>) to the specified ZipFile.  Using this
@@ -1186,7 +1165,7 @@ namespace Ionic
         /// </para>
         ///
         /// <para>
-        /// Normally, applications would not call this method directly.  This method is used 
+        /// Normally, applications would not call this method directly.  This method is used
         /// by the ZipFile class.
         /// </para>
         ///
@@ -1214,12 +1193,11 @@ namespace Ionic
             return list;
         }
 
-
         /// <summary>
         /// Retrieve the ZipEntry items in the ZipFile that conform to the specified criteria.
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// <para>
         /// This method applies the criteria set in the FileSelector instance (as described in
         /// the <see cref="FileSelector.SelectionCriteria"/>) to the specified ZipFile.  Using this
@@ -1228,12 +1206,12 @@ namespace Ionic
         /// </para>
         ///
         /// <para>
-        /// Normally, applications would not call this method directly.  This method is used 
+        /// Normally, applications would not call this method directly.  This method is used
         /// by the ZipFile class.
         /// </para>
         ///
         /// <para>
-        /// This overload allows the selection of ZipEntry instances from the ZipFile to be restricted 
+        /// This overload allows the selection of ZipEntry instances from the ZipFile to be restricted
         /// to entries contained within a particular directory in the ZipFile.
         /// </para>
         ///
@@ -1248,21 +1226,21 @@ namespace Ionic
         /// <param name="zip">The ZipFile from which to retrieve entries.</param>
         ///
         /// <param name="directoryPathInArchive">
-        /// the directory in the archive from which to select entries. If null, then 
-        /// all directories in the archive are used. 
+        /// the directory in the archive from which to select entries. If null, then
+        /// all directories in the archive are used.
         /// </param>
-        /// 
+        ///
         /// <returns>a collection of ZipEntry objects that conform to the criteria.</returns>
         public ICollection<Ionic.Zip.ZipEntry> SelectEntries(Ionic.Zip.ZipFile zip, string directoryPathInArchive)
         {
             var list = new List<Ionic.Zip.ZipEntry>();
             // workitem 8559
-            string slashSwapped = (directoryPathInArchive==null) ? null : directoryPathInArchive.Replace("/","\\");
+            string slashSwapped = (directoryPathInArchive == null) ? null : directoryPathInArchive.Replace("/", "\\");
             // workitem 9174
             if (slashSwapped != null)
             {
                 while (slashSwapped.EndsWith("\\"))
-                    slashSwapped= slashSwapped.Substring(0, slashSwapped.Length-1);
+                    slashSwapped = slashSwapped.Substring(0, slashSwapped.Length - 1);
             }
             foreach (Ionic.Zip.ZipEntry e in zip)
             {
@@ -1274,6 +1252,5 @@ namespace Ionic
 
             return list;
         }
-
     }
 }

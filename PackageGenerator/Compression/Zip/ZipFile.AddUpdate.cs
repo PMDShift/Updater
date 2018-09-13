@@ -25,10 +25,8 @@
 // ------------------------------------------------------------------
 //
 
-
 using System;
 using System.IO;
-using System.Collections.Generic;
 
 namespace Ionic.Zip
 {
@@ -84,7 +82,6 @@ namespace Ionic.Zip
         {
             return AddItem(fileOrDirectoryName, null);
         }
-
 
         /// <summary>
         ///   Adds an item, either a file or a directory, to a zip file archive,
@@ -296,10 +293,6 @@ namespace Ionic.Zip
             return AddFile(fileName, null);
         }
 
-
-
-
-
         /// <summary>
         ///   Adds a File to a Zip file archive, potentially overriding the path to be
         ///   used within the zip archive.
@@ -408,7 +401,6 @@ namespace Ionic.Zip
             return _InternalAddEntry(ze);
         }
 
-
         /// <summary>
         ///   This method removes a collection of entries from the <c>ZipFile</c>.
         /// </summary>
@@ -431,7 +423,6 @@ namespace Ionic.Zip
             }
         }
 
-
         /// <summary>
         ///   This method removes a collection of entries from the <c>ZipFile</c>, by name.
         /// </summary>
@@ -451,7 +442,6 @@ namespace Ionic.Zip
                 this.RemoveEntry(e);
             }
         }
-
 
         /// <summary>
         ///   This method adds a set of files to the <c>ZipFile</c>.
@@ -513,7 +503,6 @@ namespace Ionic.Zip
             this.AddFiles(fileNames, null);
         }
 
-
         /// <summary>
         ///   Adds or updates a set of files in the <c>ZipFile</c>.
         /// </summary>
@@ -543,7 +532,6 @@ namespace Ionic.Zip
         {
             this.UpdateFiles(fileNames, null);
         }
-
 
         /// <summary>
         ///   Adds a set of files to the <c>ZipFile</c>, using the
@@ -591,8 +579,6 @@ namespace Ionic.Zip
         {
             AddFiles(fileNames, false, directoryPathInArchive);
         }
-
-
 
         /// <summary>
         ///   Adds a set of files to the <c>ZipFile</c>, using the specified directory
@@ -671,11 +657,9 @@ namespace Ionic.Zip
             {
                 foreach (var f in fileNames)
                     this.AddFile(f, directoryPathInArchive);
-
             }
             OnAddCompleted();
         }
-
 
         /// <summary>
         ///   Adds or updates a set of files to the <c>ZipFile</c>, using the specified
@@ -723,9 +707,6 @@ namespace Ionic.Zip
                 this.UpdateFile(f, directoryPathInArchive);
             OnAddCompleted();
         }
-
-
-
 
         /// <summary>
         ///   Adds or Updates a File in a Zip file archive.
@@ -814,8 +795,6 @@ namespace Ionic.Zip
             return UpdateFile(fileName, null);
         }
 
-
-
         /// <summary>
         ///   Adds or Updates a File in a Zip file archive.
         /// </summary>
@@ -881,10 +860,6 @@ namespace Ionic.Zip
             return this.AddFile(fileName, directoryPathInArchive);
         }
 
-
-
-
-
         /// <summary>
         ///   Add or update a directory in a zip archive.
         /// </summary>
@@ -915,7 +890,6 @@ namespace Ionic.Zip
         {
             return UpdateDirectory(directoryName, null);
         }
-
 
         /// <summary>
         ///   Add or update a directory in the zip archive at the specified root
@@ -959,10 +933,6 @@ namespace Ionic.Zip
             return this.AddOrUpdateDirectoryImpl(directoryName, directoryPathInArchive, AddOrUpdateAction.AddOrUpdate);
         }
 
-
-
-
-
         /// <summary>
         ///   Add or update a file or directory in the zip archive.
         /// </summary>
@@ -995,7 +965,6 @@ namespace Ionic.Zip
         {
             UpdateItem(itemName, null);
         }
-
 
         /// <summary>
         ///   Add or update a file or directory.
@@ -1046,16 +1015,11 @@ namespace Ionic.Zip
         {
             if (File.Exists(itemName))
                 UpdateFile(itemName, directoryPathInArchive);
-
             else if (Directory.Exists(itemName))
                 UpdateDirectory(itemName, directoryPathInArchive);
-
             else
                 throw new FileNotFoundException(String.Format("That file or directory ({0}) does not exist!", itemName));
         }
-
-
-
 
         /// <summary>
         ///   Adds a named entry into the zip archive, taking content for the entry
@@ -1112,8 +1076,6 @@ namespace Ionic.Zip
         {
             return AddEntry(entryName, content, System.Text.Encoding.Default);
         }
-
-
 
         /// <summary>
         ///   Adds a named entry into the zip archive, taking content for the entry
@@ -1176,7 +1138,6 @@ namespace Ionic.Zip
 
             return AddEntry(entryName, ms);
         }
-
 
         /// <summary>
         ///   Create an entry in the <c>ZipFile</c> using the given <c>Stream</c> as input.
@@ -1253,12 +1214,10 @@ namespace Ionic.Zip
         public ZipEntry AddEntry(string entryName, Stream stream)
         {
             ZipEntry ze = ZipEntry.CreateForStream(entryName, stream);
-            ze.SetEntryTimes(DateTime.Now,DateTime.Now,DateTime.Now);
+            ze.SetEntryTimes(DateTime.Now, DateTime.Now, DateTime.Now);
             if (Verbose) StatusMessageTextWriter.WriteLine("adding {0}...", entryName);
             return _InternalAddEntry(ze);
         }
-
-
 
         /// <summary>
         ///   Add a ZipEntry for which content is written directly by the application.
@@ -1393,7 +1352,6 @@ namespace Ionic.Zip
             return _InternalAddEntry(ze);
         }
 
-
         /// <summary>
         ///   Add an entry, for which the application will provide a stream, just-in-time.
         /// </summary>
@@ -1482,12 +1440,10 @@ namespace Ionic.Zip
         public ZipEntry AddEntry(string entryName, OpenDelegate opener, CloseDelegate closer)
         {
             ZipEntry ze = ZipEntry.CreateForJitStreamProvider(entryName, opener, closer);
-            ze.SetEntryTimes(DateTime.Now,DateTime.Now,DateTime.Now);
+            ze.SetEntryTimes(DateTime.Now, DateTime.Now, DateTime.Now);
             if (Verbose) StatusMessageTextWriter.WriteLine("adding {0}...", entryName);
             return _InternalAddEntry(ze);
         }
-
-
 
         private ZipEntry _InternalAddEntry(ZipEntry ze)
         {
@@ -1503,13 +1459,10 @@ namespace Ionic.Zip
             ze.EmitTimesInWindowsFormatWhenSaving = _emitNtfsTimes;
             ze.EmitTimesInUnixFormatWhenSaving = _emitUnixTimes;
             //string key = DictionaryKeyForEntry(ze);
-            InternalAddEntry(ze.FileName,ze);
+            InternalAddEntry(ze.FileName, ze);
             AfterAddEntry(ze);
             return ze;
         }
-
-
-
 
         /// <summary>
         ///   Updates the given entry in the <c>ZipFile</c>, using the given string as
@@ -1541,7 +1494,6 @@ namespace Ionic.Zip
         {
             return UpdateEntry(entryName, content, System.Text.Encoding.Default);
         }
-
 
         /// <summary>
         ///   Updates the given entry in the <c>ZipFile</c>, using the given string as
@@ -1586,7 +1538,6 @@ namespace Ionic.Zip
 
             return AddEntry(entryName, content, encoding);
         }
-
 
         /// <summary>
         ///   Updates the given entry in the <c>ZipFile</c>, using the given stream as
@@ -1643,9 +1594,6 @@ namespace Ionic.Zip
             return AddEntry(entryName, stream);
         }
 
-
-
-
         /// <summary>
         /// Add an entry into the zip archive using the given filename and directory
         /// path within the archive, and the given content for the file. No file is
@@ -1665,7 +1613,6 @@ namespace Ionic.Zip
             var ms = new MemoryStream(byteContent);
             return AddEntry(entryName, ms);
         }
-
 
         /// <summary>
         /// Updates the given entry in the <c>ZipFile</c>, using the given byte array as
@@ -1702,13 +1649,11 @@ namespace Ionic.Zip
             return AddEntry(entryName, byteContent);
         }
 
-
-//         private string DictionaryKeyForEntry(ZipEntry ze1)
-//         {
-//             var filename = SharedUtilities.NormalizePathForUseInZipFile(ze1.FileName);
-//             return filename;
-//         }
-
+        //         private string DictionaryKeyForEntry(ZipEntry ze1)
+        //         {
+        //             var filename = SharedUtilities.NormalizePathForUseInZipFile(ze1.FileName);
+        //             return filename;
+        //         }
 
         /// <summary>
         ///   Adds the contents of a filesystem directory to a Zip file archive.
@@ -1759,7 +1704,6 @@ namespace Ionic.Zip
         {
             return AddDirectory(directoryName, null);
         }
-
 
         /// <summary>
         ///   Adds the contents of a filesystem directory to a Zip file archive,
@@ -1830,7 +1774,6 @@ namespace Ionic.Zip
             return AddOrUpdateDirectoryImpl(directoryName, directoryPathInArchive, AddOrUpdateAction.AddOnly);
         }
 
-
         /// <summary>
         ///   Creates a directory in the zip archive.
         /// </summary>
@@ -1862,17 +1805,15 @@ namespace Ionic.Zip
             dir._container = new ZipContainer(this);
             dir.MarkAsDirectory();
             dir.ProvisionalAlternateEncoding = this.ProvisionalAlternateEncoding;  // workitem 8984
-            dir.SetEntryTimes(DateTime.Now,DateTime.Now,DateTime.Now);
+            dir.SetEntryTimes(DateTime.Now, DateTime.Now, DateTime.Now);
             dir.EmitTimesInWindowsFormatWhenSaving = _emitNtfsTimes;
             dir.EmitTimesInUnixFormatWhenSaving = _emitUnixTimes;
             dir._Source = ZipEntrySource.Stream;
             //string key = DictionaryKeyForEntry(dir);
-            InternalAddEntry(dir.FileName,dir);
+            InternalAddEntry(dir.FileName, dir);
             AfterAddEntry(dir);
             return dir;
         }
-
-
 
         private ZipEntry AddOrUpdateDirectoryImpl(string directoryName, string rootDirectoryPathInArchive, AddOrUpdateAction action)
         {
@@ -1884,15 +1825,12 @@ namespace Ionic.Zip
             return AddOrUpdateDirectoryImpl(directoryName, rootDirectoryPathInArchive, action, 0);
         }
 
-
         internal void InternalAddEntry(String name, ZipEntry entry)
         {
             _entries.Add(name, entry);
             _zipEntriesAsList = null;
             _contentsChanged = true;
         }
-
-
 
         private ZipEntry AddOrUpdateDirectoryImpl(string directoryName, string rootDirectoryPathInArchive, AddOrUpdateAction action, int level)
         {
@@ -1929,7 +1867,7 @@ namespace Ionic.Zip
                 // It's not an error if it already exists.
                 if (!_entries.ContainsKey(baseDir.FileName))
                 {
-                    InternalAddEntry(baseDir.FileName,baseDir);
+                    InternalAddEntry(baseDir.FileName, baseDir);
                     AfterAddEntry(baseDir);
                 }
                 dirForEntries = baseDir.FileName;
@@ -1966,7 +1904,5 @@ namespace Ionic.Zip
 
             return baseDir;
         }
-
     }
-
 }

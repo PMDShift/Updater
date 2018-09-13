@@ -15,45 +15,51 @@
 
 namespace PMDCP.Updater
 {
+    using Ionic.Zip;
+    using PMDCP.Updater.Linker;
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Text;
     using System.Xml;
-
-    using PMDCP.Updater.Linker;
-    using System.Threading;
-    using System.IO;
-    using Ionic.Zip;
 
     public class UpdateClient : MarshalByRefObject, IUpdateClient
     {
         #region Fields
 
-        List<InstalledPackageInfo> installedPackages;
-        string packageListDirectory;
-        Security.Encryption packageListEncryption;
-        string status;
+        private List<InstalledPackageInfo> installedPackages;
+        private string packageListDirectory;
+        private Security.Encryption packageListEncryption;
+        private string status;
 
-        public string Status {
+        public string Status
+        {
             get { return status; }
             set { status = value; }
         }
+
         public event EventHandler InstallationComplete;
+
         public event EventHandler<PackageDownloadStartEventArgs> PackageDownloadStart;
+
         public event EventHandler StatusUpdated;
+
         public event EventHandler<PackageInstallationCompleteEventArgs> PackageInstallationComplete;
 
         #endregion Fields
 
 #if DEBUG
+
         [System.Runtime.InteropServices.DllImport("kernel32.dll")]
-        static extern bool AttachConsole(int dwProcessId);
+        private static extern bool AttachConsole(int dwProcessId);
+
         private const int ATTACH_PARENT_PROCESS = -1;
 #endif
 
         #region Constructors
 
-        public UpdateClient(string packageListKey, string packageListDirectory) {
+        public UpdateClient(string packageListKey, string packageListDirectory)
+        {
 #if DEBUG
             AttachConsole(ATTACH_PARENT_PROCESS);
 #endif
@@ -67,20 +73,26 @@ namespace PMDCP.Updater
 
         #region Methods
 
-        public IUpdateCheckResult CheckForUpdates(string updateURI) {
+        public IUpdateCheckResult CheckForUpdates(string updateURI)
+        {
             UpdateCheckResult result = new UpdateCheckResult(updateURI, Substring(updateURI, 0, updateURI.LastIndexOf("/") + 1));
 
             List<IPackageInfo> allPackages = ReadUpdateFile(result);
-            for (int i = 0; i < allPackages.Count; i++) {
-                for (int reqs = 0; reqs < allPackages[i].Prerequisites.Count; reqs++) {
-                    if (allPackages[i].Prerequisites[reqs].Version == -1) {
+            for (int i = 0; i < allPackages.Count; i++)
+            {
+                for (int reqs = 0; reqs < allPackages[i].Prerequisites.Count; reqs++)
+                {
+                    if (allPackages[i].Prerequisites[reqs].Version == -1)
+                    {
                         IPackageInfo packageInfo = FindPackageByID(allPackages, allPackages[i].Prerequisites[reqs].FullID);
-                        if (packageInfo != null) {
+                        if (packageInfo != null)
+                        {
                             allPackages[i].Prerequisites[reqs].Version = packageInfo.Version;
                         }
                     }
                 }
-                if (CanInstallPackage(allPackages[i])) {
+                if (CanInstallPackage(allPackages[i]))
+                {
                     // We need to install this package. So, let's read the rest of the data
                     ((PackageInfo)allPackages[i]).ReadFullFromXml(XmlReader.Create(result.UpdateDirectory + "Packages/" + allPackages[i].FullID + "/" + allPackages[i].FullID + ".xml"));
                     // And add it to the list of packages in the update
@@ -91,63 +103,78 @@ namespace PMDCP.Updater
             return result;
         }
 
-        private IPackageInfo FindPackageByID(List<IPackageInfo> packageList, string id) {
-            for (int i = 0; i < packageList.Count; i++) {
-                if (packageList[i].FullID == id) {
+        private IPackageInfo FindPackageByID(List<IPackageInfo> packageList, string id)
+        {
+            for (int i = 0; i < packageList.Count; i++)
+            {
+                if (packageList[i].FullID == id)
+                {
                     return packageList[i];
                 }
             }
             return null;
         }
 
-        public IFileDownload CreateFileDownload(string downloadURI, string filePath) {
+        public IFileDownload CreateFileDownload(string downloadURI, string filePath)
+        {
             return new FileDownload(downloadURI, filePath);
         }
 
-        public void PerformUpdate(IUpdateCheckResult result) {
-            if (result.PackagesToUpdate.Count > 0) {
+        public void PerformUpdate(IUpdateCheckResult result)
+        {
+            if (result.PackagesToUpdate.Count > 0)
+            {
                 DownloadPackage(result, 0);
             }
         }
 
-        private void DownloadPackage(IUpdateCheckResult result, int currentPackage) {
+        private void DownloadPackage(IUpdateCheckResult result, int currentPackage)
+        {
             IPackageInfo package = result.PackagesToUpdate[currentPackage];
             string updaterCache = this.packageListDirectory + "UpdaterCache/";
-            if (Directory.Exists(updaterCache) == false) {
+            if (Directory.Exists(updaterCache) == false)
+            {
                 Directory.CreateDirectory(updaterCache);
             }
             string tempPath = updaterCache + package.FullID + ".uprtmp";//Path.GetTempFileName();
             FileDownload download = new FileDownload(result.UpdateDirectory + "Packages/" + package.FullID + "/" + package.FullID + ".zip", tempPath);
-            if (PackageDownloadStart != null) {
+            if (PackageDownloadStart != null)
+            {
                 PackageDownloadStart(this, new PackageDownloadStartEventArgs(package, download));
             }
-            download.DownloadUpdate += delegate(System.Object o, FileDownloadingEventArgs e)
+            download.DownloadUpdate += delegate (System.Object o, FileDownloadingEventArgs e)
             {
                 //if (UpdateDownloading != null) {
                 //    UpdateDownloading(this, new UpdateInstallingEventArgs(e, fileNum, fileList.Count));
                 //}
             };
-            download.DownloadComplete += delegate(System.Object o, FileDownloadingEventArgs e)
+            download.DownloadComplete += delegate (System.Object o, FileDownloadingEventArgs e)
             {
                 InstallDownloadedPackage(result, currentPackage, tempPath);
             };
             download.Download();
         }
 
-        private void InstallDownloadedPackage(IUpdateCheckResult result, int currentPackage, string packagePath) {
+        private void InstallDownloadedPackage(IUpdateCheckResult result, int currentPackage, string packagePath)
+        {
             string tempFolder = packagePath + ".extracted/";
-            if (Directory.Exists(tempFolder)) {
+            if (Directory.Exists(tempFolder))
+            {
                 Directory.Delete(tempFolder, true);
             }
-            using (ZipFile zip = new ZipFile(packagePath)) {
-                foreach (ZipEntry entry in zip) {
-                    if (!entry.FileName.Contains("/")) {
+            using (ZipFile zip = new ZipFile(packagePath))
+            {
+                foreach (ZipEntry entry in zip)
+                {
+                    if (!entry.FileName.Contains("/"))
+                    {
                         entry.Extract(tempFolder, ExtractExistingFileAction.OverwriteSilently);
                     }
                 }
             }
             string uninstallPackagePath = this.packageListDirectory + "UpdaterCache/" + result.PackagesToUpdate[currentPackage].FullID + ".udruninsta_";
-            if (System.IO.File.Exists(uninstallPackagePath)) {
+            if (System.IO.File.Exists(uninstallPackagePath))
+            {
                 // An uninstall package exists!
                 // Try to uninstall it
                 UninstallPackage(result.PackagesToUpdate[currentPackage], uninstallPackagePath);
@@ -165,10 +192,12 @@ namespace PMDCP.Updater
             installer.Close();
             loader.Unload();
 
-            if (Directory.Exists(System.IO.Path.GetDirectoryName(uninstallPackagePath)) == false) {
+            if (Directory.Exists(System.IO.Path.GetDirectoryName(uninstallPackagePath)) == false)
+            {
                 Directory.CreateDirectory(Path.GetDirectoryName(uninstallPackagePath));
             }
-            using (ZipFile zip = new ZipFile()) {
+            using (ZipFile zip = new ZipFile())
+            {
                 zip.AddFile(tempFolder + "FileList.xml", "\\");
                 zip.AddFile(tempFolder + result.PackagesToUpdate[currentPackage].FullID + ".dll", "\\");
                 zip.AddFile(tempFolder + "Updater.Linker.dll", "\\");
@@ -177,60 +206,80 @@ namespace PMDCP.Updater
             }
 
             // Delete the temporary files
-            if (Directory.Exists(tempFolder)) {
+            if (Directory.Exists(tempFolder))
+            {
                 Directory.Delete(tempFolder, true);
             }
-            if (File.Exists(packagePath)) {
+            if (File.Exists(packagePath))
+            {
                 File.Delete(packagePath);
             }
             OnPackageInstallationComplete(result, currentPackage);
         }
 
-        private void OnPackageInstallationComplete(IUpdateCheckResult result, int currentPackage) {
-            if (PackageInstallationComplete != null) {
+        private void OnPackageInstallationComplete(IUpdateCheckResult result, int currentPackage)
+        {
+            if (PackageInstallationComplete != null)
+            {
                 PackageInstallationComplete(this, new PackageInstallationCompleteEventArgs(result.PackagesToUpdate[currentPackage], currentPackage));
             }
-            if (currentPackage + 1 < result.PackagesToUpdate.Count) {
+            if (currentPackage + 1 < result.PackagesToUpdate.Count)
+            {
                 DownloadPackage(result, currentPackage + 1);
-            } else {
+            }
+            else
+            {
                 // Done the update!
-                if (InstallationComplete != null) {
+                if (InstallationComplete != null)
+                {
                     InstallationComplete(this, EventArgs.Empty);
                 }
             }
         }
 
-        private void UninstallPackage(IPackageInfo packageInfo, string uninstallPackagePath) {
+        private void UninstallPackage(IPackageInfo packageInfo, string uninstallPackagePath)
+        {
             PackageFileList fileList = null;
 
             string tempFolder = uninstallPackagePath + ".extracted/";
-            if (Directory.Exists(tempFolder)) {
+            if (Directory.Exists(tempFolder))
+            {
                 Directory.Delete(tempFolder, true);
             }
-            using (ZipFile zip = new ZipFile(uninstallPackagePath)) {
-                foreach (ZipEntry entry in zip) {
+            using (ZipFile zip = new ZipFile(uninstallPackagePath))
+            {
+                foreach (ZipEntry entry in zip)
+                {
                     entry.Extract(tempFolder, ExtractExistingFileAction.OverwriteSilently);
                 }
             }
 
-            using (FileStream stream = new FileStream(tempFolder + "FileList.xml", FileMode.Open, FileAccess.Read, FileShare.None)) {
+            using (FileStream stream = new FileStream(tempFolder + "FileList.xml", FileMode.Open, FileAccess.Read, FileShare.None))
+            {
                 fileList = LoadPackageFileList(stream);
             }
 
             ExecuteUninstallation(tempFolder + packageInfo.FullID + ".dll", packageInfo, fileList);
 
-            if (Directory.Exists(tempFolder)) {
+            if (Directory.Exists(tempFolder))
+            {
                 Directory.Delete(tempFolder, true);
             }
         }
 
-        private PackageFileList LoadPackageFileList(Stream fileListStream) {
+        private PackageFileList LoadPackageFileList(Stream fileListStream)
+        {
             PackageFileList fileList = new PackageFileList();
-            using (XmlReader reader = XmlReader.Create(fileListStream)) {
-                while (reader.Read()) {
-                    if (reader.IsStartElement()) {
-                        switch (reader.Name) {
-                            case "File": {
+            using (XmlReader reader = XmlReader.Create(fileListStream))
+            {
+                while (reader.Read())
+                {
+                    if (reader.IsStartElement())
+                    {
+                        switch (reader.Name)
+                        {
+                            case "File":
+                                {
                                     PackageFileListItem item = new PackageFileListItem(this.packageListDirectory, reader.ReadString().TrimStart('\\'));
                                     fileList.Add(item);
                                 }
@@ -242,7 +291,8 @@ namespace PMDCP.Updater
             return fileList;
         }
 
-        private void ExecuteUninstallation(string packagePath, IPackageInfo packageInfo, PackageFileList fileList) {
+        private void ExecuteUninstallation(string packagePath, IPackageInfo packageInfo, PackageFileList fileList)
+        {
             PackageLoader loader = new PackageLoader();
             loader.LoadPackage(packagePath);
             loader.Package.Initialize(this);
@@ -251,38 +301,49 @@ namespace PMDCP.Updater
             loader.Package.Uninstall(uninstaller);
             // Uninstallation complete! Add this package to the installed packages list
             int removalCount = MarkPackageUninstalled(uninstaller.Package.FullID);
-            if (removalCount > 0) {
+            if (removalCount > 0)
+            {
                 SaveInstalledPackageList();
             }
             loader.Unload();
         }
 
-        public bool IsPackageInstalled(string packageID, int version) {
-            for (int i = 0; i < installedPackages.Count; i++) {
-                if (installedPackages[i].MatchIfNewer(packageID, version)) {
+        public bool IsPackageInstalled(string packageID, int version)
+        {
+            for (int i = 0; i < installedPackages.Count; i++)
+            {
+                if (installedPackages[i].MatchIfNewer(packageID, version))
+                {
                     return true;
                 }
             }
             return false;
         }
 
-        private void MarkPackageInstalled(string packageID, int version) {
+        private void MarkPackageInstalled(string packageID, int version)
+        {
             bool updated = false;
-            for (int i = 0; i < installedPackages.Count; i++) {
-                if (installedPackages[i].FullID == packageID) {
+            for (int i = 0; i < installedPackages.Count; i++)
+            {
+                if (installedPackages[i].FullID == packageID)
+                {
                     installedPackages[i].Version = version;
                     updated = true;
                 }
             }
-            if (updated == false) {
+            if (updated == false)
+            {
                 installedPackages.Add(new InstalledPackageInfo(packageID, version));
             }
         }
 
-        private int MarkPackageUninstalled(string packageID) {
+        private int MarkPackageUninstalled(string packageID)
+        {
             int removalCount = 0;
-            for (int i = installedPackages.Count - 1; i >= 0; i--) {
-                if (installedPackages[i].FullID == packageID) {
+            for (int i = installedPackages.Count - 1; i >= 0; i--)
+            {
+                if (installedPackages[i].FullID == packageID)
+                {
                     installedPackages.RemoveAt(i);
                     removalCount++;
                 }
@@ -290,16 +351,20 @@ namespace PMDCP.Updater
             return removalCount;
         }
 
-        public void UpdateStatus(string status) {
+        public void UpdateStatus(string status)
+        {
             this.status = status;
-            if (StatusUpdated != null) {
+            if (StatusUpdated != null)
+            {
                 StatusUpdated(this, EventArgs.Empty);
             }
         }
 
-        public void LoadInstalledPackageList() {
+        public void LoadInstalledPackageList()
+        {
             // Check if the configuration file exists, if not, create it
-            if (System.IO.File.Exists(packageListDirectory + "packages.dat") == false) {
+            if (System.IO.File.Exists(packageListDirectory + "packages.dat") == false)
+            {
                 // Package list doesn't exist! PANIC!
                 SaveInstalledPackageList();
             }
@@ -307,19 +372,28 @@ namespace PMDCP.Updater
             installedPackages.Clear();
             // Decrypt the configuration file into a string
             string xmlData = System.Text.Encoding.Unicode.GetString(packageListEncryption.DecryptBytes(System.IO.File.ReadAllBytes(packageListDirectory + "packages.dat")));
-            using (XmlTextReader reader = new XmlTextReader(new System.IO.StringReader(xmlData))) {
-                while (reader.Read()) {
-                    if (reader.IsStartElement()) {
-                        switch (reader.Name) {
-                            case "Package": {
+            using (XmlTextReader reader = new XmlTextReader(new System.IO.StringReader(xmlData)))
+            {
+                while (reader.Read())
+                {
+                    if (reader.IsStartElement())
+                    {
+                        switch (reader.Name)
+                        {
+                            case "Package":
+                                {
                                     installedPackages.Add(new InstalledPackageInfo("", 1));
                                 }
                                 break;
-                            case "ID": {
+
+                            case "ID":
+                                {
                                     installedPackages[installedPackages.Count - 1].FullID = reader.ReadString();
                                 }
                                 break;
-                            case "Version": {
+
+                            case "Version":
+                                {
                                     installedPackages[installedPackages.Count - 1].Version = reader.ReadString().ToInt();
                                 }
                                 break;
@@ -329,19 +403,22 @@ namespace PMDCP.Updater
             }
         }
 
-        public void SaveInstalledPackageList() {
+        public void SaveInstalledPackageList()
+        {
             StringBuilder output = new StringBuilder();
             // Write a new xml document to the 'output' StringBuilder
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.IndentChars = "   ";
             settings.Indent = true;
-            using (XmlWriter writer = XmlWriter.Create(output, settings)) {
+            using (XmlWriter writer = XmlWriter.Create(output, settings))
+            {
                 writer.WriteStartDocument();
                 // Write the root node
                 writer.WriteStartElement("PackageInfo");
                 // Write the 'InstalledPackages' node
                 writer.WriteStartElement("InstalledPackages");
-                for (int i = 0; i < installedPackages.Count; i++) {
+                for (int i = 0; i < installedPackages.Count; i++)
+                {
                     writer.WriteStartElement("Package");
 
                     writer.WriteElementString("ID", installedPackages[i].FullID);
@@ -360,36 +437,47 @@ namespace PMDCP.Updater
             System.IO.File.WriteAllBytes(packageListDirectory + "packages.dat", packageListEncryption.EncryptBytes(System.Text.Encoding.Unicode.GetBytes(output.ToString())));
         }
 
-        private bool CanInstallPackage(IPackageInfo package) {
-            if (!IsPackageInstalled(package.FullID, package.Version)) {
+        private bool CanInstallPackage(IPackageInfo package)
+        {
+            if (!IsPackageInstalled(package.FullID, package.Version))
+            {
                 // This package is not already installed
-                for (int i = 0; i < package.Prerequisites.Count; i++) {
+                for (int i = 0; i < package.Prerequisites.Count; i++)
+                {
                     // Check if all of the prerequisites as installed
-                    if (!IsPackageInstalled(package.Prerequisites[i].FullID, package.Prerequisites[i].Version)) {
+                    if (!IsPackageInstalled(package.Prerequisites[i].FullID, package.Prerequisites[i].Version))
+                    {
                         // A prerequisite is not installed! That means we cannot install this package
                         return false;
                     }
                 }
                 // All of the prerequisites are installed! That means we can install this package
                 return true;
-            } else {
+            }
+            else
+            {
                 // The package is installed. We don't need to install it again
                 return false;
             }
         }
 
-        private List<IPackageInfo> ReadUpdateFile(UpdateCheckResult updateResult) {
+        private List<IPackageInfo> ReadUpdateFile(UpdateCheckResult updateResult)
+        {
             List<IPackageInfo> packageInfoList = new List<IPackageInfo>();
 
-            using (XmlReader reader = XmlReader.Create(updateResult.UpdateURI)) {
-                while (reader.Read()) {
-                    if (reader.IsStartElement()) {
-                        switch (reader.Name) {
-                            case "Package": {
+            using (XmlReader reader = XmlReader.Create(updateResult.UpdateURI))
+            {
+                while (reader.Read())
+                {
+                    if (reader.IsStartElement())
+                    {
+                        switch (reader.Name)
+                        {
+                            case "Package":
+                                {
                                     PackageInfo package = new PackageInfo();
                                     package.ReadBasicFromXml(reader);
                                     packageInfoList.Add(package);
-
                                 }
                                 break;
                         }
@@ -400,9 +488,11 @@ namespace PMDCP.Updater
             return packageInfoList;
         }
 
-        private string Substring(string String, int Start, int End) {
+        private string Substring(string String, int Start, int End)
+        {
             //If start is after the end then just flip the values
-            if (Start > End) {
+            if (Start > End)
+            {
                 Start = Start ^ End;
                 End = Start ^ End;
                 Start = Start ^ End;
@@ -414,9 +504,8 @@ namespace PMDCP.Updater
 
         #endregion Methods
 
-
-        public void ExtractPackageFile(string packagePath, string fileToExtract, string destinationPath) {
-
+        public void ExtractPackageFile(string packagePath, string fileToExtract, string destinationPath)
+        {
         }
     }
 }

@@ -25,7 +25,6 @@
 //
 
 using System;
-using System.IO;
 
 namespace Ionic.Zip
 {
@@ -502,7 +501,6 @@ namespace Ionic.Zip
         /// <seealso cref="Ionic.Zip.ZipFile.ExtractProgress"/>
         public event EventHandler<SaveProgressEventArgs> SaveProgress;
 
-
         internal bool OnSaveBlock(ZipEntry entry, Int64 bytesXferred, Int64 totalBytesToXfer)
         {
             if (SaveProgress != null)
@@ -558,6 +556,7 @@ namespace Ionic.Zip
                 }
             }
         }
+
         private void OnSaveCompleted()
         {
             if (SaveProgress != null)
@@ -569,10 +568,11 @@ namespace Ionic.Zip
                 }
             }
         }
-        #endregion
 
+        #endregion Save
 
         #region Read
+
         /// <summary>
         /// An event handler invoked before, during, and after the reading of a zip archive.
         /// </summary>
@@ -686,6 +686,7 @@ namespace Ionic.Zip
         }
 
         private Int64 _lengthOfReadStream = -99;
+
         private Int64 LengthOfReadStream
         {
             get
@@ -699,10 +700,11 @@ namespace Ionic.Zip
                 return _lengthOfReadStream;
             }
         }
-        #endregion
 
+        #endregion Read
 
         #region Extract
+
         /// <summary>
         /// An event handler invoked before, during, and after extraction of entries
         /// in the zip archive.
@@ -847,8 +849,6 @@ namespace Ionic.Zip
         /// <seealso cref="Ionic.Zip.ZipFile.AddProgress"/>
         public event EventHandler<ExtractProgressEventArgs> ExtractProgress;
 
-
-
         private void OnExtractEntry(int current, bool before, ZipEntry currentEntry, string path)
         {
             if (ExtractProgress != null)
@@ -862,7 +862,6 @@ namespace Ionic.Zip
                 }
             }
         }
-
 
         // Can be called from within ZipEntry._ExtractOne.
         internal bool OnExtractBlock(ZipEntry entry, Int64 bytesWritten, Int64 totalBytesToWrite)
@@ -880,7 +879,6 @@ namespace Ionic.Zip
             }
             return _extractOperationCanceled;
         }
-
 
         // Can be called from within ZipEntry.InternalExtract.
         internal bool OnSingleEntryExtract(ZipEntry entry, string path, bool before)
@@ -915,7 +913,6 @@ namespace Ionic.Zip
             return _extractOperationCanceled;
         }
 
-
         private void OnExtractAllCompleted(string path)
         {
             if (ExtractProgress != null)
@@ -923,12 +920,11 @@ namespace Ionic.Zip
                 lock (LOCK)
                 {
                     var e = ExtractProgressEventArgs.ExtractAllCompleted(ArchiveNameForEvent,
-                         path );
+                         path);
                     ExtractProgress(this, e);
                 }
             }
         }
-
 
         private void OnExtractAllStarted(string path)
         {
@@ -937,18 +933,16 @@ namespace Ionic.Zip
                 lock (LOCK)
                 {
                     var e = ExtractProgressEventArgs.ExtractAllStarted(ArchiveNameForEvent,
-                         path );
+                         path);
                     ExtractProgress(this, e);
                 }
             }
         }
 
-
-        #endregion
-
-
+        #endregion Extract
 
         #region Add
+
         /// <summary>
         /// An event handler invoked before, during, and after Adding entries to a zip archive.
         /// </summary>
@@ -1065,11 +1059,10 @@ namespace Ionic.Zip
             }
         }
 
-        #endregion
-
-
+        #endregion Add
 
         #region Error
+
         /// <summary>
         /// An event that is raised when an error occurs during open or read of files
         /// while saving a zip archive.
@@ -1212,7 +1205,7 @@ namespace Ionic.Zip
             }
             return _saveOperationCanceled;
         }
-        #endregion
 
+        #endregion Error
     }
 }

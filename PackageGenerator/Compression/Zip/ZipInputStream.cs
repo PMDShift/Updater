@@ -30,12 +30,9 @@
 //
 
 using System;
-using System.Threading;
-using System.Collections.Generic;
 using System.IO;
-using Ionic.Zip;
 
-namespace  Ionic.Zip
+namespace Ionic.Zip
 {
     /// <summary>
     ///   Provides a stream metaphor for reading zip files.
@@ -227,9 +224,7 @@ namespace  Ionic.Zip
         /// End Sub
         /// </code>
         /// </example>
-        public ZipInputStream(Stream stream)  : this (stream, false) { }
-
-
+        public ZipInputStream(Stream stream) : this(stream, false) { }
 
         /// <summary>
         ///   Create a <c>ZipInputStream</c>, given the name of an existing zip file.
@@ -309,10 +304,9 @@ namespace  Ionic.Zip
         /// </example>
         public ZipInputStream(String fileName)
         {
-            Stream stream = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read );
+            Stream stream = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
             _Init(stream, false);
         }
-
 
         /// <summary>
         ///   Create a <c>ZipInputStream</c>, explicitly specifying whether to
@@ -343,12 +337,11 @@ namespace  Ionic.Zip
             _inputStream = stream;
             if (!_inputStream.CanRead)
                 throw new ZipException("The stream must be readable.");
-            _container= new ZipContainer(this);
+            _container = new ZipContainer(this);
             _provisionalAlternateEncoding = System.Text.Encoding.GetEncoding("IBM437");
             _leaveUnderlyingStreamOpen = leaveOpen;
-            _findRequired= true;
+            _findRequired = true;
         }
-
 
         /// <summary>
         ///   The text encoding to use when reading entries into the zip archive, for
@@ -414,7 +407,6 @@ namespace  Ionic.Zip
             }
         }
 
-
         /// <summary>
         ///   Size of the work buffer to use for the ZLIB codec during decompression.
         /// </summary>
@@ -432,7 +424,6 @@ namespace  Ionic.Zip
             get;
             set;
         }
-
 
         /// <summary>
         ///   Sets the password to be used on the <c>ZipInputStream</c> instance.
@@ -498,15 +489,12 @@ namespace  Ionic.Zip
             }
         }
 
-
         private void _SetupStream()
         {
-            _crcStream= _currentEntry.InternalOpenReader(_password);
+            _crcStream = _currentEntry.InternalOpenReader(_password);
             _LeftToRead = _crcStream.Length;
             _needSetup = false;
         }
-
-
 
         internal Stream ReadStream
         {
@@ -515,7 +503,6 @@ namespace  Ionic.Zip
                 return _inputStream;
             }
         }
-
 
         /// <summary>
         ///   Read the data from the stream into the buffer.
@@ -567,8 +554,6 @@ namespace  Ionic.Zip
             return n;
         }
 
-
-
         /// <summary>
         ///   Read the next entry from the zip file.
         /// </summary>
@@ -618,10 +603,9 @@ namespace  Ionic.Zip
             _endOfEntry = _inputStream.Position;
             _firstEntry = true;
             _needSetup = true;
-            _findRequired= false;
+            _findRequired = false;
             return _currentEntry;
         }
-
 
         /// <summary>
         ///   Dispose the stream.
@@ -660,19 +644,18 @@ namespace  Ionic.Zip
 #endif
                 }
             }
-            _closed= true;
+            _closed = true;
         }
-
 
         /// <summary>
         /// Always returns true.
         /// </summary>
-        public override bool CanRead  { get { return true; }}
+        public override bool CanRead { get { return true; } }
 
         /// <summary>
         /// Returns the value of <c>CanSeek</c> for the underlying (wrapped) stream.
         /// </summary>
-        public override bool CanSeek  { get { return _inputStream.CanSeek; } }
+        public override bool CanSeek { get { return _inputStream.CanSeek; } }
 
         /// <summary>
         /// Always returns false.
@@ -682,7 +665,7 @@ namespace  Ionic.Zip
         /// <summary>
         /// Returns the length of the underlying stream.
         /// </summary>
-        public override long Length   { get { return _inputStream.Length; }}
+        public override long Length { get { return _inputStream.Length; } }
 
         /// <summary>
         /// Gets or sets the position of the underlying stream.
@@ -692,8 +675,8 @@ namespace  Ionic.Zip
         /// </remarks>
         public override long Position
         {
-            get { return _inputStream.Position;}
-            set { Seek(value, SeekOrigin.Begin);}
+            get { return _inputStream.Position; }
+            set { Seek(value, SeekOrigin.Begin); }
         }
 
         /// <summary>
@@ -703,7 +686,6 @@ namespace  Ionic.Zip
         {
             throw new NotSupportedException("Flush");
         }
-
 
         /// <summary>
         /// This method always throws a NotSupportedException.
@@ -715,7 +697,6 @@ namespace  Ionic.Zip
         {
             throw new NotSupportedException("Write");
         }
-
 
         /// <summary>
         ///   This method seeks in the underlying stream.
@@ -741,7 +722,7 @@ namespace  Ionic.Zip
         /// <returns>The new position</returns>
         public override long Seek(long offset, SeekOrigin origin)
         {
-            _findRequired= true;
+            _findRequired = true;
             return _inputStream.Seek(offset, origin);
         }
 
@@ -753,7 +734,6 @@ namespace  Ionic.Zip
         {
             throw new NotSupportedException();
         }
-
 
         private Stream _inputStream;
         private System.Text.Encoding _provisionalAlternateEncoding;
@@ -771,7 +751,4 @@ namespace  Ionic.Zip
         private bool _findRequired;
         private bool _exceptionPending;
     }
-
-
-
 }

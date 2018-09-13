@@ -13,27 +13,28 @@
 // You should have received a copy of the GNU General Public License
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using PMDCP.Updater.Linker;
+using System;
 
 namespace PMDCP.Updater
 {
     public class PackageInstallationCompleteEventArgs : EventArgs
     {
-        IPackageInfo package;
-        int packageIndex;
+        private IPackageInfo package;
+        private int packageIndex;
 
-        public IPackageInfo Package {
+        public IPackageInfo Package
+        {
             get { return package; }
         }
 
-        public int PackageIndex {
+        public int PackageIndex
+        {
             get { return packageIndex; }
         }
 
-        public PackageInstallationCompleteEventArgs(IPackageInfo package, int packageIndex) {
+        public PackageInstallationCompleteEventArgs(IPackageInfo package, int packageIndex)
+        {
             this.package = package;
             this.packageIndex = packageIndex;
         }

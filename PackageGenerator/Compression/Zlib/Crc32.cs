@@ -32,11 +32,8 @@
 //
 // ------------------------------------------------------------------
 
-
-
 using System;
-using Interop=System.Runtime.InteropServices;
-
+using Interop = System.Runtime.InteropServices;
 
 namespace Ionic.Zlib
 {
@@ -123,7 +120,6 @@ namespace Ionic.Zlib
             }
         }
 
-
         /// <summary>
         /// Get the CRC32 for the given (word,byte) combo.  This is a computation
         /// defined by PKzip.
@@ -161,7 +157,6 @@ namespace Ionic.Zlib
             _TotalBytesRead += count;
         }
 
-
         // pre-initialize the crc table for speed of lookup.
         static CRC32()
         {
@@ -197,16 +192,13 @@ namespace Ionic.Zlib
             }
         }
 
-
-
-
         private uint gf2_matrix_times(uint[] matrix, uint vec)
         {
             uint sum = 0;
-            int i=0;
+            int i = 0;
             while (vec != 0)
             {
-                if ((vec & 0x01)== 0x01)
+                if ((vec & 0x01) == 0x01)
                     sum ^= matrix[i];
                 vec >>= 1;
                 i++;
@@ -219,8 +211,6 @@ namespace Ionic.Zlib
             for (int i = 0; i < 32; i++)
                 square[i] = gf2_matrix_times(mat, mat[i]);
         }
-
-
 
         /// <summary>
         /// Combines the given CRC32 value with the current running total.
@@ -240,8 +230,8 @@ namespace Ionic.Zlib
             if (length == 0)
                 return;
 
-            uint crc1= ~_RunningCrc32Result;
-            uint crc2= (uint) crc;
+            uint crc1 = ~_RunningCrc32Result;
+            uint crc2 = (uint)crc;
 
             // put operator for one zero bit in odd
             odd[0] = 0xEDB88320;  // the CRC-32 polynomial
@@ -258,15 +248,16 @@ namespace Ionic.Zlib
             // put operator for four zero bits in odd
             gf2_matrix_square(odd, even);
 
-            uint len2 = (uint) length;
+            uint len2 = (uint)length;
 
             // apply len2 zeros to crc1 (first square will put the operator for one
             // zero byte, eight zero bits, in even)
-            do {
+            do
+            {
                 // apply zeros operator for this bit of len2
                 gf2_matrix_square(even, odd);
 
-                if ((len2 & 1)== 1)
+                if ((len2 & 1) == 1)
                     crc1 = gf2_matrix_times(even, crc1);
                 len2 >>= 1;
 
@@ -275,33 +266,26 @@ namespace Ionic.Zlib
 
                 // another iteration of the loop with odd and even swapped
                 gf2_matrix_square(odd, even);
-                if ((len2 & 1)==1)
+                if ((len2 & 1) == 1)
                     crc1 = gf2_matrix_times(odd, crc1);
                 len2 >>= 1;
-
-
             } while (len2 != 0);
 
             crc1 ^= crc2;
 
-            _RunningCrc32Result= ~crc1;
+            _RunningCrc32Result = ~crc1;
 
             //return (int) crc1;
             return;
         }
 
-
-
         // private member vars
         private Int64 _TotalBytesRead;
+
         private static readonly UInt32[] crc32Table;
         private const int BUFFER_SIZE = 8192;
         private UInt32 _RunningCrc32Result = 0xFFFFFFFF;
-
     }
-
-
-
 
     /// <summary>
     /// A Stream that calculates a CRC32 (a checksum) on all bytes read,
@@ -344,7 +328,6 @@ namespace Ionic.Zlib
             get { return _Crc32.TotalBytesRead; }
         }
 
-
         /// <summary>
         /// The default constructor.
         /// </summary>
@@ -358,7 +341,6 @@ namespace Ionic.Zlib
         {
         }
 
-
         /// <summary>
         /// The constructor allows the caller to specify how to handle the underlying
         /// stream at close.
@@ -370,7 +352,6 @@ namespace Ionic.Zlib
             : this(leaveOpen, CrcCalculatorStream.UnsetLengthLimit, stream)
         {
         }
-
 
         /// <summary>
         /// A constructor allowing the specification of the length of the stream to read.
@@ -402,7 +383,6 @@ namespace Ionic.Zlib
             if (length < 0)
                 throw new ArgumentException("length");
         }
-
 
         // This ctor is private - no validation is done here.  This is to allow the use
         // of a (specific) negative value for the _lengthLimit, to indicate that there
@@ -552,7 +532,6 @@ namespace Ionic.Zlib
             throw new NotImplementedException();
         }
 
-
         void IDisposable.Dispose()
         {
             Close();
@@ -567,6 +546,5 @@ namespace Ionic.Zlib
             if (!_leaveOpen)
                 _innerStream.Close();
         }
-
     }
 }

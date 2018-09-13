@@ -26,7 +26,6 @@
 //
 // ------------------------------------------------------------------
 
-
 using System;
 using System.IO;
 
@@ -118,8 +117,6 @@ namespace Ionic.Zlib
         // on generation:
         // all optional fields get 0, except for the OS, which gets 255.
         //
-
-
 
         /// <summary>
         ///   The comment on the GZIP stream.
@@ -221,12 +218,11 @@ namespace Ionic.Zlib
 
         private int _headerByteCount;
         internal ZlibBaseStream _baseStream;
-        bool _disposed;
-        bool _firstReadDone;
-        string _FileName;
-        string _Comment;
-        int _Crc32;
-
+        private bool _disposed;
+        private bool _firstReadDone;
+        private string _FileName;
+        private string _Comment;
+        private int _Crc32;
 
         /// <summary>
         ///   Create a <c>GZipStream</c> using the specified <c>CompressionMode</c>.
@@ -547,7 +543,8 @@ namespace Ionic.Zlib
         virtual public FlushType FlushMode
         {
             get { return (this._baseStream._flushMode); }
-            set {
+            set
+            {
                 if (_disposed) throw new ObjectDisposedException("GZipStream");
                 this._baseStream._flushMode = value;
             }
@@ -587,7 +584,6 @@ namespace Ionic.Zlib
             }
         }
 
-
         /// <summary> Returns the total number of bytes input so far.</summary>
         virtual public long TotalIn
         {
@@ -606,7 +602,7 @@ namespace Ionic.Zlib
             }
         }
 
-        #endregion
+        #endregion Zlib properties
 
         #region Stream methods
 
@@ -637,7 +633,6 @@ namespace Ionic.Zlib
             }
         }
 
-
         /// <summary>
         /// Indicates whether the stream can be read.
         /// </summary>
@@ -663,7 +658,6 @@ namespace Ionic.Zlib
         {
             get { return false; }
         }
-
 
         /// <summary>
         /// Indicates whether the stream can be written.
@@ -770,8 +764,6 @@ namespace Ionic.Zlib
             return n;
         }
 
-
-
         /// <summary>
         ///   Calling this method always throws a <see cref="NotImplementedException"/>.
         /// </summary>
@@ -833,12 +825,11 @@ namespace Ionic.Zlib
 
             _baseStream.Write(buffer, offset, count);
         }
-        #endregion
 
+        #endregion Stream methods
 
         internal static readonly System.DateTime _unixEpoch = new System.DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         internal static readonly System.Text.Encoding iso8859dash1 = System.Text.Encoding.GetEncoding("iso-8859-1");
-
 
         private int EmitHeader()
         {
@@ -903,8 +894,6 @@ namespace Ionic.Zlib
             return header.Length; // bytes written
         }
 
-
-
         /// <summary>
         ///   Compress a string into a byte array using GZip.
         /// </summary>
@@ -933,7 +922,6 @@ namespace Ionic.Zlib
             }
         }
 
-
         /// <summary>
         ///   Compress a byte array into a new byte array using GZip.
         /// </summary>
@@ -955,13 +943,12 @@ namespace Ionic.Zlib
             using (var ms = new MemoryStream())
             {
                 System.IO.Stream compressor =
-                    new GZipStream( ms, CompressionMode.Compress, CompressionLevel.BestCompression );
+                    new GZipStream(ms, CompressionMode.Compress, CompressionLevel.BestCompression);
 
                 ZlibBaseStream.CompressBuffer(b, compressor);
                 return ms.ToArray();
             }
         }
-
 
         /// <summary>
         ///   Uncompress a GZip'ed byte array into a single string.
@@ -984,7 +971,6 @@ namespace Ionic.Zlib
             }
         }
 
-
         /// <summary>
         ///   Uncompress a GZip'ed byte array into a byte array.
         /// </summary>
@@ -1002,12 +988,10 @@ namespace Ionic.Zlib
             using (var input = new System.IO.MemoryStream(compressed))
             {
                 System.IO.Stream decompressor =
-                    new GZipStream( input, CompressionMode.Decompress );
+                    new GZipStream(input, CompressionMode.Decompress);
 
                 return ZlibBaseStream.UncompressBuffer(compressed, decompressor);
             }
         }
-
-
     }
 }

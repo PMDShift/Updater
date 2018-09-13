@@ -13,10 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using PMDCP.Updater.Linker;
+using System;
 
 namespace PMDCP.Updater
 {
@@ -25,23 +23,32 @@ namespace PMDCP.Updater
         public int Version { get; set; }
         public string FullID { get; set; }
 
-        public InstalledPackageInfo(string fullID, int version) {
+        public InstalledPackageInfo(string fullID, int version)
+        {
             FullID = fullID;
             Version = version;
         }
 
-        public bool Match(string fullID, int version) {
-            if (version != -1) {
+        public bool Match(string fullID, int version)
+        {
+            if (version != -1)
+            {
                 return (fullID == FullID && version == Version);
-            } else {
+            }
+            else
+            {
                 return (fullID == FullID);
             }
         }
 
-        public bool MatchIfNewer(string fullID, int versionToTest) {
-            if (versionToTest != -1) {
+        public bool MatchIfNewer(string fullID, int versionToTest)
+        {
+            if (versionToTest != -1)
+            {
                 return (fullID == FullID && versionToTest <= Version);
-            } else {
+            }
+            else
+            {
                 return (fullID == FullID);
             }
         }

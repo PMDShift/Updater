@@ -25,7 +25,6 @@
 //
 // ------------------------------------------------------------------
 
-
 using System;
 using System.IO;
 
@@ -34,6 +33,7 @@ namespace Ionic.Zip
     public partial class ZipEntry
     {
         private int _readExtraDepth;
+
         private void ReadExtraField()
         {
             _readExtraDepth++;
@@ -57,7 +57,6 @@ namespace Ionic.Zip
             this.ArchiveStream.Seek(posn, SeekOrigin.Begin);
             _readExtraDepth--;
         }
-
 
         private static bool ReadHeader(ZipEntry ze, System.Text.Encoding defaultEncoding)
         {
@@ -229,7 +228,6 @@ namespace Ionic.Zip
                         ze._UncompressedSize = (uint)(block[i++] + block[i++] * 256 + block[i++] * 256 * 256 + block[i++] * 256 * 256 * 256);
 
                         ze._LengthOfTrailer += 16;  // bytes including sig, CRC, Comp and Uncomp sizes
-
                     }
 
                     wantMore = (SizeOfDataRead != ze._CompressedSize);
@@ -253,7 +251,6 @@ namespace Ionic.Zip
             }
 
             ze._CompressedFileDataSize = ze._CompressedSize;
-
 
             // bit 0 set indicates that some kind of encryption is in use
             if ((ze._BitField & 0x01) == 0x01)
@@ -286,7 +283,6 @@ namespace Ionic.Zip
             ze._LengthOfHeader = bytesRead;
             ze._TotalEntrySize = ze._LengthOfHeader + ze._CompressedFileDataSize + ze._LengthOfTrailer;
 
-
             // We've read in the regular entry header, the extra field, and any encryption
             // header.  The pointer in the file is now at the start of the filedata, which is
             // potentially compressed and encrypted.  Just ahead in the file, there are
@@ -296,8 +292,6 @@ namespace Ionic.Zip
 
             return true;
         }
-
-
 
         internal static int ReadWeakEncryptionHeader(Stream s, byte[] buffer)
         {
@@ -320,13 +314,10 @@ namespace Ionic.Zip
             return additionalBytesRead;
         }
 
-
-
         private static bool IsNotValidSig(int signature)
         {
             return (signature != ZipConstants.ZipEntrySignature);
         }
-
 
         /// <summary>
         /// Reads one <c>ZipEntry</c> from the given stream.  If the entry is encrypted, we don't
@@ -382,7 +373,6 @@ namespace Ionic.Zip
             return entry;
         }
 
-
         internal static void HandlePK00Prefix(Stream s)
         {
             // in some cases, the zip file begins with "PK00".  This is a throwback and is rare,
@@ -393,8 +383,6 @@ namespace Ionic.Zip
                 s.Seek(-4, SeekOrigin.Current); // unread the block
             }
         }
-
-
 
         private static void HandleUnexpectedDataDescriptor(ZipEntry entry)
         {
@@ -424,10 +412,7 @@ namespace Ionic.Zip
             }
             else
                 s.Seek(-4, SeekOrigin.Current); // unread the block
-
         }
-
-
 
         // At current cursor position in the stream, read the extra field,
         // and set the properties on the ZipEntry instance appropriately.
@@ -464,13 +449,11 @@ namespace Ionic.Zip
                             j = ProcessExtraFieldUnixTimes(Buffer, j, DataSize, posn);
                             break;
 
-
                         case 0x5855:  // Info-zip Extra field (outdated)
                             // This is outdated, so the field is supported on
                             // read only.
                             j = ProcessExtraFieldInfoZipTimes(Buffer, j, DataSize, posn);
                             break;
-
 
                         case 0x0001: // ZIP64
                             j = ProcessExtraFieldZip64(Buffer, j, DataSize, posn);
@@ -572,7 +555,6 @@ namespace Ionic.Zip
 
 #endif
 
-
         private int ProcessExtraFieldZip64(byte[] Buffer, int j, Int16 DataSize, long posn)
         {
             // The PKWare spec says that any of {UncompressedSize, CompressedSize,
@@ -627,7 +609,6 @@ namespace Ionic.Zip
             return j;
         }
 
-
         private int ProcessExtraFieldInfoZipTimes(byte[] Buffer, int j, Int16 DataSize, long posn)
         {
             if (DataSize != 12 && DataSize != 8)
@@ -646,8 +627,6 @@ namespace Ionic.Zip
             _ntfsTimesAreSet = true;
             _timestamp |= ZipEntryTimestamp.InfoZip1; return j;
         }
-
-
 
         private int ProcessExtraFieldUnixTimes(byte[] Buffer, int j, Int16 DataSize, long posn)
         {
@@ -697,7 +676,6 @@ namespace Ionic.Zip
                 }
                 else
                     ReadExtraField(); // will recurse
-
             }
             return j;
         }
@@ -765,7 +743,5 @@ namespace Ionic.Zip
             }
             return j;
         }
-
-
     }
 }

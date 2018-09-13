@@ -13,77 +13,96 @@
 // You should have received a copy of the GNU General Public License
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Ionic.Zip;
+using System;
 using System.IO;
-using System.Xml;
 using System.Reflection;
+using System.Text;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace PMDCP.Updater.PackageGenerator
 {
-    class Program
+    internal class Program
     {
-        static Command commandLine;
+        private static Command commandLine;
 
-        static void Main(string[] args) {
-            try {
+        private static void Main(string[] args)
+        {
+            try
+            {
                 commandLine = CommandProcessor.ParseCommand(Environment.CommandLine);
                 string packageDll = null;
                 string outputFile = null;
                 string dataDirectory = null;
                 int index = commandLine.FindCommandArg("/dll");
-                if (index > -1) {
+                if (index > -1)
+                {
                     packageDll = commandLine[index + 1];
                 }
                 index = commandLine.FindCommandArg("/out");
-                if (index > -1) {
+                if (index > -1)
+                {
                     outputFile = commandLine[index + 1];
                 }
                 index = commandLine.FindCommandArg("/data");
-                if (index > -1) {
+                if (index > -1)
+                {
                     dataDirectory = commandLine[index + 1];
                 }
 
-                if (!string.IsNullOrEmpty(packageDll)) {
+                if (!string.IsNullOrEmpty(packageDll))
+                {
                     packageDll = Path.GetFullPath(packageDll);
                 }
-                if (!string.IsNullOrEmpty(outputFile)) {
+                if (!string.IsNullOrEmpty(outputFile))
+                {
                     outputFile = Path.GetFullPath(outputFile);
                 }
-                if (!string.IsNullOrEmpty(dataDirectory)) {
+                if (!string.IsNullOrEmpty(dataDirectory))
+                {
                     dataDirectory = Path.GetFullPath(dataDirectory);
                 }
 
                 CreatePackage(packageDll, outputFile, dataDirectory);
                 string xmlOutputFile = null;
                 index = commandLine.FindCommandArg("/xmlout");
-                if (index > -1) {
+                if (index > -1)
+                {
                     xmlOutputFile = commandLine[index + 1];
                 }
-                if (!string.IsNullOrEmpty(xmlOutputFile)) {
+                if (!string.IsNullOrEmpty(xmlOutputFile))
+                {
                     xmlOutputFile = Path.GetFullPath(xmlOutputFile);
                     CreatePackageXml(xmlOutputFile, outputFile);
                 }
                 GeneratePackageGenLaunchScript(Path.GetDirectoryName(outputFile) + "\\PackageGen.bat", args);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 System.Windows.Forms.MessageBox.Show(ex.ToString());
             }
         }
 
-        static void GeneratePackageGenLaunchScript(string destinationPath, string[] args) {
+        private static void GeneratePackageGenLaunchScript(string destinationPath, string[] args)
+        {
             string comLine = null;
-            for (int i = 0; i < args.Length; i++) {
-                if (args[i].StartsWith("/")) {
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (args[i].StartsWith("/"))
+                {
                     comLine += " " + args[i];
-                } else {
-                    if (System.IO.File.Exists(args[i]) || System.IO.Directory.Exists(args[i])) {
+                }
+                else
+                {
+                    if (System.IO.File.Exists(args[i]) || System.IO.Directory.Exists(args[i]))
+                    {
                         args[i] = Path.GetFullPath(args[i]);
-                        string relativePath = GetRelativePath(args[i], Path.GetDirectoryName(destinationPath)); 
+                        string relativePath = GetRelativePath(args[i], Path.GetDirectoryName(destinationPath));
                         comLine += " \"" + relativePath + "\"";
-                    } else {
+                    }
+                    else
+                    {
                         comLine += " \"" + args[i] + "\"";
                     }
                 }
@@ -91,7 +110,8 @@ namespace PMDCP.Updater.PackageGenerator
             File.WriteAllText(destinationPath, "Start " + GetRelativePath(Application.ExecutablePath, Path.GetDirectoryName(destinationPath)) + "" + comLine);
         }
 
-        static string GetRelativePath(string absolutePath, string relativeTo) {
+        private static string GetRelativePath(string absolutePath, string relativeTo)
+        {
             string[] absoluteDirectories = relativeTo.Split('\\');
             string[] relativeDirectories = absolutePath.Split('\\');
 
@@ -129,21 +149,26 @@ namespace PMDCP.Updater.PackageGenerator
             return relativePath.ToString();
         }
 
-        static void CreatePackage(string packageDll, string outputFile, string dataDirectory) {
+        private static void CreatePackage(string packageDll, string outputFile, string dataDirectory)
+        {
             // Check if the dll was specified
-            if (string.IsNullOrEmpty(packageDll)) {
+            if (string.IsNullOrEmpty(packageDll))
+            {
                 Console.WriteLine("No executable dll specified. Unable to create package.");
             }
             // Check if the output file was specified
-            if (string.IsNullOrEmpty(outputFile)) {
+            if (string.IsNullOrEmpty(outputFile))
+            {
                 Console.WriteLine("No output file specified. Unable to create package.");
             }
             // Check if the dll exists
-            if (!File.Exists(packageDll)) {
+            if (!File.Exists(packageDll))
+            {
                 Console.WriteLine("Specified dll not found. Unable to create package.");
             }
             // Check if the output file directory exists, if not, create it
-            if (!Directory.Exists(Path.GetDirectoryName(outputFile))) {
+            if (!Directory.Exists(Path.GetDirectoryName(outputFile)))
+            {
                 Directory.CreateDirectory(Path.GetDirectoryName(outputFile));
             }
             // All data is ready! Now let's create the package.
@@ -151,32 +176,43 @@ namespace PMDCP.Updater.PackageGenerator
             CreatePackageStructure(packageDll, outputFile, dataDirectory);
         }
 
-        static void CreatePackageStructure(string packageDll, string outputFile, string dataDirectory) {
-            if (File.Exists(outputFile)) {
+        private static void CreatePackageStructure(string packageDll, string outputFile, string dataDirectory)
+        {
+            if (File.Exists(outputFile))
+            {
                 File.Delete(outputFile);
             }
-            if (!string.IsNullOrEmpty(dataDirectory) && Directory.Exists(dataDirectory) == false) {
+            if (!string.IsNullOrEmpty(dataDirectory) && Directory.Exists(dataDirectory) == false)
+            {
                 Directory.CreateDirectory(dataDirectory);
             }
-            using (ZipFile zip = new ZipFile(outputFile)) {
+            using (ZipFile zip = new ZipFile(outputFile))
+            {
                 zip.AddFile(packageDll, "\\");
                 zip.AddEntry("Config.xml", CreatePackageConfigXml(packageDll).ToString());
                 zip.AddEntry("FileList.xml", CreatePackageFileList(dataDirectory));
-                if (!string.IsNullOrEmpty(dataDirectory) && Directory.GetFiles(dataDirectory, "*", SearchOption.AllDirectories).Length > 0) {
+                if (!string.IsNullOrEmpty(dataDirectory) && Directory.GetFiles(dataDirectory, "*", SearchOption.AllDirectories).Length > 0)
+                {
                     Console.WriteLine("Adding data files to package...");
                     string[] files = Directory.GetFiles(dataDirectory, "*", SearchOption.AllDirectories);
-                    for (int i = 0; i < files.Length; i++) {
-                        if (!files[i].Contains(".svn")) {
+                    for (int i = 0; i < files.Length; i++)
+                    {
+                        if (!files[i].Contains(".svn"))
+                        {
                             zip.AddFile(files[i], "\\Files" + Path.GetDirectoryName(files[i].Replace(dataDirectory, "")));
                         }
                     }
-                } else {
+                }
+                else
+                {
                     zip.AddDirectoryByName("Files");
                 }
                 Assembly assembly = Assembly.LoadFile(packageDll);
                 Console.WriteLine("Adding references to package...");
-                foreach (AssemblyName name in assembly.GetReferencedAssemblies()) {
-                    if (name.Name != "mscorlib" && name.Name != "System") {
+                foreach (AssemblyName name in assembly.GetReferencedAssemblies())
+                {
+                    if (name.Name != "mscorlib" && name.Name != "System")
+                    {
                         zip.AddFile(Path.GetDirectoryName(packageDll) + "\\" + name.Name + ".dll", "\\");
                     }
                 }
@@ -185,14 +221,16 @@ namespace PMDCP.Updater.PackageGenerator
             }
         }
 
-        static StringBuilder CreatePackageConfigXml(string packageDll) {
+        private static StringBuilder CreatePackageConfigXml(string packageDll)
+        {
             Console.WriteLine("Generating configuration xml...");
             StringBuilder output = new StringBuilder();
             // Write a new xml document to the 'output' StringBuilder
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.IndentChars = "   ";
             settings.Indent = true;
-            using (XmlWriter writer = XmlWriter.Create(output, settings)) {
+            using (XmlWriter writer = XmlWriter.Create(output, settings))
+            {
                 writer.WriteStartDocument();
                 // Write the root node
                 writer.WriteStartElement("Data");
@@ -210,22 +248,31 @@ namespace PMDCP.Updater.PackageGenerator
             return output;
         }
 
-        static void CreatePackageXml(string path, string packagePath) {
+        private static void CreatePackageXml(string path, string packagePath)
+        {
             Console.WriteLine("Generating update xml...");
             string configFile = commandLine["/config"];
             string name = null;
             string description = null;
-            if (!string.IsNullOrEmpty(configFile) && System.IO.File.Exists(configFile)) {
+            if (!string.IsNullOrEmpty(configFile) && System.IO.File.Exists(configFile))
+            {
                 // The config file was found, load config from it
-                using (XmlReader reader = XmlReader.Create(configFile)) {
-                    while (reader.Read()) {
-                        if (reader.IsStartElement()) {
-                            switch (reader.Name) {
-                                case "Name": {
+                using (XmlReader reader = XmlReader.Create(configFile))
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.IsStartElement())
+                        {
+                            switch (reader.Name)
+                            {
+                                case "Name":
+                                    {
                                         name = reader.ReadString();
                                     }
                                     break;
-                                case "Description": {
+
+                                case "Description":
+                                    {
                                         description = reader.ReadString();
                                     }
                                     break;
@@ -233,7 +280,9 @@ namespace PMDCP.Updater.PackageGenerator
                         }
                     }
                 }
-            } else {
+            }
+            else
+            {
                 // The config file does not exist, try to load config from command line
                 name = commandLine["/name"];
                 description = commandLine["/desc"];
@@ -242,7 +291,8 @@ namespace PMDCP.Updater.PackageGenerator
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.IndentChars = "   ";
             settings.Indent = true;
-            using (XmlWriter writer = XmlWriter.Create(path, settings)) {
+            using (XmlWriter writer = XmlWriter.Create(path, settings))
+            {
                 writer.WriteStartDocument();
                 // Write the root node
                 writer.WriteStartElement("Data");
@@ -250,10 +300,12 @@ namespace PMDCP.Updater.PackageGenerator
                 writer.WriteStartElement("Package");
 
                 writer.WriteElementString("ID", Path.GetFileNameWithoutExtension(packagePath));
-                if (!string.IsNullOrEmpty(name)) {
+                if (!string.IsNullOrEmpty(name))
+                {
                     writer.WriteElementString("Name", name);
                 }
-                if (!string.IsNullOrEmpty(description)) {
+                if (!string.IsNullOrEmpty(description))
+                {
                     writer.WriteElementString("Description", description);
                 }
                 writer.WriteElementString("Hash", Security.Hash.GetFileHash(packagePath, Security.HashType.SHA1));
@@ -268,15 +320,19 @@ namespace PMDCP.Updater.PackageGenerator
             }
         }
 
-        static byte[] CreatePackageFileList(string dataDirectory) {
+        private static byte[] CreatePackageFileList(string dataDirectory)
+        {
             PackageFileList fileList = new PackageFileList();
             string[] files = Directory.GetFiles(dataDirectory, "*", SearchOption.AllDirectories);
-            for (int i = 0; i < files.Length; i++) {
-                if (!files[i].Contains(".svn")) {
+            for (int i = 0; i < files.Length; i++)
+            {
+                if (!files[i].Contains(".svn"))
+                {
                     fileList.Add(new PackageFileListItem("", Path.GetDirectoryName(files[i].Replace(dataDirectory, "")) + "/" + System.IO.Path.GetFileName(files[i])));
                 }
             }
-            using (MemoryStream memoryStream = new MemoryStream()) {
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
                 fileList.Save(memoryStream);
                 return memoryStream.ToArray();
             }

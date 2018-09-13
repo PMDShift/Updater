@@ -8,23 +8,22 @@
 //
 // ------------------------------------------------------------------
 //
-// This code is licensed under the Microsoft Public License. 
+// This code is licensed under the Microsoft Public License.
 // See the file License.txt for the license details.
 // More info on: http://dotnetzip.codeplex.com
 //
 // ------------------------------------------------------------------
 //
-// last saved (in emacs): 
+// last saved (in emacs):
 // Time-stamp: <2009-August-27 12:50:35>
 //
 // ------------------------------------------------------------------
 //
-// This module defines logic for handling reading of zip archives embedded 
+// This module defines logic for handling reading of zip archives embedded
 // into larger streams.  The initial position of the stream serves as
 // the base offset for all future Seek() operations.
-// 
+//
 // ------------------------------------------------------------------
-
 
 using System;
 using System.IO;
@@ -87,12 +86,10 @@ namespace Ionic.Zip
             set { _innerStream.Position = _originalPosition + value; }
         }
 
-
         public override long Seek(long offset, System.IO.SeekOrigin origin)
         {
             return _innerStream.Seek(_originalPosition + offset, origin) - _originalPosition;
         }
-
 
         public override void SetLength(long value)
         {
@@ -108,7 +105,5 @@ namespace Ionic.Zip
         {
             base.Close();
         }
-
     }
-
 }

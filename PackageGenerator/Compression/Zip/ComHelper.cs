@@ -8,13 +8,13 @@
 //
 // ------------------------------------------------------------------
 //
-// This code is licensed under the Microsoft Public License. 
+// This code is licensed under the Microsoft Public License.
 // See the file License.txt for the license details.
 // More info on: http://dotnetzip.codeplex.com
 //
 // ------------------------------------------------------------------
 //
-// last saved (in emacs): 
+// last saved (in emacs):
 // Time-stamp: <2009-September-11 11:03:32>
 //
 // ------------------------------------------------------------------
@@ -22,9 +22,7 @@
 // This module defines a COM Helper class.
 //
 // Created: Tue, 08 Sep 2009  22:03
-// 
-
-using Interop=System.Runtime.InteropServices;
+//
 
 namespace Ionic.Zip
 {
@@ -35,7 +33,7 @@ namespace Ionic.Zip
     /// </summary>
     [System.Runtime.InteropServices.GuidAttribute("ebc25cf6-9120-4283-b972-0e5520d0000F")]
     [System.Runtime.InteropServices.ComVisible(true)]
-#if !NETCF    
+#if !NETCF
     [System.Runtime.InteropServices.ClassInterface(System.Runtime.InteropServices.ClassInterfaceType.AutoDispatch)]
 #endif
 
@@ -65,7 +63,8 @@ namespace Ionic.Zip
             return ZipFile.IsZipFile(filename, true);
         }
 
-#if !NETCF    
+#if !NETCF
+
         /// <summary>
         ///  A wrapper for <see cref="ZipFile.CheckZip(string)">ZipFile.CheckZip(string)</see>
         /// </summary>
@@ -85,8 +84,9 @@ namespace Ionic.Zip
         {
             ZipFile.FixZipDirectory(filename);
         }
+
 #endif
-        
+
         /// <summary>
         ///  A wrapper for <see cref="ZipFile.LibraryVersion">ZipFile.LibraryVersion</see>
         /// </summary>
@@ -97,6 +97,5 @@ namespace Ionic.Zip
         {
             return ZipFile.LibraryVersion.ToString();
         }
-        
     }
 }

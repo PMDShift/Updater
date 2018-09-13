@@ -13,11 +13,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
+using PMDCP.Updater.Linker;
 using System;
 using System.Collections.Generic;
-using System.Text;
-
-using PMDCP.Updater.Linker;
 using System.IO;
 using System.Xml;
 
@@ -25,33 +23,40 @@ namespace PMDCP.Updater
 {
     public class PackageFileList : MarshalByRefObject, IPackageFileList
     {
-        List<IPackageFileListItem> items;
+        private List<IPackageFileListItem> items;
 
-        public PackageFileList() {
+        public PackageFileList()
+        {
             items = new List<IPackageFileListItem>();
         }
 
-        public void Add(IPackageFileListItem item) {
+        public void Add(IPackageFileListItem item)
+        {
             items.Add(item);
         }
 
-        public int Count {
+        public int Count
+        {
             get { return items.Count; }
         }
 
-        public IPackageFileListItem this[int index] {
+        public IPackageFileListItem this[int index]
+        {
             get { return items[index]; }
         }
 
-        public void Save(Stream stream) {
+        public void Save(Stream stream)
+        {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.IndentChars = "   ";
             settings.Indent = true;
-            using (XmlWriter writer = XmlWriter.Create(stream, settings)) {
+            using (XmlWriter writer = XmlWriter.Create(stream, settings))
+            {
                 writer.WriteStartDocument();
                 writer.WriteStartElement("PackageFileList");
 
-                for (int i = 0; i < items.Count; i++) {
+                for (int i = 0; i < items.Count; i++)
+                {
                     writer.WriteStartElement("PackageFile");
                     writer.WriteElementString("File", items[i].RelativePath);
                     writer.WriteEndElement();

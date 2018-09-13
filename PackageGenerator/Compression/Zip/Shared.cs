@@ -38,7 +38,6 @@ namespace Ionic.Zip
         /// private null constructor
         private SharedUtilities() { }
 
-
         // workitem 8423
         public static Int64 GetFileLength(string fileName)
         {
@@ -57,7 +56,6 @@ namespace Ionic.Zip
             }
             return fileLength;
         }
-
 
 #if LEGACY
         /// <summary>
@@ -121,7 +119,6 @@ namespace Ionic.Zip
             return path;
         }
 
-
         /// <summary>
         /// Utility routine for transforming path names from filesystem format (on Windows that means backslashes) to
         /// a format suitable for use within zipfiles. This means trimming the volume letter and colon (if any) And
@@ -135,8 +132,8 @@ namespace Ionic.Zip
             if (String.IsNullOrEmpty(pathName)) return pathName;
 
             // trim volume if necessary
-            if ((pathName.Length >= 2)  && ((pathName[1] == ':') && (pathName[2] == '\\')))
-                pathName =  pathName.Substring(3);
+            if ((pathName.Length >= 2) && ((pathName[1] == ':') && (pathName[2] == '\\')))
+                pathName = pathName.Substring(3);
 
             // swap slashes
             pathName = pathName.Replace('\\', '/');
@@ -147,15 +144,15 @@ namespace Ionic.Zip
             return SimplifyFwdSlashPath(pathName);
         }
 
-
-        static System.Text.Encoding ibm437 = System.Text.Encoding.GetEncoding("IBM437");
-        static System.Text.Encoding utf8 = System.Text.Encoding.GetEncoding("UTF-8");
+        private static System.Text.Encoding ibm437 = System.Text.Encoding.GetEncoding("IBM437");
+        private static System.Text.Encoding utf8 = System.Text.Encoding.GetEncoding("UTF-8");
 
         internal static byte[] StringToByteArray(string value, System.Text.Encoding encoding)
         {
             byte[] a = encoding.GetBytes(value);
             return a;
         }
+
         internal static byte[] StringToByteArray(string value)
         {
             return StringToByteArray(value, ibm437);
@@ -183,7 +180,6 @@ namespace Ionic.Zip
             return s;
         }
 
-
         internal static int ReadSignature(System.IO.Stream s)
         {
             int x = 0;
@@ -191,7 +187,6 @@ namespace Ionic.Zip
             catch (BadReadException) { }
             return x;
         }
-
 
         internal static int ReadEntrySignature(System.IO.Stream s)
         {
@@ -224,7 +219,6 @@ namespace Ionic.Zip
             catch (BadReadException) { }
             return x;
         }
-
 
         internal static int ReadInt(System.IO.Stream s)
         {
@@ -262,8 +256,6 @@ namespace Ionic.Zip
             int data = unchecked((((block[3] * 256 + block[2]) * 256) + block[1]) * 256 + block[0]);
             return data;
         }
-
-
 
         /// <summary>
         ///   Finds a signature in the zip stream. This is useful for finding
@@ -326,7 +318,6 @@ namespace Ionic.Zip
                 }
                 else break;
                 if (success) break;
-
             } while (true);
 
             if (!success)
@@ -341,7 +332,6 @@ namespace Ionic.Zip
             return bytesRead;
         }
 
-
         // If I have a time in the .NET environment, and I want to use it for
         // SetWastWriteTime() etc, then I need to adjust it for Win32.
         internal static DateTime AdjustTime_Reverse(DateTime time)
@@ -350,7 +340,6 @@ namespace Ionic.Zip
             DateTime adjusted = time;
             if (DateTime.Now.IsDaylightSavingTime() && !time.IsDaylightSavingTime())
                 adjusted = time - new System.TimeSpan(1, 0, 0);
-
             else if (!DateTime.Now.IsDaylightSavingTime() && time.IsDaylightSavingTime())
                 adjusted = time + new System.TimeSpan(1, 0, 0);
 
@@ -365,14 +354,11 @@ namespace Ionic.Zip
             DateTime adjusted = time;
             if (DateTime.Now.IsDaylightSavingTime() && !time.IsDaylightSavingTime())
                 adjusted = time + new System.TimeSpan(1, 0, 0);
-
             else if (!DateTime.Now.IsDaylightSavingTime() && time.IsDaylightSavingTime())
                 adjusted = time - new System.TimeSpan(1, 0, 0);
 
             return adjusted;
         }
-
-
 
         internal static DateTime PackedToDateTime(Int32 packedDateTime)
         {
@@ -399,11 +385,11 @@ namespace Ionic.Zip
             if (hour >= 24) { day++; hour = 0; }
 
             DateTime d = System.DateTime.Now;
-            bool success= false;
+            bool success = false;
             try
             {
                 d = new System.DateTime(year, month, day, hour, minute, second, 0);
-                success= true;
+                success = true;
             }
             catch (System.ArgumentOutOfRangeException)
             {
@@ -412,17 +398,16 @@ namespace Ionic.Zip
                     try
                     {
                         d = new System.DateTime(1980, 1, 1, hour, minute, second, 0);
-                success= true;
+                        success = true;
                     }
                     catch (System.ArgumentOutOfRangeException)
                     {
                         try
                         {
                             d = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
-                success= true;
+                            success = true;
                         }
                         catch (System.ArgumentOutOfRangeException) { }
-
                     }
                 }
                 // workitem 8814
@@ -443,7 +428,7 @@ namespace Ionic.Zip
                         while (second < 0) second++;
                         while (second > 59) second--;
                         d = new System.DateTime(year, month, day, hour, minute, second, 0);
-                        success= true;
+                        success = true;
                     }
                     catch (System.ArgumentOutOfRangeException) { }
                 }
@@ -452,14 +437,12 @@ namespace Ionic.Zip
             {
                 string msg = String.Format("y({0}) m({1}) d({2}) h({3}) m({4}) s({5})", year, month, day, hour, minute, second);
                 throw new ZipException(String.Format("Bad date/time format in the zip file. ({0})", msg));
-
             }
             // workitem 6191
             //d = AdjustTime_Reverse(d);
             d = DateTime.SpecifyKind(d, DateTimeKind.Local);
             return d;
         }
-
 
         internal
          static Int32 DateTimeToPacked(DateTime time)
@@ -479,7 +462,6 @@ namespace Ionic.Zip
             Int32 result = (Int32)(((UInt32)(packedDate << 16)) | packedTime);
             return result;
         }
-
 
         /// <summary>
         /// Create a pseudo-random filename, suitable for use as a temporary file, and open it.
@@ -542,13 +524,13 @@ namespace Ionic.Zip
             return result;
         }
 #else
+
         public static string InternalGetTempFileName()
         {
             return "DotNetZip-" + Path.GetRandomFileName().Substring(0, 8) + ".tmp";
         }
 
 #endif
-
 
         /// <summary>
         /// Workitem 7889: handle ERROR_LOCK_VIOLATION during read
@@ -571,7 +553,6 @@ namespace Ionic.Zip
                 }
                 catch (System.IO.IOException ioexc1)
                 {
-
 #if !NETCF
                     // Check if we can call GetHRForException,
                     // which makes unmanaged code calls.
@@ -600,14 +581,12 @@ namespace Ionic.Zip
                         throw;
                     }
 #endif
-
                 }
             }
             while (!done);
 
             return n;
         }
-
 
 #if !NETCF
         // workitem 8009
@@ -629,15 +608,12 @@ namespace Ionic.Zip
         // generates the JIT-compile time exception.
         //
 #endif
+
         private static uint _HRForException(System.Exception ex1)
         {
             return unchecked((uint)System.Runtime.InteropServices.Marshal.GetHRForException(ex1));
         }
-
     }
-
-
-
 
     /// <summary>
     /// A Stream wrapper, used for bookkeeping on input or output
@@ -744,7 +720,6 @@ namespace Ionic.Zip
             get { return _initialOffset + _bytesWritten; }
         }
 
-
         public override long Position
         {
             get { return _s.Position; }
@@ -763,8 +738,5 @@ namespace Ionic.Zip
         {
             _s.SetLength(value);
         }
-
     }
-
-
 }

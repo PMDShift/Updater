@@ -15,22 +15,21 @@
 
 namespace PMDCP.Updater.PackageGenerator
 {
-    using System;
     using System.Collections.Generic;
-    using System.Text;
 
     public class Command
     {
         #region Fields
 
-        List<string> commandArgs = new List<string>();
-        string fullCommand;
+        private List<string> commandArgs = new List<string>();
+        private string fullCommand;
 
         #endregion Fields
 
         #region Constructors
 
-        internal Command(string fullCommand, List<string> command) {
+        internal Command(string fullCommand, List<string> command)
+        {
             this.fullCommand = fullCommand;
             commandArgs = command;
         }
@@ -42,14 +41,16 @@ namespace PMDCP.Updater.PackageGenerator
         /// <summary>
         /// Gets the command line arguments for the program
         /// </summary>
-        public List<string> CommandArgs {
+        public List<string> CommandArgs
+        {
             get { return commandArgs; }
         }
 
         /// <summary>
         /// Gets the full, unparsed command string
         /// </summary>
-        public string FullCommand {
+        public string FullCommand
+        {
             get { return fullCommand; }
         }
 
@@ -57,16 +58,22 @@ namespace PMDCP.Updater.PackageGenerator
 
         #region Indexers
 
-        public string this[int index] {
+        public string this[int index]
+        {
             get { return commandArgs[index]; }
         }
 
-        public string this[string argument] {
-            get {
+        public string this[string argument]
+        {
+            get
+            {
                 int index = FindCommandArg(argument);
-                if (index > -1 && commandArgs.Count > index + 1) {
+                if (index > -1 && commandArgs.Count > index + 1)
+                {
                     return commandArgs[index + 1];
-                } else {
+                }
+                else
+                {
                     return null;
                 }
             }
@@ -81,7 +88,8 @@ namespace PMDCP.Updater.PackageGenerator
         /// </summary>
         /// <param name="argToFind">The argument to look for</param>
         /// <returns>True if the argument exists; False if it doesn't exist.</returns>
-        public bool ContainsCommandArg(string argToFind) {
+        public bool ContainsCommandArg(string argToFind)
+        {
             return commandArgs.Contains(argToFind);
         }
 
@@ -90,7 +98,8 @@ namespace PMDCP.Updater.PackageGenerator
         /// </summary>
         /// <param name="argToFind"></param>
         /// <returns>The index of the argument if it was found; otherwise, returns -1</returns>
-        public int FindCommandArg(string argToFind) {
+        public int FindCommandArg(string argToFind)
+        {
             return commandArgs.IndexOf(argToFind);
         }
 

@@ -26,10 +26,9 @@
 // ------------------------------------------------------------------
 //
 
-
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Ionic.Zip
 {
@@ -73,7 +72,6 @@ namespace Ionic.Zip
             System.Collections.ObjectModel.ReadOnlyCollection<String> ignoredMessages;
             return CheckZip(zipFileName, false, out ignoredMessages);
         }
-
 
         /// <summary>
         ///   Checks a zip file to see if its directory is consistent,
@@ -197,8 +195,6 @@ namespace Ionic.Zip
             return isOk;
         }
 
-
-
         /// <summary>
         ///   Rewrite the directory within a zipfile.
         /// </summary>
@@ -242,7 +238,6 @@ namespace Ionic.Zip
                 zip.Save(zipFileName);
             }
         }
-
 
         /// <summary>
         /// Provides a human-readable string with information about the ZipFile.
@@ -288,8 +283,5 @@ namespace Ionic.Zip
                 return builder.ToString();
             }
         }
-
-
     }
-
 }

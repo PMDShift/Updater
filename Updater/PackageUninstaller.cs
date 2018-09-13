@@ -13,42 +13,45 @@
 // You should have received a copy of the GNU General Public License
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using PMDCP.Updater.Linker;
+using System;
 
 namespace PMDCP.Updater
 {
     public class PackageUninstaller : MarshalByRefObject, IPackageUninstaller
     {
-        IPackageInfo packageInfo;
-        IPackageFileList packageFileList;
+        private IPackageInfo packageInfo;
+        private IPackageFileList packageFileList;
 
-        public IPackageInfo Package {
+        public IPackageInfo Package
+        {
             get { return packageInfo; }
         }
 
-        public IPackageFileList FileList {
+        public IPackageFileList FileList
+        {
             get { return packageFileList; }
         }
 
-        public PackageUninstaller(IPackageInfo packageInfo, IPackageFileList packageFileList) {
+        public PackageUninstaller(IPackageInfo packageInfo, IPackageFileList packageFileList)
+        {
             this.packageInfo = packageInfo;
             this.packageFileList = packageFileList;
         }
 
-        public void DeleteFile(string filePath, bool relative) {
-
+        public void DeleteFile(string filePath, bool relative)
+        {
         }
 
-        public void DeleteFile(IPackageFileListItem packageFile) {
+        public void DeleteFile(IPackageFileListItem packageFile)
+        {
             System.IO.File.Delete(packageFile.FullPath);
         }
 
-        public void BasicUninstall() {
-            for (int i = 0; i < packageFileList.Count; i++) {
+        public void BasicUninstall()
+        {
+            for (int i = 0; i < packageFileList.Count; i++)
+            {
                 DeleteFile(packageFileList[i]);
             }
         }

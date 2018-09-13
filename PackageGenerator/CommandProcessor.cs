@@ -13,45 +13,56 @@
 // You should have received a copy of the GNU General Public License
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace PMDCP.Updater.PackageGenerator
 {
     public class CommandProcessor
     {
-        public static string[] SplitCommand(string fullText) {
+        public static string[] SplitCommand(string fullText)
+        {
             fullText = fullText.Trim(' ');
-            if (fullText.Contains(" ")) {
+            if (fullText.Contains(" "))
+            {
                 List<string> parsed = new List<string>();
                 bool startNewLine = true;
                 int currentLine = -1;
                 bool isInQuotes = false;
-                for (int i = 0; i < fullText.Length; i++) {
-                    if (startNewLine) {
+                for (int i = 0; i < fullText.Length; i++)
+                {
+                    if (startNewLine)
+                    {
                         parsed.Add("");
                         currentLine++;
                         startNewLine = false;
                     }
                     char curChar = fullText[i];
-                    if (curChar == ' ' && isInQuotes == false) {
+                    if (curChar == ' ' && isInQuotes == false)
+                    {
                         startNewLine = true;
-                    } else if (curChar == '"') {
+                    }
+                    else if (curChar == '"')
+                    {
                         isInQuotes = !isInQuotes;
-                    } else {
+                    }
+                    else
+                    {
                         parsed[currentLine] += curChar;
                     }
                 }
                 return parsed.ToArray();
-            } else {
+            }
+            else
+            {
                 return new string[] { fullText };
             }
         }
 
-        public static string JoinArgs(string[] args) {
+        public static string JoinArgs(string[] args)
+        {
             string joinedArgs = "";
-            for (int i = 1; i < args.Length; i++) {
+            for (int i = 1; i < args.Length; i++)
+            {
                 joinedArgs += args[i] + " ";
             }
             return joinedArgs;
@@ -61,24 +72,32 @@ namespace PMDCP.Updater.PackageGenerator
         /// Parses the command
         /// </summary>
         /// <returns>The parsed command arguments</returns>
-        public static Command ParseCommand(string command) {
+        public static Command ParseCommand(string command)
+        {
             string fullCommandLine = command.Trim();
             List<string> parsed = new List<string>();
             bool startNewLine = true;
             int currentLine = -1;
             bool isInQuotes = false;
-            for (int i = 0; i < fullCommandLine.Length; i++) {
-                if (startNewLine) {
+            for (int i = 0; i < fullCommandLine.Length; i++)
+            {
+                if (startNewLine)
+                {
                     parsed.Add("");
                     currentLine++;
                     startNewLine = false;
                 }
                 char curChar = fullCommandLine[i];
-                if (curChar == ' ' && isInQuotes == false) {
+                if (curChar == ' ' && isInQuotes == false)
+                {
                     startNewLine = true;
-                } else if (curChar == '"') {
+                }
+                else if (curChar == '"')
+                {
                     isInQuotes = !isInQuotes;
-                } else {
+                }
+                else
+                {
                     parsed[currentLine] += curChar;
                 }
             }

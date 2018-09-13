@@ -14,101 +14,132 @@
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PMDCP.Updater.Linker
 {
     public static class Extensions
     {
-        public static int ToInt(this string str) {
+        public static int ToInt(this string str)
+        {
             int result = 0;
-            if (str != null && int.TryParse(str, out result) == true) {
+            if (str != null && int.TryParse(str, out result) == true)
+            {
                 return result;
-            } else
+            }
+            else
                 return 0;
         }
 
-        public static int ToInt(this string str, int defaultVal) {
+        public static int ToInt(this string str, int defaultVal)
+        {
             int result = 0;
-            if (str != null && int.TryParse(str, out result) == true) {
+            if (str != null && int.TryParse(str, out result) == true)
+            {
                 return result;
-            } else
+            }
+            else
                 return defaultVal;
         }
 
-        public static long ToLong(this string str) {
+        public static long ToLong(this string str)
+        {
             long result = 0;
-            if (str != null && long.TryParse(str, out result) == true) {
+            if (str != null && long.TryParse(str, out result) == true)
+            {
                 return result;
-            } else
+            }
+            else
                 return 0;
         }
 
-        public static long ToLong(this string str, long defaultVal) {
+        public static long ToLong(this string str, long defaultVal)
+        {
             long result = 0;
-            if (str != null && long.TryParse(str, out result) == true) {
+            if (str != null && long.TryParse(str, out result) == true)
+            {
                 return result;
-            } else
+            }
+            else
                 return defaultVal;
         }
 
-        public static double ToDbl(this string str) {
+        public static double ToDbl(this string str)
+        {
             double result = 0;
-            if (str != null && double.TryParse(str, out result) == true) {
+            if (str != null && double.TryParse(str, out result) == true)
+            {
                 return result;
-            } else
+            }
+            else
                 return 0;
         }
 
-        public static double ToDbl(this string str, double defaultVal) {
+        public static double ToDbl(this string str, double defaultVal)
+        {
             double result = 0;
-            if (str != null && double.TryParse(str, out result) == true) {
+            if (str != null && double.TryParse(str, out result) == true)
+            {
                 return result;
-            } else
+            }
+            else
                 return defaultVal;
         }
 
-        public static string ToIntString(this bool boolval) {
+        public static string ToIntString(this bool boolval)
+        {
             if (boolval == true)
                 return "1";
             else
                 return "0";
         }
 
-        public static bool IsNumeric(this string str) {
+        public static bool IsNumeric(this string str)
+        {
             int result;
             return int.TryParse(str, out result);
         }
 
-        public static ulong ToUlng(this string str) {
+        public static ulong ToUlng(this string str)
+        {
             ulong result = 0;
-            if (ulong.TryParse(str, out result) == true) {
+            if (ulong.TryParse(str, out result) == true)
+            {
                 return result;
-            } else
+            }
+            else
                 return 0;
         }
 
-        public static bool ToBool(this string str) {
-            switch (str.ToLower()) {
+        public static bool ToBool(this string str)
+        {
+            switch (str.ToLower())
+            {
                 case "true":
                     return true;
+
                 case "false":
                     return false;
+
                 case "1":
                     return true;
+
                 case "0":
                     return false;
+
                 default:
                     return false;
             }
         }
 
-        public static DateTime? ToDate(this string date) {
+        public static DateTime? ToDate(this string date)
+        {
             DateTime tmpDate;
-            if (DateTime.TryParse(date, out tmpDate)) {
+            if (DateTime.TryParse(date, out tmpDate))
+            {
                 return tmpDate;
-            } else {
+            }
+            else
+            {
                 return null;
             }
         }
@@ -122,4 +153,3 @@ namespace System.Runtime.CompilerServices
     {
     }
 }
-

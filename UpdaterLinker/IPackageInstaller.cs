@@ -13,24 +13,27 @@
 // You should have received a copy of the GNU General Public License
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace PMDCP.Updater.Linker
 {
     public interface IPackageInstaller
     {
         void ExtractFile(string file, string destinationPath);
+
         void ExtractFile(string file);
+
         void ExtractAll();
+
         string PackagePath { get; }
         string PackageDataDirectory { get; }
         IPackageInfo Package { get; }
         IPackageLoader Loader { get; }
+
         void Close();
+
         void DeleteFile(string filePath, bool relative);
+
         bool FileExists(string filePath, bool relative);
+
         string GetFullPath(string filePath);
     }
 }

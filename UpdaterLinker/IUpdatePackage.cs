@@ -13,16 +13,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace PMDCP.Updater.Linker
 {
     public interface IUpdatePackage
     {
         void Initialize(IUpdateClient updateClient);
+
         void Install(IPackageInstaller installer);
+
         void Uninstall(IPackageUninstaller uninstaller);
     }
 }

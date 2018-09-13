@@ -42,10 +42,8 @@
 //
 
 using System;
-using System.Threading;
 using System.Collections.Generic;
 using System.IO;
-using Ionic.Zip;
 
 namespace Ionic.Zip
 {
@@ -210,7 +208,6 @@ namespace Ionic.Zip
         /// </example>
         public ZipOutputStream(Stream stream) : this(stream, false) { }
 
-
         /// <summary>
         ///   Create a ZipOutputStream that writes to a filesystem file.
         /// </summary>
@@ -298,7 +295,6 @@ namespace Ionic.Zip
             _name = fileName;
         }
 
-
         /// <summary>
         ///   Create a ZipOutputStream.
         /// </summary>
@@ -337,7 +333,6 @@ namespace Ionic.Zip
             ParallelDeflateThreshold = -1L;
 #endif
         }
-
 
         /// <summary>
         ///   Sets the password to be used on the <c>ZipOutputStream</c> instance.
@@ -409,7 +404,6 @@ namespace Ionic.Zip
             }
         }
 
-
         /// <summary>
         ///   The Encryption to use for entries added to the <c>ZipOutputStream</c>.
         /// </summary>
@@ -453,7 +447,6 @@ namespace Ionic.Zip
             }
         }
 
-
         /// <summary>
         ///   Size of the work buffer to use for the ZLIB codec during compression.
         /// </summary>
@@ -469,7 +462,6 @@ namespace Ionic.Zip
             get;
             set;
         }
-
 
         /// <summary>
         ///   The compression strategy to use for all entries.
@@ -488,7 +480,6 @@ namespace Ionic.Zip
             get;
             set;
         }
-
 
         /// <summary>
         ///   The type of timestamp attached to the ZipEntry.
@@ -514,7 +505,6 @@ namespace Ionic.Zip
                 _timestamp = value;
             }
         }
-
 
         /// <summary>
         ///   Sets the compression level to be used for entries subsequently added to
@@ -552,7 +542,6 @@ namespace Ionic.Zip
             get;
             set;
         }
-
 
         /// <summary>
         ///   A comment attached to the zip archive.
@@ -597,8 +586,6 @@ namespace Ionic.Zip
             }
         }
 
-
-
         /// <summary>
         ///   Specify whether to use ZIP64 extensions when saving a zip archive.
         /// </summary>
@@ -633,7 +620,6 @@ namespace Ionic.Zip
             }
         }
 
-
         /// <summary>
         ///   Indicates whether ZIP64 extensions were used when saving the zip archive.
         /// </summary>
@@ -648,7 +634,6 @@ namespace Ionic.Zip
                 return _anyEntriesUsedZip64 || _directoryNeededZip64;
             }
         }
-
 
         /// <summary>
         ///   Whether the ZipOutputStream should use case-insensitive comparisons when
@@ -671,18 +656,16 @@ namespace Ionic.Zip
         /// </remarks>
         public bool IgnoreCase
         {
-          get
-          {
-              return !_DontIgnoreCase;
-          }
+            get
+            {
+                return !_DontIgnoreCase;
+            }
 
-          set
-          {
-              _DontIgnoreCase = !value;
-          }
-
+            set
+            {
+                _DontIgnoreCase = !value;
+            }
         }
-
 
         /// <summary>
         ///   Indicates whether to encode entry filenames and entry comments using
@@ -813,7 +796,6 @@ namespace Ionic.Zip
             }
         }
 
-
         /// <summary>
         ///   The text encoding to use when emitting entries into the zip archive, for
         ///   those entries whose filenames or comments cannot be encoded with the
@@ -907,9 +889,8 @@ namespace Ionic.Zip
             }
         }
 
-
-
 #if !NETCF
+
         /// <summary>
         ///   The size threshold for an entry, above which a parallel deflate is used.
         /// </summary>
@@ -981,8 +962,8 @@ namespace Ionic.Zip
                 return _ParallelDeflateThreshold;
             }
         }
-#endif
 
+#endif
 
         private void InsureUniqueEntry(ZipEntry ze1)
         {
@@ -992,7 +973,6 @@ namespace Ionic.Zip
                 throw new ArgumentException(String.Format("The entry '{0}' already exists in the zip archive.", ze1.FileName));
             }
         }
-
 
         internal Stream OutputStream
         {
@@ -1026,7 +1006,6 @@ namespace Ionic.Zip
         {
             return _entriesWritten.ContainsKey(SharedUtilities.NormalizePathForUseInZipFile(name));
         }
-
 
         /// <summary>
         ///   Write the data from the buffer to the stream.
@@ -1067,8 +1046,6 @@ namespace Ionic.Zip
 
             _entryOutputStream.Write(buffer, offset, count);
         }
-
-
 
         /// <summary>
         ///   Specify the name of the next entry that will be written to the zip file.
@@ -1167,7 +1144,7 @@ namespace Ionic.Zip
             _currentEntry.Encryption = Encryption;
             _currentEntry.Password = _password;
 
-            if (entryName.EndsWith("/"))  _currentEntry.MarkAsDirectory();
+            if (entryName.EndsWith("/")) _currentEntry.MarkAsDirectory();
 
             _currentEntry.EmitTimesInWindowsFormatWhenSaving = ((_timestamp & ZipEntryTimestamp.Windows) != 0);
             _currentEntry.EmitTimesInUnixFormatWhenSaving = ((_timestamp & ZipEntryTimestamp.Unix) != 0);
@@ -1177,8 +1154,6 @@ namespace Ionic.Zip
             return _currentEntry;
         }
 
-
-
         private void _InitiateCurrentEntry(bool finishing)
         {
             // If finishing==true, this means we're initiating the entry at the time of
@@ -1187,7 +1162,7 @@ namespace Ionic.Zip
             // _InitiateCurrentEntry(bool) from within Write().)  If finishing==true,
             // the entry could be either a zero-byte file or a directory.
 
-            _entriesWritten.Add(_currentEntry.FileName,_currentEntry);
+            _entriesWritten.Add(_currentEntry.FileName, _currentEntry);
             _entryCount++; // could use _entriesWritten.Count, but I don't want to incur
             // the cost.
 
@@ -1224,8 +1199,6 @@ namespace Ionic.Zip
             _needToWriteEntryHeader = false;
         }
 
-
-
         private void _FinishCurrentEntry()
         {
             if (_currentEntry != null)
@@ -1240,8 +1213,6 @@ namespace Ionic.Zip
                 _outputCounter = null; _encryptor = _deflater = null; _entryOutputStream = null;
             }
         }
-
-
 
         /// <summary>
         /// Dispose the stream
@@ -1312,8 +1283,6 @@ namespace Ionic.Zip
             _disposed = true;
         }
 
-
-
         /// <summary>
         /// Always returns false.
         /// </summary>
@@ -1381,7 +1350,6 @@ namespace Ionic.Zip
             throw new NotSupportedException();
         }
 
-
         private EncryptionAlgorithm _encryption;
         private ZipEntryTimestamp _timestamp;
         internal String _password;
@@ -1408,8 +1376,6 @@ namespace Ionic.Zip
         private long _ParallelDeflateThreshold;
 #endif
     }
-
-
 
     internal class ZipContainer
     {
@@ -1471,6 +1437,7 @@ namespace Ionic.Zip
         }
 
 #if !NETCF
+
         public Ionic.Zlib.ParallelDeflateOutputStream ParallelDeflater
         {
             get
@@ -1493,6 +1460,7 @@ namespace Ionic.Zip
                 return _zos.ParallelDeflateThreshold;
             }
         }
+
 #endif
 
         public int CodecBufferSize
@@ -1540,5 +1508,4 @@ namespace Ionic.Zip
             }
         }
     }
-
 }

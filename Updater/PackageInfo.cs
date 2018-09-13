@@ -15,31 +15,30 @@
 
 namespace PMDCP.Updater
 {
+    using PMDCP.Updater.Linker;
     using System;
     using System.Collections.Generic;
-    using System.Text;
     using System.Xml;
-
-    using PMDCP.Updater.Linker;
 
     public class PackageInfo : MarshalByRefObject, IPackageInfo
     {
         #region Fields
 
-        string description;
-        string fullID;
-        string hash;
-        string name;
-        List<IInstalledPackageInfo> prerequisites;
-        long size;
-        int version;
-        DateTime publishDate;
+        private string description;
+        private string fullID;
+        private string hash;
+        private string name;
+        private List<IInstalledPackageInfo> prerequisites;
+        private long size;
+        private int version;
+        private DateTime publishDate;
 
         #endregion Fields
 
         #region Constructors
 
-        public PackageInfo() {
+        public PackageInfo()
+        {
             prerequisites = new List<IInstalledPackageInfo>();
         }
 
@@ -47,42 +46,50 @@ namespace PMDCP.Updater
 
         #region Properties
 
-        public string Description {
+        public string Description
+        {
             get { return description; }
             set { description = value; }
         }
 
-        public string FullID {
+        public string FullID
+        {
             get { return fullID; }
             set { fullID = value; }
         }
 
-        public string Hash {
+        public string Hash
+        {
             get { return hash; }
             set { hash = value; }
         }
 
-        public string Name {
+        public string Name
+        {
             get { return name; }
             set { name = value; }
         }
 
-        public List<IInstalledPackageInfo> Prerequisites {
+        public List<IInstalledPackageInfo> Prerequisites
+        {
             get { return prerequisites; }
             set { prerequisites = value; }
         }
 
-        public long Size {
+        public long Size
+        {
             get { return size; }
             set { size = value; }
         }
 
-        public int Version {
+        public int Version
+        {
             get { return version; }
             set { version = value; }
         }
 
-        public DateTime PublishDate {
+        public DateTime PublishDate
+        {
             get { return publishDate; }
             set { publishDate = value; }
         }
@@ -91,20 +98,30 @@ namespace PMDCP.Updater
 
         #region Methods
 
-        public void ReadBasicFromXml(XmlReader reader) {
-            using (XmlReader subtreeReader = reader.ReadSubtree()) {
-                while (subtreeReader.Read()) {
-                    if (subtreeReader.IsStartElement()) {
-                        switch (subtreeReader.Name) {
-                            case "ID": {
+        public void ReadBasicFromXml(XmlReader reader)
+        {
+            using (XmlReader subtreeReader = reader.ReadSubtree())
+            {
+                while (subtreeReader.Read())
+                {
+                    if (subtreeReader.IsStartElement())
+                    {
+                        switch (subtreeReader.Name)
+                        {
+                            case "ID":
+                                {
                                     fullID = subtreeReader.ReadString();
                                 }
                                 break;
-                            case "Version": {
+
+                            case "Version":
+                                {
                                     version = subtreeReader.ReadString().ToInt();
                                 }
                                 break;
-                            case "Prerequisites": {
+
+                            case "Prerequisites":
+                                {
                                     ReadPrerequisites(subtreeReader);
                                 }
                                 break;
@@ -114,28 +131,42 @@ namespace PMDCP.Updater
             }
         }
 
-        public void ReadFullFromXml(XmlReader reader) {
-            using (reader) {
-                while (reader.Read()) {
-                    if (reader.IsStartElement()) {
-                        switch (reader.Name) {
-                            case "Name": {
+        public void ReadFullFromXml(XmlReader reader)
+        {
+            using (reader)
+            {
+                while (reader.Read())
+                {
+                    if (reader.IsStartElement())
+                    {
+                        switch (reader.Name)
+                        {
+                            case "Name":
+                                {
                                     name = reader.ReadString();
                                 }
                                 break;
-                            case "Description": {
+
+                            case "Description":
+                                {
                                     description = reader.ReadString();
                                 }
                                 break;
-                            case "Size": {
+
+                            case "Size":
+                                {
                                     size = reader.ReadString().ToLong();
                                 }
                                 break;
-                            case "Hash": {
+
+                            case "Hash":
+                                {
                                     hash = reader.ReadString();
                                 }
                                 break;
-                            case "PublishDate": {
+
+                            case "PublishDate":
+                                {
                                     publishDate = DateTime.Parse(reader.ReadString());
                                 }
                                 break;
@@ -145,20 +176,30 @@ namespace PMDCP.Updater
             }
         }
 
-        private void ReadPrerequisites(XmlReader reader) {
-            using (XmlReader subtreeReader = reader.ReadSubtree()) {
-                while (subtreeReader.Read()) {
-                    if (subtreeReader.IsStartElement()) {
-                        switch (subtreeReader.Name) {
-                            case "Prerequisite": {
+        private void ReadPrerequisites(XmlReader reader)
+        {
+            using (XmlReader subtreeReader = reader.ReadSubtree())
+            {
+                while (subtreeReader.Read())
+                {
+                    if (subtreeReader.IsStartElement())
+                    {
+                        switch (subtreeReader.Name)
+                        {
+                            case "Prerequisite":
+                                {
                                     prerequisites.Add(new InstalledPackageInfo("", -1));
                                 }
                                 break;
-                            case "ID": {
+
+                            case "ID":
+                                {
                                     prerequisites[prerequisites.Count - 1].FullID = subtreeReader.ReadString();
                                 }
                                 break;
-                            case "Version": {
+
+                            case "Version":
+                                {
                                     prerequisites[prerequisites.Count - 1].Version = subtreeReader.ReadString().ToInt();
                                 }
                                 break;

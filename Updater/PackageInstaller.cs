@@ -13,25 +13,24 @@
 // You should have received a copy of the GNU General Public License
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using PMDCP.Updater.Linker;
 using Ionic.Zip;
+using PMDCP.Updater.Linker;
+using System;
 using System.IO;
 
 namespace PMDCP.Updater
 {
     public class PackageInstaller : MarshalByRefObject, IPackageInstaller
     {
-        string packagePath;
-        string basePath;
-        ZipFile packageZip;
-        IPackageInfo package;
-        string packageDataDirectory;
-        IPackageLoader loader;
+        private string packagePath;
+        private string basePath;
+        private ZipFile packageZip;
+        private IPackageInfo package;
+        private string packageDataDirectory;
+        private IPackageLoader loader;
 
-        public PackageInstaller(string packagePath, string packageDataDirectory, string basePath, IPackageInfo package, IPackageLoader loader) {
+        public PackageInstaller(string packagePath, string packageDataDirectory, string basePath, IPackageInfo package, IPackageLoader loader)
+        {
             this.packagePath = packagePath;
             this.packageDataDirectory = packageDataDirectory;
             this.basePath = basePath;
@@ -40,12 +39,16 @@ namespace PMDCP.Updater
             packageZip = new ZipFile(packagePath);
         }
 
-        public void ExtractFile(string file, string destinationPath) {
-            foreach (ZipEntry entry in packageZip) {
-                if (entry.FileName == "Files/" + file) {
+        public void ExtractFile(string file, string destinationPath)
+        {
+            foreach (ZipEntry entry in packageZip)
+            {
+                if (entry.FileName == "Files/" + file)
+                {
                     //entry.FileName = destinationPath;
                     string fullPath = basePath + destinationPath;
-                    if (!Directory.Exists(Path.GetDirectoryName(fullPath))) {
+                    if (!Directory.Exists(Path.GetDirectoryName(fullPath)))
+                    {
                         Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
                     }
                     //if (IsFileLocked(fullPath, false)) {
@@ -54,7 +57,8 @@ namespace PMDCP.Updater
                     //    }
                     //    File.Move(fullPath, fullPath + ".ToDelete");
                     //}
-                    using (FileStream stream = new FileStream(fullPath, FileMode.Create)) {
+                    using (FileStream stream = new FileStream(fullPath, FileMode.Create))
+                    {
                         entry.Extract(stream);
                     }
                     return;
@@ -62,46 +66,62 @@ namespace PMDCP.Updater
             }
         }
 
-        public void DeleteFile(string filePath, bool relative) {
+        public void DeleteFile(string filePath, bool relative)
+        {
             string fullPath;
-            if (relative) {
+            if (relative)
+            {
                 fullPath = basePath + filePath;
-            } else {
+            }
+            else
+            {
                 fullPath = filePath;
             }
-            if (File.Exists(fullPath)) {
+            if (File.Exists(fullPath))
+            {
                 File.Delete(fullPath);
             }
         }
 
-        public bool FileExists(string filePath, bool relative) {
+        public bool FileExists(string filePath, bool relative)
+        {
             string fullPath;
-            if (relative) {
+            if (relative)
+            {
                 fullPath = basePath + filePath;
-            } else {
+            }
+            else
+            {
                 fullPath = filePath;
             }
             return File.Exists(fullPath);
         }
 
-        public string GetFullPath(string filePath) {
+        public string GetFullPath(string filePath)
+        {
             return basePath + filePath;
         }
 
-        public string PackagePath {
+        public string PackagePath
+        {
             get { return packagePath; }
         }
 
-        public void ExtractFile(string file) {
+        public void ExtractFile(string file)
+        {
             ExtractFile(file, file);
         }
 
-        public void ExtractAll() {
-            foreach (ZipEntry entry in packageZip) {
-                if (entry.FileName.StartsWith("Files/") && entry.FileName != "Files/") {
+        public void ExtractAll()
+        {
+            foreach (ZipEntry entry in packageZip)
+            {
+                if (entry.FileName.StartsWith("Files/") && entry.FileName != "Files/")
+                {
                     //entry.FileName = entry.FileName.Remove(0, 6);
                     string fullPath = basePath + entry.FileName.Remove(0, 6);
-                    if (!Directory.Exists(Path.GetDirectoryName(fullPath))) {
+                    if (!Directory.Exists(Path.GetDirectoryName(fullPath)))
+                    {
                         Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
                     }
                     //if (IsFileLocked(fullPath, false)) {
@@ -110,33 +130,42 @@ namespace PMDCP.Updater
                     //    }
                     //    File.Move(fullPath, fullPath + ".ToDelete");
                     //}
-                    using (FileStream stream = new FileStream(fullPath, FileMode.Create)) {
+                    using (FileStream stream = new FileStream(fullPath, FileMode.Create))
+                    {
                         entry.Extract(stream);
                     }
                 }
             }
         }
 
-        public void Close() {
+        public void Close()
+        {
             packageZip.Dispose();
         }
 
-        public bool IsFileLocked(string filePath, bool relative) {
-            if (relative) {
+        public bool IsFileLocked(string filePath, bool relative)
+        {
+            if (relative)
+            {
                 filePath = GetFullPath(filePath);
             }
 
             FileStream stream = null;
 
-            try {
+            try
+            {
                 stream = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
-            } catch (IOException) {
+            }
+            catch (IOException)
+            {
                 //the file is unavailable because it is:
                 //still being written to
                 //or being processed by another thread
                 //or does not exist (has already been processed)
                 return true;
-            } finally {
+            }
+            finally
+            {
                 if (stream != null)
                     stream.Close();
             }
@@ -145,15 +174,18 @@ namespace PMDCP.Updater
             return false;
         }
 
-        public string PackageDataDirectory {
+        public string PackageDataDirectory
+        {
             get { return packageDataDirectory; }
         }
 
-        public IPackageInfo Package {
+        public IPackageInfo Package
+        {
             get { return package; }
         }
 
-        public IPackageLoader Loader {
+        public IPackageLoader Loader
+        {
             get { return loader; }
         }
     }

@@ -1,20 +1,20 @@
 // Zlib.cs
 // ------------------------------------------------------------------
 //
-// Copyright (c) 2009 Dino Chiesa and Microsoft Corporation.  
+// Copyright (c) 2009 Dino Chiesa and Microsoft Corporation.
 // All rights reserved.
 //
 // This code module is part of DotNetZip, a zipfile class library.
 //
 // ------------------------------------------------------------------
 //
-// This code is licensed under the Microsoft Public License. 
+// This code is licensed under the Microsoft Public License.
 // See the file License.txt for the license details.
 // More info on: http://dotnetzip.codeplex.com
 //
 // ------------------------------------------------------------------
 //
-// last saved (in emacs): 
+// last saved (in emacs):
 // Time-stamp: <2009-November-07 05:26:55>
 //
 // ------------------------------------------------------------------
@@ -27,22 +27,22 @@
 // included below.
 //
 // ------------------------------------------------------------------
-// 
+//
 // Copyright (c) 2000,2001,2002,2003 ymnk, JCraft,Inc. All rights reserved.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
-// 
+//
 // 1. Redistributions of source code must retain the above copyright notice,
 // this list of conditions and the following disclaimer.
-// 
-// 2. Redistributions in binary form must reproduce the above copyright 
-// notice, this list of conditions and the following disclaimer in 
+//
+// 2. Redistributions in binary form must reproduce the above copyright
+// notice, this list of conditions and the following disclaimer in
 // the documentation and/or other materials provided with the distribution.
-// 
+//
 // 3. The names of the authors may not be used to endorse or promote products
 // derived from this software without specific prior written permission.
-// 
+//
 // THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
 // INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
 // FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL JCRAFT,
@@ -53,7 +53,7 @@
 // LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 // NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 // EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-// 
+//
 // -----------------------------------------------------------------------
 //
 // This program is based on zlib-1.1.3; credit to authors
@@ -62,14 +62,10 @@
 //
 // -----------------------------------------------------------------------
 
-
-
-using System;
-using Interop=System.Runtime.InteropServices;
+using Interop = System.Runtime.InteropServices;
 
 namespace Ionic.Zlib
 {
-
     /// <summary>
     /// The compression level to be used when using a DeflateStream or ZlibStream with CompressionMode.Compress.
     /// </summary>
@@ -80,7 +76,8 @@ namespace Ionic.Zlib
         /// If you are producing ZIPs for use on Mac OSX, be aware that archives produced with CompressionLevel.None
         /// cannot be opened with the default zip reader. Use a different CompressionLevel.
         /// </summary>
-        None= 0,
+        None = 0,
+
         /// <summary>
         /// Same as None.
         /// </summary>
@@ -110,16 +107,17 @@ namespace Ionic.Zlib
         /// A little slower, but better, than level 3.
         /// </summary>
         Level4 = 4,
-        
+
         /// <summary>
         /// A little slower than level 4, but with better compression.
         /// </summary>
         Level5 = 5,
 
         /// <summary>
-        /// The default compression level, with a good balance of speed and compression efficiency.   
+        /// The default compression level, with a good balance of speed and compression efficiency.
         /// </summary>
         Default = 6,
+
         /// <summary>
         /// A synonym for Default.
         /// </summary>
@@ -136,7 +134,7 @@ namespace Ionic.Zlib
         Level8 = 8,
 
         /// <summary>
-        /// The "best" compression, where best means greatest reduction in size of the input data stream. 
+        /// The "best" compression, where best means greatest reduction in size of the input data stream.
         /// This is also the slowest compression.
         /// </summary>
         BestCompression = 9,
@@ -155,7 +153,7 @@ namespace Ionic.Zlib
     public enum CompressionStrategy
     {
         /// <summary>
-        /// The default strategy is probably the best for normal data. 
+        /// The default strategy is probably the best for normal data.
         /// </summary>
         Default = 0,
 
@@ -175,7 +173,6 @@ namespace Ionic.Zlib
         HuffmanOnly = 2,
     }
 
-
     /// <summary>
     /// An enum to specify the direction of transcoding - whether to compress or decompress.
     /// </summary>
@@ -184,13 +181,13 @@ namespace Ionic.Zlib
         /// <summary>
         /// Used to specify that the stream should compress the data.
         /// </summary>
-        Compress= 0,
+        Compress = 0,
+
         /// <summary>
         /// Used to specify that the stream should decompress the data.
         /// </summary>
         Decompress = 1,
     }
-
 
     /// <summary>
     /// A general purpose exception class for exceptions in the Zlib library.
@@ -200,7 +197,7 @@ namespace Ionic.Zlib
     {
         /// <summary>
         /// The ZlibException class captures exception information generated
-        /// by the Zlib library. 
+        /// by the Zlib library.
         /// </summary>
         public ZlibException()
             : base()
@@ -216,7 +213,6 @@ namespace Ionic.Zlib
         {
         }
     }
-
 
     internal class SharedUtils
     {
@@ -243,7 +239,7 @@ namespace Ionic.Zlib
             return (long) ((UInt64)number >> bits);
         }
 #endif
-        
+
         /// <summary>
         ///   Reads a number of characters from the current source TextReader and writes
         ///   the data to the target array at the specified index.
@@ -253,7 +249,7 @@ namespace Ionic.Zlib
         /// <param name="target">Contains the array of characteres read from the source TextReader.</param>
         /// <param name="start">The starting index of the target array.</param>
         /// <param name="count">The maximum number of characters to read from the source TextReader.</param>
-        /// 
+        ///
         /// <returns>
         ///   The number of characters read. The number will be less than or equal to
         ///   count depending on the data available in the source TextReader. Returns -1
@@ -276,12 +272,10 @@ namespace Ionic.Zlib
             return bytesRead;
         }
 
-
         internal static byte[] ToByteArray(System.String sourceString)
         {
             return System.Text.UTF8Encoding.UTF8.GetBytes(sourceString);
         }
-
 
         internal static char[] ToCharArray(byte[] byteArray)
         {
@@ -291,25 +285,24 @@ namespace Ionic.Zlib
 
     internal static class InternalConstants
     {
-        internal static readonly int MAX_BITS     = 15;
-        internal static readonly int BL_CODES     = 19;
-        internal static readonly int D_CODES      = 30;
-        internal static readonly int LITERALS     = 256;
+        internal static readonly int MAX_BITS = 15;
+        internal static readonly int BL_CODES = 19;
+        internal static readonly int D_CODES = 30;
+        internal static readonly int LITERALS = 256;
         internal static readonly int LENGTH_CODES = 29;
-        internal static readonly int L_CODES      = (LITERALS + 1 + LENGTH_CODES);
-        
+        internal static readonly int L_CODES = (LITERALS + 1 + LENGTH_CODES);
+
         // Bit length codes must not exceed MAX_BL_BITS bits
-        internal static readonly int MAX_BL_BITS  = 7;
+        internal static readonly int MAX_BL_BITS = 7;
 
         // repeat previous bit length 3-6 times (2 bits of repeat count)
-        internal static readonly int REP_3_6      = 16;
+        internal static readonly int REP_3_6 = 16;
 
         // repeat a zero length 3-10 times  (3 bits of repeat count)
-        internal static readonly int REPZ_3_10    = 17;
+        internal static readonly int REPZ_3_10 = 17;
 
         // repeat a zero length 11-138 times  (7 bits of repeat count)
-        internal static readonly int REPZ_11_138  = 18;
-
+        internal static readonly int REPZ_11_138 = 18;
     }
 
     internal sealed class StaticTree
@@ -377,6 +370,7 @@ namespace Ionic.Zlib
             this.elems = elems;
             this.maxLength = maxLength;
         }
+
         static StaticTree()
         {
             Literals = new StaticTree(lengthAndLiteralsTreeCodes, Tree.ExtraLengthBits, InternalConstants.LITERALS + 1, InternalConstants.L_CODES, InternalConstants.MAX_BITS);
@@ -385,10 +379,8 @@ namespace Ionic.Zlib
         }
     }
 
-
-    
     /// <summary>
-    /// Computes an Adler-32 checksum. 
+    /// Computes an Adler-32 checksum.
     /// </summary>
     /// <remarks>
     /// The Adler checksum is similar to a CRC checksum, but faster to compute, though less
@@ -400,6 +392,7 @@ namespace Ionic.Zlib
     {
         // largest prime smaller than 65536
         private static readonly int BASE = 65521;
+
         // NMAX is the largest n such that 255n(n+1)/2 + (n+1)(BASE-1) <= 2^32-1
         private static readonly int NMAX = 5552;
 
@@ -408,8 +401,8 @@ namespace Ionic.Zlib
             if (buf == null)
                 return 1;
 
-            int s1 = (int) (adler & 0xffff);
-            int s2 = (int) ((adler >> 16) & 0xffff);
+            int s1 = (int)(adler & 0xffff);
+            int s2 = (int)((adler >> 16) & 0xffff);
 
             while (len > 0)
             {
@@ -440,7 +433,7 @@ namespace Ionic.Zlib
                 {
                     do
                     {
-                        s1 += buf[index++]; 
+                        s1 += buf[index++];
                         s2 += s1;
                     }
                     while (--k != 0);
@@ -450,7 +443,5 @@ namespace Ionic.Zlib
             }
             return (uint)((s2 << 16) | s1);
         }
-
     }
-
 }

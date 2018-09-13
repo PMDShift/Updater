@@ -15,28 +15,26 @@
 
 namespace PMDCP.Updater
 {
+    using PMDCP.Updater.Linker;
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel;
     using System.IO;
     using System.Net;
-    using System.Text;
-
-    using PMDCP.Updater.Linker;
 
     public class FileDownload : IFileDownload
     {
         #region Fields
 
-        BackgroundWorker downloadBWorker;
-        string downloadURI;
-        string filePath;
+        private BackgroundWorker downloadBWorker;
+        private string downloadURI;
+        private string filePath;
 
         #endregion Fields
 
         #region Constructors
 
-        public FileDownload(string downloadURI, string filePath) {
+        public FileDownload(string downloadURI, string filePath)
+        {
             this.downloadURI = downloadURI;
             this.filePath = filePath;
         }
@@ -53,7 +51,8 @@ namespace PMDCP.Updater
 
         #region Methods
 
-        public void Download() {
+        public void Download()
+        {
             downloadBWorker = new BackgroundWorker();
             downloadBWorker.DoWork += new DoWorkEventHandler(downloadBWorker_DoWork);
             downloadBWorker.WorkerReportsProgress = true;
@@ -67,8 +66,10 @@ namespace PMDCP.Updater
             //webClient.DownloadFileAsync(new Uri(downloadURI), filePath + ".tmp");
         }
 
-        void webClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e) {
-            if (File.Exists(filePath)) {
+        private void webClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            if (File.Exists(filePath))
+            {
                 File.Delete(filePath);
             }
             File.Move(filePath + ".tmp", filePath);
@@ -77,31 +78,39 @@ namespace PMDCP.Updater
                 DownloadComplete(this, new FileDownloadingEventArgs(0, filePath, 100, 0));
         }
 
-        void webClient_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e) {
+        private void webClient_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
 #if DEBUG
             Console.WriteLine(e.BytesReceived + "/" + e.TotalBytesToReceive);
 #endif
-            if (DownloadUpdate != null) {
+            if (DownloadUpdate != null)
+            {
                 DownloadUpdate(this, new FileDownloadingEventArgs(e.TotalBytesToReceive, filePath, e.ProgressPercentage, e.BytesReceived));
             }
         }
 
-        void downloadBWorker_DoWork(object sender, DoWorkEventArgs e) {
+        private void downloadBWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
             bool downloadComplete = false;
 
             long length = 0;
 
             string downloadPath = ((object[])e.Argument)[0] as string;
-            using (Stream stream = ((object[])e.Argument)[1] as Stream) {
-                try {
+            using (Stream stream = ((object[])e.Argument)[1] as Stream)
+            {
+                try
+                {
                     HttpWebResponse theResponse;
                     HttpWebRequest theRequest;
                     //Checks if the file exist
 
-                    try {
+                    try
+                    {
                         theRequest = (HttpWebRequest)WebRequest.Create(downloadPath);
                         theResponse = (HttpWebResponse)theRequest.GetResponse();
-                    } catch (Exception ex) {
+                    }
+                    catch (Exception ex)
+                    {
                         downloadBWorker.ReportProgress(0, new object[] { "error", ex });
                         return;
                     }
@@ -113,7 +122,8 @@ namespace PMDCP.Updater
                     //Replacement for Stream.Position (webResponse stream doesn't support seek)
                     long nRead = 0;
 
-                    do {
+                    do
+                    {
                         byte[] readBytes = new byte[1024];
                         int bytesread = theResponse.GetResponseStream().Read(readBytes, 0, 1024);
 
@@ -124,7 +134,8 @@ namespace PMDCP.Updater
 
                         int percent = (int)Updater.Math.CalculatePercent(nRead, length);
                         stream.Write(readBytes, 0, bytesread);
-                        if (DownloadUpdate != null) {
+                        if (DownloadUpdate != null)
+                        {
                             downloadBWorker.ReportProgress(percent, new object[] { "downloading", new FileDownloadingEventArgs(length, "", percent, nRead) });
                         }
                     }
@@ -134,41 +145,54 @@ namespace PMDCP.Updater
                     theResponse.GetResponseStream().Close();
 
                     downloadComplete = true;
-                } catch (Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     downloadBWorker.ReportProgress(0, new object[] { "error", ex });
                 }
             }
 
-            if (downloadComplete) {
-                if (File.Exists(filePath)) {
+            if (downloadComplete)
+            {
+                if (File.Exists(filePath))
+                {
                     File.Delete(filePath);
                 }
                 File.Move(filePath + ".tmp", filePath);
 
-                if (DownloadComplete != null) {
+                if (DownloadComplete != null)
+                {
                     downloadBWorker.ReportProgress(100, new object[] { "done", new FileDownloadingEventArgs(length, "", 100, length) });
                 }
             }
         }
 
-        private void downloadBWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
+        private void downloadBWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
             object[] data = e.UserState as object[];
-            switch ((string)data[0]) {
-                case "downloading": {
+            switch ((string)data[0])
+            {
+                case "downloading":
+                    {
                         FileDownloadingEventArgs downloadInfo = data[1] as FileDownloadingEventArgs;
                         if (DownloadUpdate != null)
                             DownloadUpdate(this, downloadInfo);
                     }
                     break;
-                case "done": {
+
+                case "done":
+                    {
                         FileDownloadingEventArgs downloadInfo = data[1] as FileDownloadingEventArgs;
                         if (DownloadComplete != null)
                             DownloadComplete(this, downloadInfo);
                     }
                     break;
-                case "error": {
+
+                case "error":
+                    {
                         Exception ex = data[1] as Exception;
-                        if (ex != null) {
+                        if (ex != null)
+                        {
                             System.Windows.Forms.MessageBox.Show(ex.ToString());
                         }
                     }
@@ -177,6 +201,5 @@ namespace PMDCP.Updater
         }
 
         #endregion Methods
-
     }
 }

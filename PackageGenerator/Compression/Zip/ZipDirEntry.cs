@@ -28,12 +28,10 @@
 //
 // ------------------------------------------------------------------
 
-
 using System;
 
 namespace Ionic.Zip
 {
-
     partial class ZipEntry
     {
         /// <summary>
@@ -44,8 +42,8 @@ namespace Ionic.Zip
             get { return ((_InternalFileAttrs == 0) && ((_ExternalFileAttrs & 0x0010) == 0x0010)); }
         }
 
-
 #if OPTIMIZE_WI6612
+
         internal void ResetDirEntry()
         {
             // __FileDataPosition is the position of the file data for an entry.
@@ -63,6 +61,7 @@ namespace Ionic.Zip
             // set _LengthOfHeader to 0, to indicate we need to read later.
             this._LengthOfHeader = 0;
         }
+
 #endif
 
         /// <summary>
@@ -84,7 +83,7 @@ namespace Ionic.Zip
                     .Append(string.Format("  Bit Field: 0x{0:X4}\n", this._BitField))
                     .Append(string.Format("  Encrypted?: {0}\n", this._sourceIsEncrypted))
                     .Append(string.Format("  Timeblob: 0x{0:X8} ({1})\n", this._TimeBlob,
-                                          Ionic.Zip.SharedUtilities.PackedToDateTime(this._TimeBlob)) )
+                                          Ionic.Zip.SharedUtilities.PackedToDateTime(this._TimeBlob)))
                     .Append(string.Format("  CRC: 0x{0:X8}\n", this._Crc32))
                     .Append(string.Format("  Is Text?: {0}\n", this._IsText))
                     .Append(string.Format("  Is Directory?: {0}\n", this._IsDirectory))
@@ -96,9 +95,6 @@ namespace Ionic.Zip
                 return builder.ToString();
             }
         }
-
-
-
 
         /// <summary>
         /// Reads one entry from the zip directory structure in the zip file.
@@ -267,7 +263,6 @@ namespace Ionic.Zip
             return zde;
         }
 
-
         /// <summary>
         /// Returns true if the passed-in value is a valid signature for a ZipDirEntry.
         /// </summary>
@@ -278,16 +273,14 @@ namespace Ionic.Zip
             return (signature != ZipConstants.ZipDirEntrySignature);
         }
 
-
         private Int16 _VersionMadeBy;
         private Int16 _InternalFileAttrs;
         private Int32 _ExternalFileAttrs;
 
         //private Int32 _LengthOfDirEntry;
         private Int16 _filenameLength;
+
         private Int16 _extraFieldLength;
         private Int16 _commentLength;
     }
-
-
 }

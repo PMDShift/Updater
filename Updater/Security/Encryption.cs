@@ -14,8 +14,6 @@
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Security.Cryptography;
 
 namespace PMDCP.Updater.Security
@@ -24,8 +22,8 @@ namespace PMDCP.Updater.Security
     {
         #region Fields
 
-        TripleDESCryptoServiceProvider TripleDes = new TripleDESCryptoServiceProvider();
-        string svKey = "justsomewordstobeusedasacryptionkey";
+        private TripleDESCryptoServiceProvider TripleDes = new TripleDESCryptoServiceProvider();
+        private string svKey = "justsomewordstobeusedasacryptionkey";
 
         #endregion Fields
 
@@ -35,7 +33,8 @@ namespace PMDCP.Updater.Security
         /// Initializes a new instance of the <see cref="Encryption"/> class.
         /// </summary>
         /// <param name="key">The encryption key.</param>
-        public Encryption(string key) {
+        public Encryption(string key)
+        {
             // Initialize the crypto provider.
             TripleDes.Key = TruncateHash(key, TripleDes.KeySize / 8);
             TripleDes.IV = TruncateHash("", TripleDes.BlockSize / 8);
@@ -44,7 +43,8 @@ namespace PMDCP.Updater.Security
         /// <summary>
         /// Initializes a new instance of the <see cref="Encryption"/> class.
         /// </summary>
-        public Encryption() {
+        public Encryption()
+        {
             TripleDes.Key = TruncateHash(svKey, TripleDes.KeySize / 8);
             TripleDes.IV = TruncateHash("", TripleDes.BlockSize / 8);
         }
@@ -58,7 +58,8 @@ namespace PMDCP.Updater.Security
         /// </summary>
         /// <param name="encryptedBytes">The encrypted bytes.</param>
         /// <returns></returns>
-        public byte[] DecryptBytes(byte[] encryptedBytes) {
+        public byte[] DecryptBytes(byte[] encryptedBytes)
+        {
             // Create the stream.
             System.IO.MemoryStream ms = new System.IO.MemoryStream();
             // Create the decoder to write to the stream.
@@ -77,8 +78,10 @@ namespace PMDCP.Updater.Security
         /// </summary>
         /// <param name="encryptedtext">The encrypted data.</param>
         /// <returns>The decrypted string.</returns>
-        public string DecryptData(string encryptedtext) {
-            try {
+        public string DecryptData(string encryptedtext)
+        {
+            try
+            {
                 // Convert the encrypted text string to a byte array.
                 byte[] encryptedBytes = Convert.FromBase64String(encryptedtext);
 
@@ -93,7 +96,9 @@ namespace PMDCP.Updater.Security
 
                 // Convert the plaintext stream to a string.
                 return System.Text.Encoding.Unicode.GetString(ms.ToArray());
-            } catch {
+            }
+            catch
+            {
                 return "sdcksndcsac ascascscdds";
             }
         }
@@ -103,7 +108,8 @@ namespace PMDCP.Updater.Security
         /// </summary>
         /// <param name="bytesToEncrypt">The bytes to encrypt.</param>
         /// <returns></returns>
-        public byte[] EncryptBytes(byte[] bytesToEncrypt) {
+        public byte[] EncryptBytes(byte[] bytesToEncrypt)
+        {
             // Create the stream.
             System.IO.MemoryStream ms = new System.IO.MemoryStream();
 
@@ -123,7 +129,8 @@ namespace PMDCP.Updater.Security
         /// </summary>
         /// <param name="plaintext">The data to encrypt.</param>
         /// <returns>The encrypted string.</returns>
-        public string EncryptData(string plaintext) {
+        public string EncryptData(string plaintext)
+        {
             // Convert the plaintext string to a byte array.
             byte[] plaintextBytes = System.Text.Encoding.Unicode.GetBytes(plaintext);
 
@@ -145,13 +152,15 @@ namespace PMDCP.Updater.Security
         /// Sets the encryption key.
         /// </summary>
         /// <param name="key">The key.</param>
-        public void SetKey(string key) {
+        public void SetKey(string key)
+        {
             // Initialize the crypto provider.
             TripleDes.Key = TruncateHash(key, TripleDes.KeySize / 8);
             TripleDes.IV = TruncateHash("", TripleDes.BlockSize / 8);
         }
 
-        private byte[] TruncateHash(string key, int length) {
+        private byte[] TruncateHash(string key, int length)
+        {
             SHA1CryptoServiceProvider sha1 = new SHA1CryptoServiceProvider();
             // Hash the key.
             byte[] keyBytes = System.Text.Encoding.Unicode.GetBytes(key);

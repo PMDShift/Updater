@@ -13,36 +13,37 @@
 // You should have received a copy of the GNU General Public License
 // along with Mystery Dungeon eXtended.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using PMDCP.Updater.Linker;
+using System;
 
 namespace PMDCP.Updater
 {
     public class PackageFileListItem : MarshalByRefObject, IPackageFileListItem
     {
-        string path;
-        string name;
-        string relativePath;
+        private string path;
+        private string name;
+        private string relativePath;
 
-        public string FullPath {
+        public string FullPath
+        {
             get { return path; }
         }
 
-        public string Name {
+        public string Name
+        {
             get { return name; }
         }
 
-        public string RelativePath {
+        public string RelativePath
+        {
             get { return relativePath; }
         }
 
-        public PackageFileListItem(string baseDirectory, string relativePath) {
+        public PackageFileListItem(string baseDirectory, string relativePath)
+        {
             this.path = baseDirectory + relativePath;
             this.relativePath = relativePath;
             this.name = System.IO.Path.GetFileName(this.path);
         }
-
     }
 }

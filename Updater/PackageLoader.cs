@@ -15,35 +15,35 @@
 
 namespace PMDCP.Updater
 {
+    using PMDCP.Updater.Linker;
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Reflection;
-    using System.Text;
-
-    using PMDCP.Updater.Linker;
 
     public class PackageLoader : MarshalByRefObject, IPackageLoader
     {
         #region Fields
 
-        string assemblyPath;
-        IUpdatePackage package;
-        AppDomain packageAppDomain;
+        private string assemblyPath;
+        private IUpdatePackage package;
+        private AppDomain packageAppDomain;
 
         #endregion Fields
 
         #region Properties
 
-        public string AssemblyPath {
+        public string AssemblyPath
+        {
             get { return assemblyPath; }
         }
 
-        public IUpdatePackage Package {
+        public IUpdatePackage Package
+        {
             get { return package; }
         }
 
-        public AppDomain PackageAppDomain {
+        public AppDomain PackageAppDomain
+        {
             get { return packageAppDomain; }
         }
 
@@ -51,8 +51,10 @@ namespace PMDCP.Updater
 
         #region Methods
 
-        public void LoadPackage(string assemblyPath) {
-            if (packageAppDomain != null) {
+        public void LoadPackage(string assemblyPath)
+        {
+            if (packageAppDomain != null)
+            {
                 Unload();
             }
             this.assemblyPath = assemblyPath;
@@ -60,9 +62,12 @@ namespace PMDCP.Updater
             string dir = Path.GetDirectoryName(assemblyPath);
 
             AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
-            if (false) {
+            if (false)
+            {
                 setup.ApplicationBase = Environment.CurrentDirectory;
-            } else {
+            }
+            else
+            {
                 setup.ApplicationBase = dir;
             }
             packageAppDomain = AppDomain.CreateDomain(fileNamespace, null, setup);
@@ -70,8 +75,10 @@ namespace PMDCP.Updater
             this.package = this.packageAppDomain.CreateInstanceFrom(assemblyPath, "UpdatePackage.UpdatePackage").Unwrap() as IUpdatePackage;
         }
 
-        public void LoadPackage(byte[] assembly, IPackageInfo packageInfo) {
-            if (packageAppDomain != null) {
+        public void LoadPackage(byte[] assembly, IPackageInfo packageInfo)
+        {
+            if (packageAppDomain != null)
+            {
                 Unload();
             }
             this.assemblyPath = assemblyPath;
@@ -87,11 +94,15 @@ namespace PMDCP.Updater
             this.package = this.packageAppDomain.CreateInstance(loadedAssembly.FullName, "UpdatePackage.UpdatePackage").Unwrap() as IUpdatePackage;
         }
 
-        public void Unload() {
-            if (packageAppDomain != null) {
-                try {
+        public void Unload()
+        {
+            if (packageAppDomain != null)
+            {
+                try
+                {
                     AppDomain.Unload(packageAppDomain);
-                } catch { }
+                }
+                catch { }
                 //packageAppDomain = null;
                 //package = null;
             }

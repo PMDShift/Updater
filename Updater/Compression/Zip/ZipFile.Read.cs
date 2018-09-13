@@ -24,14 +24,11 @@
 // ------------------------------------------------------------------
 //
 
-
 using System;
 using System.IO;
-using System.Collections.Generic;
 
 namespace Ionic.Zip
 {
-
     public partial class ZipFile
     {
         /// <summary>
@@ -185,7 +182,6 @@ namespace Ionic.Zip
             return ZipFile.Read(fileName, statusMessageWriter, DefaultEncoding);
         }
 
-
         /// <summary>
         /// Reads a zip file archive using the specified text encoding, and the
         /// specified ReadProgress event handler, and returns the instance.
@@ -288,7 +284,6 @@ namespace Ionic.Zip
             return ZipFile.Read(fileName, null, encoding);
         }
 
-
         /// <summary>
         /// Reads a zip file archive using the specified text encoding and ReadProgress
         /// event handler, and returns the instance.
@@ -318,7 +313,6 @@ namespace Ionic.Zip
         {
             return ZipFile.Read(fileName, null, encoding, readProgress);
         }
-
 
         /// <summary>
         /// Reads a zip file archive using the specified text encoding and the specified
@@ -543,7 +537,6 @@ namespace Ionic.Zip
             return Read(zipStream, null, DefaultEncoding, readProgress);
         }
 
-
         /// <summary>
         /// Reads a zip archive from a stream, using the specified TextWriter for status
         /// messages.
@@ -592,7 +585,6 @@ namespace Ionic.Zip
         {
             return Read(zipStream, statusMessageWriter, DefaultEncoding);
         }
-
 
         /// <summary>
         /// Reads a zip archive from a stream, using the specified TextWriter for status
@@ -781,7 +773,6 @@ namespace Ionic.Zip
             return Read(zipStream, statusMessageWriter, encoding, null);
         }
 
-
         /// <summary>
         /// Reads a zip archive from a stream, using the specified text Encoding, the
         /// specified TextWriter for status messages,
@@ -850,7 +841,6 @@ namespace Ionic.Zip
             return zf;
         }
 
-
         /// <summary>
         /// Reads a zip archive from a byte array.
         /// </summary>
@@ -877,7 +867,6 @@ namespace Ionic.Zip
         {
             return Read(buffer, null, DefaultEncoding);
         }
-
 
         /// <summary>
         /// Reads a zip archive from a byte array, using the given StatusMessageWriter.
@@ -911,7 +900,6 @@ namespace Ionic.Zip
         {
             return Read(buffer, statusMessageWriter, DefaultEncoding);
         }
-
 
         /// <summary>
         /// Reads a zip archive from a byte array, using the given StatusMessageWriter and text Encoding.
@@ -962,7 +950,6 @@ namespace Ionic.Zip
             return zf;
         }
 
-
         private static void ReadIntoInstance(ZipFile zf)
         {
             Stream s = zf.ReadStream;
@@ -985,7 +972,6 @@ namespace Ionic.Zip
 
                 if (datum == ZipConstants.EndOfCentralDirectorySignature)
                     return;
-
 
                 // start at the end of the file...
                 // seek backwards a bit, then look for the EoCD signature.
@@ -1033,7 +1019,7 @@ namespace Ionic.Zip
 
                     int i = 12;
 
-                    uint offset32 = (uint) BitConverter.ToUInt32(block, i);
+                    uint offset32 = (uint)BitConverter.ToUInt32(block, i);
                     if (offset32 == 0xFFFFFFFF)
                     {
                         Zip64SeekToCentralDirectory(zf);
@@ -1078,8 +1064,6 @@ namespace Ionic.Zip
             zf._contentsChanged = false;
         }
 
-
-
         private static void Zip64SeekToCentralDirectory(ZipFile zf)
         {
             Stream s = zf.ReadStream;
@@ -1112,26 +1096,23 @@ namespace Ionic.Zip
             //zf.SeekFromOrigin(Offset64);
         }
 
-
         private static uint VerifyBeginningOfZipFile(Stream s)
         {
             uint datum = (uint)Ionic.Zip.SharedUtilities.ReadInt(s);
             // workitem 8337
-//             if (datum != ZipConstants.PackedToRemovableMedia              // weird edge case #1
-//                 && datum != ZipConstants.ZipEntryDataDescriptorSignature  // weird edge case #2
-//                 && datum != ZipConstants.ZipDirEntrySignature             // weird edge case #3 - DynaZip
-//                 && datum != ZipConstants.ZipEntrySignature                // normal BOF marker
-//                 && datum != ZipConstants.EndOfCentralDirectorySignature   // for zip file with no entries
-//                 && (datum & 0x0000FFFF) != 0x00005A4D                     // PE/COFF BOF marker (for SFX)
-//                 )
-//             {
-//                 //Console.WriteLine("WTF, datum = 0x{0:X8}", datum);
-//                 throw new BadReadException(String.Format("  ZipFile::Read(): Bad signature (0x{0:X8}) at start of file at position 0x{1:X8}", datum, s.Position));
-//             }
+            //             if (datum != ZipConstants.PackedToRemovableMedia              // weird edge case #1
+            //                 && datum != ZipConstants.ZipEntryDataDescriptorSignature  // weird edge case #2
+            //                 && datum != ZipConstants.ZipDirEntrySignature             // weird edge case #3 - DynaZip
+            //                 && datum != ZipConstants.ZipEntrySignature                // normal BOF marker
+            //                 && datum != ZipConstants.EndOfCentralDirectorySignature   // for zip file with no entries
+            //                 && (datum & 0x0000FFFF) != 0x00005A4D                     // PE/COFF BOF marker (for SFX)
+            //                 )
+            //             {
+            //                 //Console.WriteLine("WTF, datum = 0x{0:X8}", datum);
+            //                 throw new BadReadException(String.Format("  ZipFile::Read(): Bad signature (0x{0:X8}) at start of file at position 0x{1:X8}", datum, s.Position));
+            //             }
             return datum;
         }
-
-
 
         private static void ReadCentralDirectory(ZipFile zf)
         {
@@ -1153,7 +1134,7 @@ namespace Ionic.Zip
                 if (zf.Verbose)
                     zf.StatusMessageTextWriter.WriteLine("entry {0}", de.FileName);
 
-                zf._entries.Add(de.FileName,de);
+                zf._entries.Add(de.FileName, de);
 
                 // workitem 9214
                 if (de._InputUsesZip64) inputUsesZip64 = true;
@@ -1179,15 +1160,12 @@ namespace Ionic.Zip
             zf.OnReadCompleted();
         }
 
-
-
-
         // build the TOC by reading each entry in the file.
         private static void ReadIntoInstance_Orig(ZipFile zf)
         {
             zf.OnReadStarted();
             //zf._entries = new System.Collections.Generic.List<ZipEntry>();
-            zf._entries = new System.Collections.Generic.Dictionary<String,ZipEntry>();
+            zf._entries = new System.Collections.Generic.Dictionary<String, ZipEntry>();
 
             ZipEntry e;
             if (zf.Verbose)
@@ -1204,7 +1182,7 @@ namespace Ionic.Zip
                 if (zf.Verbose)
                     zf.StatusMessageTextWriter.WriteLine("  {0}", e.FileName);
 
-                zf._entries.Add(e.FileName,e);
+                zf._entries.Add(e.FileName, e);
                 firstEntry = false;
             }
 
@@ -1222,7 +1200,8 @@ namespace Ionic.Zip
                     // Also since ZipEntry is used to Write zip files, we need to copy the
                     // file attributes to the ZipEntry as appropriate.
                     ZipEntry e1 = zf._entries[de.FileName];
-                    if (e1 != null){
+                    if (e1 != null)
+                    {
                         e1._Comment = de.Comment;
                         if (de.IsDirectory) e1.MarkAsDirectory();
                     }
@@ -1243,9 +1222,6 @@ namespace Ionic.Zip
 
             zf.OnReadCompleted();
         }
-
-
-
 
         private static void ReadCentralDirectoryFooter(ZipFile zf)
         {
@@ -1339,8 +1315,6 @@ namespace Ionic.Zip
             ReadZipFileComment(zf);
         }
 
-
-
         private static void ReadZipFileComment(ZipFile zf)
         {
             // read the comment here
@@ -1374,7 +1348,6 @@ namespace Ionic.Zip
             }
         }
 
-
         private static bool BlocksAreEqual(byte[] a, byte[] b)
         {
             if (a.Length != b.Length) return false;
@@ -1384,8 +1357,6 @@ namespace Ionic.Zip
             }
             return true;
         }
-
-
 
         /// <summary>
         /// Checks the given file to see if it appears to be a valid zip file.
@@ -1404,7 +1375,6 @@ namespace Ionic.Zip
         {
             return IsZipFile(fileName, false);
         }
-
 
         /// <summary>
         /// Checks a file to see if it is a valid zip file.
@@ -1457,7 +1427,6 @@ namespace Ionic.Zip
             catch { }
             return result;
         }
-
 
         /// <summary>
         /// Checks a stream to see if it contains a valid zip archive.
@@ -1523,10 +1492,5 @@ namespace Ionic.Zip
             catch { }
             return result;
         }
-
-
-
-
     }
-
 }

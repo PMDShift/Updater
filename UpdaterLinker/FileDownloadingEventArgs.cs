@@ -16,17 +16,15 @@
 namespace PMDCP.Updater.Linker
 {
     using System;
-    using System.Collections.Generic;
-    using System.Text;
-    
+
     public class FileDownloadingEventArgs : EventArgs
     {
         #region Fields
 
-        string fileName;
-        long fileSize;
-        int percent;
-        long position;
+        private string fileName;
+        private long fileSize;
+        private int percent;
+        private long position;
 
         #endregion Fields
 
