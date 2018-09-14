@@ -2222,12 +2222,14 @@ namespace Ionic.Zip
             if (String.IsNullOrEmpty(nameInArchive))
                 throw new Ionic.Zip.ZipException("The entry name must be non-null and non-empty.");
 
-            ZipEntry entry = new ZipEntry();
+            ZipEntry entry = new ZipEntry
+            {
 
-            // workitem 7071
-            // workitem 7926 - "version made by" OS should be zero for compat with WinZip
-            entry._VersionMadeBy = (0 << 8) + 45; // indicates the attributes are FAT Attributes, and v4.5 of the spec
-            entry._Source = source;
+                // workitem 7071
+                // workitem 7926 - "version made by" OS should be zero for compat with WinZip
+                _VersionMadeBy = (0 << 8) + 45, // indicates the attributes are FAT Attributes, and v4.5 of the spec
+                _Source = source
+            };
             entry._Mtime = entry._Atime = entry._Ctime = DateTime.UtcNow;
 
             if (source == ZipEntrySource.Stream)

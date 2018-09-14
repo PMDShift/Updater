@@ -81,14 +81,13 @@ namespace PMDCP.Updater
             {
                 Unload();
             }
-            this.assemblyPath = assemblyPath;
             string fileNamespace = packageInfo.FullID;
             string dir = Path.GetDirectoryName(assemblyPath);
 
             //AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
             //setup.ApplicationBase = Environment.CurrentDirectory;
             packageAppDomain = AppDomain.CreateDomain(fileNamespace, null);
-            // TODO: Load all the of the dependancies into memory too!
+            // TODO: Load all the of the dependencies into memory too!
             //this.packageAppDomain.Load()
             Assembly loadedAssembly = this.packageAppDomain.Load(assembly);
             this.package = this.packageAppDomain.CreateInstance(loadedAssembly.FullName, "UpdatePackage.UpdatePackage").Unwrap() as IUpdatePackage;
