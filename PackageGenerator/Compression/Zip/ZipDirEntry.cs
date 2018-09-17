@@ -83,7 +83,7 @@ namespace Ionic.Zip
                     .Append(string.Format("  Bit Field: 0x{0:X4}\n", this._BitField))
                     .Append(string.Format("  Encrypted?: {0}\n", this._sourceIsEncrypted))
                     .Append(string.Format("  Timeblob: 0x{0:X8} ({1})\n", this._TimeBlob,
-                                          Ionic.Zip.SharedUtilities.PackedToDateTime(this._TimeBlob)))
+                                          SharedUtilities.PackedToDateTime(this._TimeBlob)))
                     .Append(string.Format("  CRC: 0x{0:X8}\n", this._Crc32))
                     .Append(string.Format("  Is Text?: {0}\n", this._IsText))
                     .Append(string.Format("  Is Directory?: {0}\n", this._IsDirectory))
@@ -127,7 +127,7 @@ namespace Ionic.Zip
                     signature != ZipConstants.ZipEntrySignature  // workitem 8299
                     )
                 {
-                    throw new BadReadException(String.Format("  ZipEntry::ReadDirEntry(): Bad signature (0x{0:X8}) at position 0x{1:X8}", signature, s.Position));
+                    throw new BadReadException(string.Format("  ZipEntry::ReadDirEntry(): Bad signature (0x{0:X8}) at position 0x{1:X8}", signature, s.Position));
                 }
                 return null;
             }
@@ -147,9 +147,9 @@ namespace Ionic.Zip
                 zde._VersionMadeBy = (short)(block[i++] + block[i++] * 256);
                 zde._VersionNeeded = (short)(block[i++] + block[i++] * 256);
                 zde._BitField = (short)(block[i++] + block[i++] * 256);
-                zde._CompressionMethod = (Int16)(block[i++] + block[i++] * 256);
+                zde._CompressionMethod = (short)(block[i++] + block[i++] * 256);
                 zde._TimeBlob = block[i++] + block[i++] * 256 + block[i++] * 256 * 256 + block[i++] * 256 * 256 * 256;
-                zde._LastModified = Ionic.Zip.SharedUtilities.PackedToDateTime(zde._TimeBlob);
+                zde._LastModified = SharedUtilities.PackedToDateTime(zde._TimeBlob);
                 zde._timestamp |= ZipEntryTimestamp.DOS;
 
                 zde._Crc32 = block[i++] + block[i++] * 256 + block[i++] * 256 * 256 + block[i++] * 256 * 256 * 256;
@@ -163,7 +163,7 @@ namespace Ionic.Zip
             zde._filenameLength = (short)(block[i++] + block[i++] * 256);
             zde._extraFieldLength = (short)(block[i++] + block[i++] * 256);
             zde._commentLength = (short)(block[i++] + block[i++] * 256);
-            zde._diskNumber = (UInt32)(block[i++] + block[i++] * 256);
+            zde._diskNumber = (uint)(block[i++] + block[i++] * 256);
 
             zde._InternalFileAttrs = (short)(block[i++] + block[i++] * 256);
             zde._ExternalFileAttrs = block[i++] + block[i++] * 256 + block[i++] * 256 * 256 + block[i++] * 256 * 256 * 256;
@@ -179,11 +179,11 @@ namespace Ionic.Zip
             if ((zde._BitField & 0x0800) == 0x0800)
             {
                 // UTF-8 is in use
-                zde._FileNameInArchive = Ionic.Zip.SharedUtilities.Utf8StringFromBuffer(block);
+                zde._FileNameInArchive = SharedUtilities.Utf8StringFromBuffer(block);
             }
             else
             {
-                zde._FileNameInArchive = Ionic.Zip.SharedUtilities.StringFromBuffer(block, expectedEncoding);
+                zde._FileNameInArchive = SharedUtilities.StringFromBuffer(block, expectedEncoding);
             }
 
             // Console.WriteLine("\nEntry : {0}", zde._LocalFileName);
@@ -252,11 +252,11 @@ namespace Ionic.Zip
                 if ((zde._BitField & 0x0800) == 0x0800)
                 {
                     // UTF-8 is in use
-                    zde._Comment = Ionic.Zip.SharedUtilities.Utf8StringFromBuffer(block);
+                    zde._Comment = SharedUtilities.Utf8StringFromBuffer(block);
                 }
                 else
                 {
-                    zde._Comment = Ionic.Zip.SharedUtilities.StringFromBuffer(block, expectedEncoding);
+                    zde._Comment = SharedUtilities.StringFromBuffer(block, expectedEncoding);
                 }
             }
             //zde._LengthOfDirEntry = bytesRead;
@@ -273,14 +273,14 @@ namespace Ionic.Zip
             return (signature != ZipConstants.ZipDirEntrySignature);
         }
 
-        private Int16 _VersionMadeBy;
-        private Int16 _InternalFileAttrs;
-        private Int32 _ExternalFileAttrs;
+        private short _VersionMadeBy;
+        private short _InternalFileAttrs;
+        private int _ExternalFileAttrs;
 
         //private Int32 _LengthOfDirEntry;
-        private Int16 _filenameLength;
+        private short _filenameLength;
 
-        private Int16 _extraFieldLength;
-        private Int16 _commentLength;
+        private short _extraFieldLength;
+        private short _commentLength;
     }
 }

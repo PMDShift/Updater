@@ -43,7 +43,7 @@ namespace Ionic.Zip
     /// with an incorrect password.
     /// </summary>
     [Serializable]
-    [System.Runtime.InteropServices.GuidAttribute("ebc25cf6-9120-4283-b972-0e5520d0000B")]
+    [System.Runtime.InteropServices.Guid("ebc25cf6-9120-4283-b972-0e5520d0000B")]
     public class BadPasswordException : ZipException
     {
         /// <summary>
@@ -55,7 +55,7 @@ namespace Ionic.Zip
         /// Come on, you know how exceptions work. Why are you looking at this documentation?
         /// </summary>
         /// <param name="message">The message in the exception.</param>
-        public BadPasswordException(String message)
+        public BadPasswordException(string message)
             : base(message)
         { }
 
@@ -64,7 +64,7 @@ namespace Ionic.Zip
         /// </summary>
         /// <param name="message">The message in the exception.</param>
         /// <param name="innerException">The innerException for this exception.</param>
-        public BadPasswordException(String message, Exception innerException)
+        public BadPasswordException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
@@ -88,7 +88,7 @@ namespace Ionic.Zip
     /// received.
     /// </summary>
     [Serializable]
-    [System.Runtime.InteropServices.GuidAttribute("ebc25cf6-9120-4283-b972-0e5520d0000A")]
+    [System.Runtime.InteropServices.Guid("ebc25cf6-9120-4283-b972-0e5520d0000A")]
     public class BadReadException : ZipException
     {
         /// <summary>
@@ -100,7 +100,7 @@ namespace Ionic.Zip
         /// Come on, you know how exceptions work. Why are you looking at this documentation?
         /// </summary>
         /// <param name="message">The message in the exception.</param>
-        public BadReadException(String message)
+        public BadReadException(string message)
             : base(message)
         { }
 
@@ -109,7 +109,7 @@ namespace Ionic.Zip
         /// </summary>
         /// <param name="message">The message in the exception.</param>
         /// <param name="innerException">The innerException for this exception.</param>
-        public BadReadException(String message, Exception innerException)
+        public BadReadException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
@@ -132,7 +132,7 @@ namespace Ionic.Zip
     /// Issued when an CRC check fails upon extracting an entry from a zip archive.
     /// </summary>
     [Serializable]
-    [System.Runtime.InteropServices.GuidAttribute("ebc25cf6-9120-4283-b972-0e5520d00009")]
+    [System.Runtime.InteropServices.Guid("ebc25cf6-9120-4283-b972-0e5520d00009")]
     public class BadCrcException : ZipException
     {
         /// <summary>
@@ -144,7 +144,7 @@ namespace Ionic.Zip
         /// Come on, you know how exceptions work. Why are you looking at this documentation?
         /// </summary>
         /// <param name="message">The message in the exception.</param>
-        public BadCrcException(String message)
+        public BadCrcException(string message)
             : base(message)
         { }
 
@@ -178,7 +178,7 @@ namespace Ionic.Zip
     /// Issued when errors occur saving a self-extracting archive.
     /// </summary>
     [Serializable]
-    [System.Runtime.InteropServices.GuidAttribute("ebc25cf6-9120-4283-b972-0e5520d00008")]
+    [System.Runtime.InteropServices.Guid("ebc25cf6-9120-4283-b972-0e5520d00008")]
     public class SfxGenerationException : ZipException
     {
         /// <summary>
@@ -190,7 +190,7 @@ namespace Ionic.Zip
         /// Come on, you know how exceptions work. Why are you looking at this documentation?
         /// </summary>
         /// <param name="message">The message in the exception.</param>
-        public SfxGenerationException(String message)
+        public SfxGenerationException(string message)
             : base(message)
         { }
 
@@ -225,7 +225,7 @@ namespace Ionic.Zip
     /// which has no filename set, you can get this exception.
     /// </summary>
     [Serializable]
-    [System.Runtime.InteropServices.GuidAttribute("ebc25cf6-9120-4283-b972-0e5520d00007")]
+    [System.Runtime.InteropServices.Guid("ebc25cf6-9120-4283-b972-0e5520d00007")]
     public class BadStateException : ZipException
     {
         /// <summary>
@@ -237,7 +237,7 @@ namespace Ionic.Zip
         /// Come on, you know how exceptions work. Why are you looking at this documentation?
         /// </summary>
         /// <param name="message">The message in the exception.</param>
-        public BadStateException(String message)
+        public BadStateException(string message)
             : base(message)
         { }
 
@@ -246,7 +246,7 @@ namespace Ionic.Zip
         /// </summary>
         /// <param name="message">The message in the exception.</param>
         /// <param name="innerException">The innerException for this exception.</param>
-        public BadStateException(String message, Exception innerException)
+        public BadStateException(string message, Exception innerException)
             : base(message, innerException)
         { }
 
@@ -268,7 +268,7 @@ namespace Ionic.Zip
     /// Base class for all exceptions defined by and throw by the Zip library.
     /// </summary>
     [Serializable]
-    [System.Runtime.InteropServices.GuidAttribute("ebc25cf6-9120-4283-b972-0e5520d00006")]
+    [System.Runtime.InteropServices.Guid("ebc25cf6-9120-4283-b972-0e5520d00006")]
     public class ZipException : Exception
     {
         /// <summary>
@@ -280,14 +280,14 @@ namespace Ionic.Zip
         /// Come on, you know how exceptions work. Why are you looking at this documentation?
         /// </summary>
         /// <param name="message">The message in the exception.</param>
-        public ZipException(String message) : base(message) { }
+        public ZipException(string message) : base(message) { }
 
         /// <summary>
         /// Come on, you know how exceptions work. Why are you looking at this documentation?
         /// </summary>
         /// <param name="message">The message in the exception.</param>
         /// <param name="innerException">The innerException for this exception.</param>
-        public ZipException(String message, Exception innerException)
+        public ZipException(string message, Exception innerException)
             : base(message, innerException)
         { }
 

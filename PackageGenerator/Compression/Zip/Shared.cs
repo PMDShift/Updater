@@ -180,7 +180,7 @@ namespace Ionic.Zip
             return s;
         }
 
-        internal static int ReadSignature(System.IO.Stream s)
+        internal static int ReadSignature(Stream s)
         {
             int x = 0;
             try { x = _ReadFourBytes(s, "nul"); }
@@ -188,7 +188,7 @@ namespace Ionic.Zip
             return x;
         }
 
-        internal static int ReadEntrySignature(System.IO.Stream s)
+        internal static int ReadEntrySignature(Stream s)
         {
             // handle the case of ill-formatted zip archives - includes a data descriptor
             // when none is expected.
@@ -220,12 +220,12 @@ namespace Ionic.Zip
             return x;
         }
 
-        internal static int ReadInt(System.IO.Stream s)
+        internal static int ReadInt(Stream s)
         {
             return _ReadFourBytes(s, "Could not read block - no data!  (position 0x{0:X8})");
         }
 
-        private static int _ReadFourBytes(System.IO.Stream s, string message)
+        private static int _ReadFourBytes(Stream s, string message)
         {
             int n = 0;
             byte[] block = new byte[4];
@@ -252,7 +252,7 @@ namespace Ionic.Zip
 #else
             n = s.Read(block, 0, block.Length);
 #endif
-            if (n != block.Length) throw new BadReadException(String.Format(message, s.Position));
+            if (n != block.Length) throw new BadReadException(string.Format(message, s.Position));
             int data = unchecked((((block[3] * 256 + block[2]) * 256) + block[1]) * 256 + block[0]);
             return data;
         }
@@ -278,7 +278,7 @@ namespace Ionic.Zip
         /// <param name="stream">The stream to search</param>
         /// <param name="SignatureToFind">The 4-byte signature to find</param>
         /// <returns>The number of bytes read</returns>
-        protected internal static long FindSignature(System.IO.Stream stream, int SignatureToFind)
+        protected internal static long FindSignature(Stream stream, int SignatureToFind)
         {
             long startingPosition = stream.Position;
 
@@ -301,7 +301,7 @@ namespace Ionic.Zip
                         if (batch[i] == targetBytes[3])
                         {
                             long curPosition = stream.Position;
-                            stream.Seek(i - n, System.IO.SeekOrigin.Current);
+                            stream.Seek(i - n, SeekOrigin.Current);
 
                             // workitem 7711
                             int sig = ReadSignature(stream);
@@ -309,7 +309,7 @@ namespace Ionic.Zip
                             success = (sig == SignatureToFind);
                             if (!success)
                             {
-                                stream.Seek(curPosition, System.IO.SeekOrigin.Begin);
+                                stream.Seek(curPosition, SeekOrigin.Begin);
                             }
                             else
                                 break; // out of for loop
@@ -339,9 +339,9 @@ namespace Ionic.Zip
             if (time.Kind == DateTimeKind.Utc) return time;
             DateTime adjusted = time;
             if (DateTime.Now.IsDaylightSavingTime() && !time.IsDaylightSavingTime())
-                adjusted = time - new System.TimeSpan(1, 0, 0);
+                adjusted = time - new TimeSpan(1, 0, 0);
             else if (!DateTime.Now.IsDaylightSavingTime() && time.IsDaylightSavingTime())
-                adjusted = time + new System.TimeSpan(1, 0, 0);
+                adjusted = time + new TimeSpan(1, 0, 0);
 
             return adjusted;
         }
@@ -353,21 +353,21 @@ namespace Ionic.Zip
             if (time.Kind == DateTimeKind.Utc) return time;
             DateTime adjusted = time;
             if (DateTime.Now.IsDaylightSavingTime() && !time.IsDaylightSavingTime())
-                adjusted = time + new System.TimeSpan(1, 0, 0);
+                adjusted = time + new TimeSpan(1, 0, 0);
             else if (!DateTime.Now.IsDaylightSavingTime() && time.IsDaylightSavingTime())
                 adjusted = time - new System.TimeSpan(1, 0, 0);
 
             return adjusted;
         }
 
-        internal static DateTime PackedToDateTime(Int32 packedDateTime)
+        internal static DateTime PackedToDateTime(int packedDateTime)
         {
             // workitem 7074 & workitem 7170
             if (packedDateTime == 0xFFFF || packedDateTime == 0)
-                return new System.DateTime(1995, 1, 1, 0, 0, 0, 0);  // return a fixed date when none is supplied.
+                return new DateTime(1995, 1, 1, 0, 0, 0, 0);  // return a fixed date when none is supplied.
 
-            Int16 packedTime = unchecked((Int16)(packedDateTime & 0x0000ffff));
-            Int16 packedDate = unchecked((Int16)((packedDateTime & 0xffff0000) >> 16));
+            short packedTime = unchecked((short)(packedDateTime & 0x0000ffff));
+            short packedDate = unchecked((short)((packedDateTime & 0xffff0000) >> 16));
 
             int year = 1980 + ((packedDate & 0xFE00) >> 9);
             int month = (packedDate & 0x01E0) >> 5;
@@ -384,30 +384,30 @@ namespace Ionic.Zip
             if (minute >= 60) { hour++; minute = 0; }
             if (hour >= 24) { day++; hour = 0; }
 
-            DateTime d = System.DateTime.Now;
+            DateTime d = DateTime.Now;
             bool success = false;
             try
             {
-                d = new System.DateTime(year, month, day, hour, minute, second, 0);
+                d = new DateTime(year, month, day, hour, minute, second, 0);
                 success = true;
             }
-            catch (System.ArgumentOutOfRangeException)
+            catch (ArgumentOutOfRangeException)
             {
                 if (year == 1980 && (month == 0 || day == 0))
                 {
                     try
                     {
-                        d = new System.DateTime(1980, 1, 1, hour, minute, second, 0);
+                        d = new DateTime(1980, 1, 1, hour, minute, second, 0);
                         success = true;
                     }
-                    catch (System.ArgumentOutOfRangeException)
+                    catch (ArgumentOutOfRangeException)
                     {
                         try
                         {
                             d = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
                             success = true;
                         }
-                        catch (System.ArgumentOutOfRangeException) { }
+                        catch (ArgumentOutOfRangeException) { }
                     }
                 }
                 // workitem 8814
@@ -427,16 +427,16 @@ namespace Ionic.Zip
                         while (minute > 59) minute--;
                         while (second < 0) second++;
                         while (second > 59) second--;
-                        d = new System.DateTime(year, month, day, hour, minute, second, 0);
+                        d = new DateTime(year, month, day, hour, minute, second, 0);
                         success = true;
                     }
-                    catch (System.ArgumentOutOfRangeException) { }
+                    catch (ArgumentOutOfRangeException) { }
                 }
             }
             if (!success)
             {
-                string msg = String.Format("y({0}) m({1}) d({2}) h({3}) m({4}) s({5})", year, month, day, hour, minute, second);
-                throw new ZipException(String.Format("Bad date/time format in the zip file. ({0})", msg));
+                string msg = string.Format("y({0}) m({1}) d({2}) h({3}) m({4}) s({5})", year, month, day, hour, minute, second);
+                throw new ZipException(string.Format("Bad date/time format in the zip file. ({0})", msg));
             }
             // workitem 6191
             //d = AdjustTime_Reverse(d);
@@ -445,7 +445,7 @@ namespace Ionic.Zip
         }
 
         internal
-         static Int32 DateTimeToPacked(DateTime time)
+         static int DateTimeToPacked(DateTime time)
         {
             // The time is passed in here only for purposes of writing LastModified to the
             // zip archive. It should always be LocalTime, but we convert anyway.  And,
@@ -456,10 +456,10 @@ namespace Ionic.Zip
             //time = AdjustTime_Forward(time);
 
             // see http://www.vsft.com/hal/dostime.htm for the format
-            UInt16 packedDate = (UInt16)((time.Day & 0x0000001F) | ((time.Month << 5) & 0x000001E0) | (((time.Year - 1980) << 9) & 0x0000FE00));
-            UInt16 packedTime = (UInt16)((time.Second / 2 & 0x0000001F) | ((time.Minute << 5) & 0x000007E0) | ((time.Hour << 11) & 0x0000F800));
+            ushort packedDate = (ushort)((time.Day & 0x0000001F) | ((time.Month << 5) & 0x000001E0) | (((time.Year - 1980) << 9) & 0x0000FE00));
+            ushort packedTime = (ushort)((time.Second / 2 & 0x0000001F) | ((time.Minute << 5) & 0x000007E0) | ((time.Hour << 11) & 0x0000F800));
 
-            Int32 result = (Int32)(((UInt32)(packedDate << 16)) | packedTime);
+            int result = (int)(((uint)(packedDate << 16)) | packedTime);
             return result;
         }
 
@@ -539,7 +539,7 @@ namespace Ionic.Zip
         /// This could be gracefully handled with an extension attribute, but
         /// This assembly is built for .NET 2.0, so I cannot use them.
         /// </remarks>
-        internal static int ReadWithRetry(System.IO.Stream s, byte[] buffer, int offset, int count, string FileName)
+        internal static int ReadWithRetry(Stream s, byte[] buffer, int offset, int count, string FileName)
         {
             int n = 0;
             bool done = false;
@@ -551,7 +551,7 @@ namespace Ionic.Zip
                     n = s.Read(buffer, offset, count);
                     done = true;
                 }
-                catch (System.IO.IOException ioexc1)
+                catch (IOException ioexc1)
                 {
 #if !NETCF
                     // Check if we can call GetHRForException,
@@ -562,10 +562,10 @@ namespace Ionic.Zip
 #endif
                         uint hresult = _HRForException(ioexc1);
                         if (hresult != 0x80070021)  // ERROR_LOCK_VIOLATION
-                            throw new System.IO.IOException(String.Format("Cannot read file {0}", FileName), ioexc1);
+                            throw new IOException(string.Format("Cannot read file {0}", FileName), ioexc1);
                         retries++;
                         if (retries > 10)
-                            throw new System.IO.IOException(String.Format("Cannot read file {0}, at offset 0x{1:X8} after 10 retries", FileName, offset), ioexc1);
+                            throw new IOException(string.Format("Cannot read file {0}, at offset 0x{1:X8} after 10 retries", FileName, offset), ioexc1);
 
                         // max time waited on last retry = 250 + 10*550 = 5.75s
                         // aggregate time waited after 10 retries: 250 + 55*550 = 30.5s
@@ -609,7 +609,7 @@ namespace Ionic.Zip
         //
 #endif
 
-        private static uint _HRForException(System.Exception ex1)
+        private static uint _HRForException(Exception ex1)
         {
             return unchecked((uint)System.Runtime.InteropServices.Marshal.GetHRForException(ex1));
         }
@@ -624,24 +624,21 @@ namespace Ionic.Zip
     /// In this case, we can use this counting stream to count the bytes
     /// read or written.
     /// </summary>
-    internal class CountingStream : System.IO.Stream
+    internal class CountingStream : Stream
     {
-        private System.IO.Stream _s;
-        private Int64 _bytesWritten;
-        private Int64 _bytesRead;
-        private Int64 _initialOffset;
+        private long _initialOffset;
 
         /// <summary>
         /// The  constructor.
         /// </summary>
         /// <param name="s">The underlying stream</param>
-        public CountingStream(System.IO.Stream s)
+        public CountingStream(Stream s)
             : base()
         {
-            _s = s;
+            WrappedStream = s;
             try
             {
-                _initialOffset = _s.Position;
+                _initialOffset = WrappedStream.Position;
             }
             catch
             {
@@ -649,94 +646,82 @@ namespace Ionic.Zip
             }
         }
 
-        public Stream WrappedStream
-        {
-            get
-            {
-                return _s;
-            }
-        }
+        public Stream WrappedStream { get; }
 
-        public Int64 BytesWritten
-        {
-            get { return _bytesWritten; }
-        }
+        public long BytesWritten { get; private set; }
 
-        public Int64 BytesRead
-        {
-            get { return _bytesRead; }
-        }
+        public long BytesRead { get; private set; }
 
-        public void Adjust(Int64 delta)
+        public void Adjust(long delta)
         {
-            _bytesWritten -= delta;
-            if (_bytesWritten < 0)
+            BytesWritten -= delta;
+            if (BytesWritten < 0)
                 throw new InvalidOperationException();
-            if (_s as CountingStream != null)
-                ((CountingStream)_s).Adjust(delta);
+            if (WrappedStream as CountingStream != null)
+                ((CountingStream)WrappedStream).Adjust(delta);
         }
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            int n = _s.Read(buffer, offset, count);
-            _bytesRead += n;
+            int n = WrappedStream.Read(buffer, offset, count);
+            BytesRead += n;
             return n;
         }
 
         public override void Write(byte[] buffer, int offset, int count)
         {
             if (count == 0) return;
-            _s.Write(buffer, offset, count);
-            _bytesWritten += count;
+            WrappedStream.Write(buffer, offset, count);
+            BytesWritten += count;
         }
 
         public override bool CanRead
         {
-            get { return _s.CanRead; }
+            get { return WrappedStream.CanRead; }
         }
 
         public override bool CanSeek
         {
-            get { return _s.CanSeek; }
+            get { return WrappedStream.CanSeek; }
         }
 
         public override bool CanWrite
         {
-            get { return _s.CanWrite; }
+            get { return WrappedStream.CanWrite; }
         }
 
         public override void Flush()
         {
-            _s.Flush();
+            WrappedStream.Flush();
         }
 
         public override long Length
         {
-            get { return _s.Length; }   // bytesWritten??
+            get { return WrappedStream.Length; }   // bytesWritten??
         }
 
         public long ComputedPosition
         {
-            get { return _initialOffset + _bytesWritten; }
+            get { return _initialOffset + BytesWritten; }
         }
 
         public override long Position
         {
-            get { return _s.Position; }
+            get { return WrappedStream.Position; }
             set
             {
-                _s.Seek(value, System.IO.SeekOrigin.Begin);
+                WrappedStream.Seek(value, SeekOrigin.Begin);
             }
         }
 
-        public override long Seek(long offset, System.IO.SeekOrigin origin)
+        public override long Seek(long offset, SeekOrigin origin)
         {
-            return _s.Seek(offset, origin);
+            return WrappedStream.Seek(offset, origin);
         }
 
         public override void SetLength(long value)
         {
-            _s.SetLength(value);
+            WrappedStream.SetLength(value);
         }
     }
 }

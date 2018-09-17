@@ -277,13 +277,7 @@ namespace Ionic.Zip
     /// </summary>
     public class ZipProgressEventArgs : EventArgs
     {
-        private int _entriesTotal;
         private bool _cancel;
-        private ZipEntry _latestEntry;
-        private ZipProgressEventType _flavor;
-        private String _archiveName;
-        private Int64 _bytesTransferred;
-        private Int64 _totalBytesToTransfer;
 
         internal ZipProgressEventArgs()
         {
@@ -291,27 +285,19 @@ namespace Ionic.Zip
 
         internal ZipProgressEventArgs(string archiveName, ZipProgressEventType flavor)
         {
-            this._archiveName = archiveName;
-            this._flavor = flavor;
+            ArchiveName = archiveName;
+            EventType = flavor;
         }
 
         /// <summary>
         /// The total number of entries to be saved or extracted.
         /// </summary>
-        public int EntriesTotal
-        {
-            get { return _entriesTotal; }
-            set { _entriesTotal = value; }
-        }
+        public int EntriesTotal { get; set; }
 
         /// <summary>
         /// The name of the last entry saved or extracted.
         /// </summary>
-        public ZipEntry CurrentEntry
-        {
-            get { return _latestEntry; }
-            set { _latestEntry = value; }
-        }
+        public ZipEntry CurrentEntry { get; set; }
 
         /// <summary>
         /// In an event handler, set this to cancel the save or extract
@@ -326,39 +312,23 @@ namespace Ionic.Zip
         /// <summary>
         /// The type of event being reported.
         /// </summary>
-        public ZipProgressEventType EventType
-        {
-            get { return _flavor; }
-            set { _flavor = value; }
-        }
+        public ZipProgressEventType EventType { get; set; }
 
         /// <summary>
         /// Returns the archive name associated to this event.
         /// </summary>
-        public String ArchiveName
-        {
-            get { return _archiveName; }
-            set { _archiveName = value; }
-        }
+        public string ArchiveName { get; set; }
 
         /// <summary>
         /// The number of bytes read or written so far for this entry.
         /// </summary>
-        public Int64 BytesTransferred
-        {
-            get { return _bytesTransferred; }
-            set { _bytesTransferred = value; }
-        }
+        public long BytesTransferred { get; set; }
 
         /// <summary>
         /// Total number of bytes that will be read or written for this entry.
         /// This number will be -1 if the value cannot be determined.
         /// </summary>
-        public Int64 TotalBytesToTransfer
-        {
-            get { return _totalBytesToTransfer; }
-            set { _totalBytesToTransfer = value; }
-        }
+        public long TotalBytesToTransfer { get; set; }
     }
 
     /// <summary>
@@ -458,7 +428,6 @@ namespace Ionic.Zip
     /// </summary>
     public class SaveProgressEventArgs : ZipProgressEventArgs
     {
-        private int _entriesSaved;
 
         /// <summary>
         /// Constructor for the SaveProgressEventArgs.
@@ -471,9 +440,9 @@ namespace Ionic.Zip
         internal SaveProgressEventArgs(string archiveName, bool before, int entriesTotal, int entriesSaved, ZipEntry entry)
             : base(archiveName, (before) ? ZipProgressEventType.Saving_BeforeWriteEntry : ZipProgressEventType.Saving_AfterWriteEntry)
         {
-            this.EntriesTotal = entriesTotal;
-            this.CurrentEntry = entry;
-            this._entriesSaved = entriesSaved;
+            EntriesTotal = entriesTotal;
+            CurrentEntry = entry;
+            EntriesSaved = entriesSaved;
         }
 
         internal SaveProgressEventArgs()
@@ -484,7 +453,7 @@ namespace Ionic.Zip
             : base(archiveName, flavor)
         { }
 
-        internal static SaveProgressEventArgs ByteUpdate(string archiveName, ZipEntry entry, Int64 bytesXferred, Int64 totalBytes)
+        internal static SaveProgressEventArgs ByteUpdate(string archiveName, ZipEntry entry, long bytesXferred, long totalBytes)
         {
             var x = new SaveProgressEventArgs(archiveName, ZipProgressEventType.Saving_EntryBytesRead)
             {
@@ -511,10 +480,7 @@ namespace Ionic.Zip
         /// <summary>
         /// Number of entries saved so far.
         /// </summary>
-        public int EntriesSaved
-        {
-            get { return _entriesSaved; }
-        }
+        public int EntriesSaved { get; }
     }
 
     /// <summary>
@@ -522,8 +488,6 @@ namespace Ionic.Zip
     /// </summary>
     public class ExtractProgressEventArgs : ZipProgressEventArgs
     {
-        private int _entriesExtracted;
-        private string _target;
 
         /// <summary>
         /// Constructor for the ExtractProgressEventArgs.
@@ -537,10 +501,10 @@ namespace Ionic.Zip
         internal ExtractProgressEventArgs(string archiveName, bool before, int entriesTotal, int entriesExtracted, ZipEntry entry, string extractLocation)
             : base(archiveName, (before) ? ZipProgressEventType.Extracting_BeforeExtractEntry : ZipProgressEventType.Extracting_AfterExtractEntry)
         {
-            this.EntriesTotal = entriesTotal;
-            this.CurrentEntry = entry;
-            this._entriesExtracted = entriesExtracted;
-            this._target = extractLocation;
+            EntriesTotal = entriesTotal;
+            CurrentEntry = entry;
+            EntriesExtracted = entriesExtracted;
+            ExtractLocation = extractLocation;
         }
 
         internal ExtractProgressEventArgs(string archiveName, ZipProgressEventType flavor)
@@ -557,7 +521,7 @@ namespace Ionic.Zip
                 ArchiveName = archiveName,
                 EventType = ZipProgressEventType.Extracting_BeforeExtractEntry,
                 CurrentEntry = entry,
-                _target = extractLocation,
+                ExtractLocation = extractLocation,
             };
             return x;
         }
@@ -569,7 +533,7 @@ namespace Ionic.Zip
                 ArchiveName = archiveName,
                 EventType = ZipProgressEventType.Extracting_ExtractEntryWouldOverwrite,
                 CurrentEntry = entry,
-                _target = extractLocation,
+                ExtractLocation = extractLocation,
             };
             return x;
         }
@@ -581,7 +545,7 @@ namespace Ionic.Zip
                 ArchiveName = archiveName,
                 EventType = ZipProgressEventType.Extracting_AfterExtractEntry,
                 CurrentEntry = entry,
-                _target = extractLocation,
+                ExtractLocation = extractLocation,
             };
             return x;
         }
@@ -590,7 +554,7 @@ namespace Ionic.Zip
         {
             var x = new ExtractProgressEventArgs(archiveName, ZipProgressEventType.Extracting_BeforeExtractAll)
             {
-                _target = extractLocation
+                ExtractLocation = extractLocation
             };
             return x;
         }
@@ -599,12 +563,12 @@ namespace Ionic.Zip
         {
             var x = new ExtractProgressEventArgs(archiveName, ZipProgressEventType.Extracting_AfterExtractAll)
             {
-                _target = extractLocation
+                ExtractLocation = extractLocation
             };
             return x;
         }
 
-        internal static ExtractProgressEventArgs ByteUpdate(string archiveName, ZipEntry entry, Int64 bytesWritten, Int64 totalBytes)
+        internal static ExtractProgressEventArgs ByteUpdate(string archiveName, ZipEntry entry, long bytesWritten, long totalBytes)
         {
             var x = new ExtractProgressEventArgs(archiveName, ZipProgressEventType.Extracting_EntryBytesWritten)
             {
@@ -621,18 +585,12 @@ namespace Ionic.Zip
         /// EventType is Extracting_BeforeExtractEntry or Extracting_AfterExtractEntry, and
         /// the Extract() is occurring witin the scope of a call to ExtractAll().
         /// </summary>
-        public int EntriesExtracted
-        {
-            get { return _entriesExtracted; }
-        }
+        public int EntriesExtracted { get; }
 
         /// <summary>
         /// Returns the extraction target location, a filesystem path.
         /// </summary>
-        public String ExtractLocation
-        {
-            get { return _target; }
-        }
+        public string ExtractLocation { get; private set; }
     }
 
     /// <summary>
@@ -640,8 +598,6 @@ namespace Ionic.Zip
     /// </summary>
     public class ZipErrorEventArgs : ZipProgressEventArgs
     {
-        private Exception _exc;
-
         private ZipErrorEventArgs()
         {
         }
@@ -653,7 +609,7 @@ namespace Ionic.Zip
                 EventType = ZipProgressEventType.Error_Saving,
                 ArchiveName = archiveName,
                 CurrentEntry = entry,
-                _exc = exception
+                Exception = exception
             };
             return x;
         }
@@ -661,15 +617,12 @@ namespace Ionic.Zip
         /// <summary>
         /// Returns the exception that occurred, if any.
         /// </summary>
-        public Exception @Exception
-        {
-            get { return _exc; }
-        }
+        public Exception @Exception { get; private set; }
 
         /// <summary>
         /// Returns the name of the file that caused the exception, if any.
         /// </summary>
-        public String FileName
+        public string FileName
         {
             get { return CurrentEntry.LocalFileName; }
         }

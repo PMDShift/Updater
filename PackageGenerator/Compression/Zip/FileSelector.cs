@@ -102,9 +102,9 @@ namespace Ionic
     internal partial class SizeCriterion : SelectionCriterion
     {
         internal ComparisonOperator Operator;
-        internal Int64 Size;
+        internal long Size;
 
-        public override String ToString()
+        public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("size ").Append(EnumUtil.GetDescription(Operator)).Append(" ").Append(Size.ToString());
@@ -113,11 +113,11 @@ namespace Ionic
 
         internal override bool Evaluate(string filename)
         {
-            System.IO.FileInfo fi = new System.IO.FileInfo(filename);
+            FileInfo fi = new FileInfo(filename);
             return _Evaluate(fi.Length);
         }
 
-        private bool _Evaluate(Int64 Length)
+        private bool _Evaluate(long Length)
         {
             bool result = false;
             switch (Operator)
@@ -159,7 +159,7 @@ namespace Ionic
         internal WhichTime Which;
         internal DateTime Time;
 
-        public override String ToString()
+        public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(Which.ToString()).Append(" ").Append(EnumUtil.GetDescription(Operator)).Append(" ").Append(Time.ToString("yyyy-MM-dd-HH:mm:ss"));
