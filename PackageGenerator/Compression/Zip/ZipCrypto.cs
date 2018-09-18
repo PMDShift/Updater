@@ -130,7 +130,7 @@ namespace Ionic.Zip
         {
             get
             {
-                UInt16 t = (UInt16)((UInt16)(_Keys[2] & 0xFFFF) | 2);
+                ushort t = (ushort)((ushort)(_Keys[2] & 0xFFFF) | 2);
                 return (byte)((t * (t ^ 1)) >> 8);
             }
         }
@@ -165,9 +165,9 @@ namespace Ionic.Zip
         public byte[] DecryptMessage(byte[] cipherText, int length)
         {
             if (cipherText == null)
-                throw new System.ArgumentException("Bad length during Decryption: cipherText must be non-null.", "cipherText");
+                throw new ArgumentException("Bad length during Decryption: cipherText must be non-null.", "cipherText");
             if (length > cipherText.Length)
-                throw new System.ArgumentException("Bad length during Decryption: the length parameter must be smaller than or equal to the size of the destination array.", "length");
+                throw new ArgumentException("Bad length during Decryption: the length parameter must be smaller than or equal to the size of the destination array.", "length");
 
             byte[] PlainText = new byte[length];
             for (int i = 0; i < length; i++)
@@ -192,10 +192,10 @@ namespace Ionic.Zip
         public byte[] EncryptMessage(byte[] plaintext, int length)
         {
             if (plaintext == null)
-                throw new System.ArgumentException("Bad length during Encryption: the plainText must be non-null.", "plaintext");
+                throw new ArgumentException("Bad length during Encryption: the plainText must be non-null.", "plaintext");
 
             if (length > plaintext.Length)
-                throw new System.ArgumentException("Bad length during Encryption: The length parameter must be smaller than or equal to the size of the destination array.", "length");
+                throw new ArgumentException("Bad length during Encryption: The length parameter must be smaller than or equal to the size of the destination array.", "length");
 
             byte[] CipherText = new byte[length];
             for (int i = 0; i < length; i++)
@@ -307,7 +307,7 @@ namespace Ionic.Zip
         // private fields for the crypto stuff:
         private UInt32[] _Keys = { 0x12345678, 0x23456789, 0x34567890 };
 
-        private Ionic.Zlib.CRC32 crc32 = new Ionic.Zlib.CRC32();
+        private Zlib.CRC32 crc32 = new Zlib.CRC32();
     }
 
     internal enum CryptoMode

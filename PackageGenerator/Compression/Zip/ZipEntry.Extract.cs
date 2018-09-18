@@ -41,8 +41,8 @@ namespace Ionic.Zip
         /// <c>ExtractWithPassword()</c> methods.
         /// </overloads>
         ///
-        /// <seealso cref="Ionic.Zip.ZipEntry.ExtractExistingFile"/>
-        /// <seealso cref="ZipEntry.Extract(ExtractExistingFileAction)"/>
+        /// <seealso cref="ExtractExistingFile"/>
+        /// <seealso cref="Extract(ExtractExistingFileAction)"/>
         ///
         /// <remarks>
         ///
@@ -93,8 +93,8 @@ namespace Ionic.Zip
         ///
         /// <para>
         /// The caller can specify any write-able stream, for example <see
-        /// cref="System.Console.OpenStandardOutput()"/>, a <see
-        /// cref="System.IO.FileStream"/>, a <see cref="System.IO.MemoryStream"/>, or
+        /// cref="Console.OpenStandardOutput()"/>, a <see
+        /// cref="FileStream"/>, a <see cref="MemoryStream"/>, or
         /// ASP.NET's <c>Response.OutputStream</c>.
         /// The content will be decrypted and decompressed as necessary. If the entry is
         /// encrypted and no password is provided, this method will throw.
@@ -115,8 +115,8 @@ namespace Ionic.Zip
         ///
         /// <param name="baseDirectory">the pathname of the base directory</param>
         ///
-        /// <seealso cref="Ionic.Zip.ZipEntry.ExtractExistingFile"/>
-        /// <seealso cref="Ionic.Zip.ZipEntry.Extract(string, ExtractExistingFileAction)"/>
+        /// <seealso cref="ExtractExistingFile"/>
+        /// <seealso cref="Extract(string, ExtractExistingFileAction)"/>
         ///
         /// <example>
         /// This example extracts only the entries in a zip file that are .txt files,
@@ -224,14 +224,14 @@ namespace Ionic.Zip
         /// the right one for you...
         /// </overloads>
         ///
-        /// <seealso cref="Ionic.Zip.ZipEntry.ExtractExistingFile"/>
-        /// <seealso cref="Ionic.Zip.ZipEntry.ExtractWithPassword(ExtractExistingFileAction, string)"/>
+        /// <seealso cref="ExtractExistingFile"/>
+        /// <seealso cref="ZipEntry.ExtractWithPassword(ExtractExistingFileAction, string)"/>
         ///
         /// <remarks>
         ///
         /// <para> Existing entries in the filesystem will not be overwritten. If you would
         /// like to force the overwrite of existing files, see the <see
-        /// cref="Ionic.Zip.ZipEntry.ExtractExistingFile"/>property, or call <see
+        /// cref="ExtractExistingFile"/>property, or call <see
         /// cref="ExtractWithPassword(ExtractExistingFileAction,string)"/>.</para>
         ///
         /// <para>

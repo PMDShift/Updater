@@ -39,10 +39,10 @@ namespace Ionic.Zip
         private SharedUtilities() { }
 
         // workitem 8423
-        public static Int64 GetFileLength(string fileName)
+        public static long GetFileLength(string fileName)
         {
             if (!File.Exists(fileName))
-                throw new System.IO.FileNotFoundException(fileName);
+                throw new FileNotFoundException(fileName);
 
             long fileLength = 0L;
             FileShare fs = FileShare.ReadWrite;
@@ -322,7 +322,7 @@ namespace Ionic.Zip
 
             if (!success)
             {
-                stream.Seek(startingPosition, System.IO.SeekOrigin.Begin);
+                stream.Seek(startingPosition, SeekOrigin.Begin);
                 return -1;  // or throw?
             }
 
@@ -355,7 +355,7 @@ namespace Ionic.Zip
             if (DateTime.Now.IsDaylightSavingTime() && !time.IsDaylightSavingTime())
                 adjusted = time + new TimeSpan(1, 0, 0);
             else if (!DateTime.Now.IsDaylightSavingTime() && time.IsDaylightSavingTime())
-                adjusted = time - new System.TimeSpan(1, 0, 0);
+                adjusted = time - new TimeSpan(1, 0, 0);
 
             return adjusted;
         }
@@ -404,7 +404,7 @@ namespace Ionic.Zip
                     {
                         try
                         {
-                            d = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
+                            d = new DateTime(1980, 1, 1, 0, 0, 0, 0);
                             success = true;
                         }
                         catch (ArgumentOutOfRangeException) { }

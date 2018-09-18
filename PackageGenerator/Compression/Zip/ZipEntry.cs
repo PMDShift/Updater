@@ -36,7 +36,7 @@ namespace Ionic.Zip
     /// by enumerating the entries within a ZipFile, or by adding an entry to a ZipFile.
     /// </summary>
 
-    [Interop.GuidAttribute("ebc25cf6-9120-4283-b972-0e5520d00004")]
+    [Interop.Guid("ebc25cf6-9120-4283-b972-0e5520d00004")]
     [Interop.ComVisible(true)]
 #if !NETCF
     [Interop.ClassInterface(Interop.ClassInterfaceType.AutoDispatch)]  // AutoDual
@@ -52,8 +52,8 @@ namespace Ionic.Zip
         /// </remarks>
         public ZipEntry()
         {
-            _CompressionMethod = (Int16)CompressionMethod.Deflate;
-            _CompressionLevel = Ionic.Zlib.CompressionLevel.Default;
+            _CompressionMethod = (short)CompressionMethod.Deflate;
+            _CompressionLevel = Zlib.CompressionLevel.Default;
             _Encryption = EncryptionAlgorithm.None;
             _Source = ZipEntrySource.None;
         }
@@ -208,7 +208,7 @@ namespace Ionic.Zip
                 _LastModified = (value.Kind == DateTimeKind.Unspecified)
                     ? DateTime.SpecifyKind(value, DateTimeKind.Local)
                     : value.ToLocalTime();
-                _Mtime = Ionic.Zip.SharedUtilities.AdjustTime_Reverse(_LastModified).ToUniversalTime();
+                _Mtime = SharedUtilities.AdjustTime_Reverse(_LastModified).ToUniversalTime();
                 _metadataChanged = true;
             }
         }
@@ -366,7 +366,7 @@ namespace Ionic.Zip
         ///
         /// <seealso cref="AccessedTime"/>
         /// <seealso cref="CreationTime"/>
-        /// <seealso cref="Ionic.Zip.ZipEntry.LastModified"/>
+        /// <seealso cref="LastModified"/>
         /// <seealso cref="SetEntryTimes"/>
         public DateTime ModifiedTime
         {
@@ -528,7 +528,7 @@ namespace Ionic.Zip
         ///
         /// <para>
         ///   This property is not mutually exclusive from the <see
-        ///   cref="ZipEntry.EmitTimesInUnixFormatWhenSaving"/> property.  It is
+        ///   cref="EmitTimesInUnixFormatWhenSaving"/> property.  It is
         ///   possible that a zip entry can embed the timestamps in both forms, one
         ///   form, or neither.  But, there are no guarantees that a program running on
         ///   Mac or Linux will gracefully handle NTFS Formatted times, or that a
@@ -718,10 +718,10 @@ namespace Ionic.Zip
         /// </para>
         ///
         /// </remarks>
-        public System.IO.FileAttributes Attributes
+        public FileAttributes Attributes
         {
             // workitem 7071
-            get { return (System.IO.FileAttributes)_ExternalFileAttrs; }
+            get { return (FileAttributes)_ExternalFileAttrs; }
             set
             {
                 _ExternalFileAttrs = (int)value;
