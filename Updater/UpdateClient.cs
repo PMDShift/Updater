@@ -28,15 +28,10 @@ namespace PMDCP.Updater
         #region Fields
 
         private List<InstalledPackageInfo> installedPackages;
-        private string packageListDirectory;
+        private readonly string packageListDirectory;
         private Security.Encryption packageListEncryption;
-        private string status;
 
-        public string Status
-        {
-            get { return status; }
-            set { status = value; }
-        }
+        public string Status { get; set; }
 
         public event EventHandler InstallationComplete;
 
@@ -138,10 +133,7 @@ namespace PMDCP.Updater
             }
             string tempPath = updaterCache + package.FullID + ".uprtmp";//Path.GetTempFileName();
             FileDownload download = new FileDownload(result.UpdateDirectory + "Packages/" + package.FullID + "/" + package.FullID + ".zip", tempPath);
-            if (PackageDownloadStart != null)
-            {
-                PackageDownloadStart(this, new PackageDownloadStartEventArgs(package, download));
-            }
+            PackageDownloadStart?.Invoke(this, new PackageDownloadStartEventArgs(package, download));
             download.DownloadUpdate += delegate (System.Object o, FileDownloadingEventArgs e)
             {
                 //if (UpdateDownloading != null) {
@@ -219,10 +211,7 @@ namespace PMDCP.Updater
 
         private void OnPackageInstallationComplete(IUpdateCheckResult result, int currentPackage)
         {
-            if (PackageInstallationComplete != null)
-            {
-                PackageInstallationComplete(this, new PackageInstallationCompleteEventArgs(result.PackagesToUpdate[currentPackage], currentPackage));
-            }
+            PackageInstallationComplete?.Invoke(this, new PackageInstallationCompleteEventArgs(result.PackagesToUpdate[currentPackage], currentPackage));
             if (currentPackage + 1 < result.PackagesToUpdate.Count)
             {
                 DownloadPackage(result, currentPackage + 1);
@@ -230,10 +219,7 @@ namespace PMDCP.Updater
             else
             {
                 // Done the update!
-                if (InstallationComplete != null)
-                {
-                    InstallationComplete(this, EventArgs.Empty);
-                }
+                InstallationComplete?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -353,17 +339,14 @@ namespace PMDCP.Updater
 
         public void UpdateStatus(string status)
         {
-            this.status = status;
-            if (StatusUpdated != null)
-            {
-                StatusUpdated(this, EventArgs.Empty);
-            }
+            this.Status = status;
+            StatusUpdated?.Invoke(this, EventArgs.Empty);
         }
 
         public void LoadInstalledPackageList()
         {
             // Check if the configuration file exists, if not, create it
-            if (System.IO.File.Exists(packageListDirectory + "packages.dat") == false)
+            if (File.Exists(packageListDirectory + "packages.dat") == false)
             {
                 // Package list doesn't exist! PANIC!
                 SaveInstalledPackageList();
@@ -371,8 +354,8 @@ namespace PMDCP.Updater
             // Clear the in-memory installed package list
             installedPackages.Clear();
             // Decrypt the configuration file into a string
-            string xmlData = System.Text.Encoding.Unicode.GetString(packageListEncryption.DecryptBytes(System.IO.File.ReadAllBytes(packageListDirectory + "packages.dat")));
-            using (XmlTextReader reader = new XmlTextReader(new System.IO.StringReader(xmlData)))
+            string xmlData = Encoding.Unicode.GetString(packageListEncryption.DecryptBytes(File.ReadAllBytes(packageListDirectory + "packages.dat")));
+            using (XmlTextReader reader = new XmlTextReader(new StringReader(xmlData)))
             {
                 while (reader.Read())
                 {
@@ -407,9 +390,11 @@ namespace PMDCP.Updater
         {
             StringBuilder output = new StringBuilder();
             // Write a new xml document to the 'output' StringBuilder
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.IndentChars = "   ";
-            settings.Indent = true;
+            XmlWriterSettings settings = new XmlWriterSettings
+            {
+                IndentChars = "   ",
+                Indent = true
+            };
             using (XmlWriter writer = XmlWriter.Create(output, settings))
             {
                 writer.WriteStartDocument();

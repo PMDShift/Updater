@@ -67,7 +67,7 @@ namespace Ionic.Zlib
     /// </remarks>
     /// <seealso cref="DeflateStream" />
     /// <seealso cref="GZipStream" />
-    public class ZlibStream : System.IO.Stream
+    public class ZlibStream : Stream
     {
         internal ZlibBaseStream _baseStream;
         private bool _disposed;
@@ -125,7 +125,7 @@ namespace Ionic.Zlib
         ///
         /// <param name="stream">The stream which will be read or written.</param>
         /// <param name="mode">Indicates whether the ZlibStream will compress or decompress.</param>
-        public ZlibStream(System.IO.Stream stream, CompressionMode mode)
+        public ZlibStream(Stream stream, CompressionMode mode)
             : this(stream, mode, CompressionLevel.Default, false)
         {
         }
@@ -189,7 +189,7 @@ namespace Ionic.Zlib
         /// <param name="stream">The stream to be read or written while deflating or inflating.</param>
         /// <param name="mode">Indicates whether the ZlibStream will compress or decompress.</param>
         /// <param name="level">A tuning knob to trade speed for effectiveness.</param>
-        public ZlibStream(System.IO.Stream stream, CompressionMode mode, CompressionLevel level)
+        public ZlibStream(Stream stream, CompressionMode mode, CompressionLevel level)
             : this(stream, mode, level, false)
         {
         }
@@ -212,7 +212,7 @@ namespace Ionic.Zlib
         ///   remain open after the deflation or inflation occurs.  By default, after
         ///   <c>Close()</c> is called on the stream, the captive stream is also
         ///   closed. In some cases this is not desired, for example if the stream is a
-        ///   <see cref="System.IO.MemoryStream"/> that will be re-read after
+        ///   <see cref="MemoryStream"/> that will be re-read after
         ///   compression.  Specify true for the <paramref name="leaveOpen"/> parameter to leave the stream
         ///   open.
         /// </para>
@@ -228,7 +228,7 @@ namespace Ionic.Zlib
         /// <param name="mode">Indicates whether the ZlibStream will compress or decompress.</param>
         /// <param name="leaveOpen">true if the application would like the stream to remain
         /// open after inflation/deflation.</param>
-        public ZlibStream(System.IO.Stream stream, CompressionMode mode, bool leaveOpen)
+        public ZlibStream(Stream stream, CompressionMode mode, bool leaveOpen)
             : this(stream, mode, CompressionLevel.Default, leaveOpen)
         {
         }
@@ -246,7 +246,7 @@ namespace Ionic.Zlib
         ///   remain open after the deflation or inflation occurs.  By default, after
         ///   <c>Close()</c> is called on the stream, the captive stream is also closed. In
         ///   some cases this is not desired, for example if the stream is a <see
-        ///   cref="System.IO.MemoryStream"/> that will be re-read after compression.
+        ///   cref="MemoryStream"/> that will be re-read after compression.
         ///   Specify true for the <paramref name="leaveOpen"/> parameter to leave the stream open.
         /// </para>
         ///
@@ -309,7 +309,7 @@ namespace Ionic.Zlib
         /// A tuning knob to trade speed for effectiveness. This parameter is effective only when
         /// mode is <c>CompressionMode.Compress</c>.
         /// </param>
-        public ZlibStream(System.IO.Stream stream, CompressionMode mode, CompressionLevel level, bool leaveOpen)
+        public ZlibStream(Stream stream, CompressionMode mode, CompressionLevel level, bool leaveOpen)
         {
             _baseStream = new ZlibBaseStream(stream, mode, level, ZlibStreamFlavor.ZLIB, leaveOpen);
         }
@@ -574,11 +574,11 @@ namespace Ionic.Zlib
         /// </summary>
         ///
         /// <remarks>
-        ///   Uncompress it with <see cref="ZlibStream.UncompressString(byte[])"/>.
+        ///   Uncompress it with <see cref="UncompressString(byte[])"/>.
         /// </remarks>
         ///
-        /// <seealso cref="ZlibStream.UncompressString(byte[])"/>
-        /// <seealso cref="ZlibStream.CompressBuffer(byte[])"/>
+        /// <seealso cref="UncompressString(byte[])"/>
+        /// <seealso cref="CompressBuffer(byte[])"/>
         ///
         /// <param name="s">
         ///   A string to compress.  The string will first be encoded
@@ -586,7 +586,7 @@ namespace Ionic.Zlib
         /// </param>
         ///
         /// <returns>The string in compressed form</returns>
-        public static byte[] CompressString(String s)
+        public static byte[] CompressString(string s)
         {
             using (var ms = new MemoryStream())
             {
@@ -602,11 +602,11 @@ namespace Ionic.Zlib
         /// </summary>
         ///
         /// <remarks>
-        ///   Uncompress it with <see cref="ZlibStream.UncompressBuffer(byte[])"/>.
+        ///   Uncompress it with <see cref="UncompressBuffer(byte[])"/>.
         /// </remarks>
         ///
-        /// <seealso cref="ZlibStream.CompressString(string)"/>
-        /// <seealso cref="ZlibStream.UncompressBuffer(byte[])"/>
+        /// <seealso cref="CompressString(string)"/>
+        /// <seealso cref="UncompressBuffer(byte[])"/>
         ///
         /// <param name="b">
         /// A buffer to compress.
@@ -629,8 +629,8 @@ namespace Ionic.Zlib
         ///   Uncompress a ZLIB-compressed byte array into a single string.
         /// </summary>
         ///
-        /// <seealso cref="ZlibStream.CompressString(String)"/>
-        /// <seealso cref="ZlibStream.UncompressBuffer(byte[])"/>
+        /// <seealso cref="CompressString(string)"/>
+        /// <seealso cref="UncompressBuffer(byte[])"/>
         ///
         /// <param name="compressed">
         ///   A buffer containing ZLIB-compressed data.
@@ -652,8 +652,8 @@ namespace Ionic.Zlib
         ///   Uncompress a ZLIB-compressed byte array into a byte array.
         /// </summary>
         ///
-        /// <seealso cref="ZlibStream.CompressBuffer(byte[])"/>
-        /// <seealso cref="ZlibStream.UncompressString(byte[])"/>
+        /// <seealso cref="CompressBuffer(byte[])"/>
+        /// <seealso cref="UncompressString(byte[])"/>
         ///
         /// <param name="compressed">
         ///   A buffer containing ZLIB-compressed data.

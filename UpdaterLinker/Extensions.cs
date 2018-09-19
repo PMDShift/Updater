@@ -21,68 +21,32 @@ namespace PMDCP.Updater.Linker
     {
         public static int ToInt(this string str)
         {
-            int result = 0;
-            if (str != null && int.TryParse(str, out result) == true)
-            {
-                return result;
-            }
-            else
-                return 0;
+            return str != null && int.TryParse(str, out int result) == true ? result : 0;
         }
 
         public static int ToInt(this string str, int defaultVal)
         {
-            int result = 0;
-            if (str != null && int.TryParse(str, out result) == true)
-            {
-                return result;
-            }
-            else
-                return defaultVal;
+            return str != null && int.TryParse(str, out int result) == true ? result : defaultVal;
         }
 
         public static long ToLong(this string str)
         {
-            long result = 0;
-            if (str != null && long.TryParse(str, out result) == true)
-            {
-                return result;
-            }
-            else
-                return 0;
+            return str != null && long.TryParse(str, out long result) == true ? result : 0;
         }
 
         public static long ToLong(this string str, long defaultVal)
         {
-            long result = 0;
-            if (str != null && long.TryParse(str, out result) == true)
-            {
-                return result;
-            }
-            else
-                return defaultVal;
+            return str != null && long.TryParse(str, out long result) == true ? result : defaultVal;
         }
 
         public static double ToDbl(this string str)
         {
-            double result = 0;
-            if (str != null && double.TryParse(str, out result) == true)
-            {
-                return result;
-            }
-            else
-                return 0;
+            return str != null && double.TryParse(str, out double result) == true ? result : 0;
         }
 
         public static double ToDbl(this string str, double defaultVal)
         {
-            double result = 0;
-            if (str != null && double.TryParse(str, out result) == true)
-            {
-                return result;
-            }
-            else
-                return defaultVal;
+            return str != null && double.TryParse(str, out double result) == true ? result : defaultVal;
         }
 
         public static string ToIntString(this bool boolval)
@@ -95,19 +59,12 @@ namespace PMDCP.Updater.Linker
 
         public static bool IsNumeric(this string str)
         {
-            int result;
-            return int.TryParse(str, out result);
+            return int.TryParse(str, out int result);
         }
 
         public static ulong ToUlng(this string str)
         {
-            ulong result = 0;
-            if (ulong.TryParse(str, out result) == true)
-            {
-                return result;
-            }
-            else
-                return 0;
+            return ulong.TryParse(str, out ulong result) == true ? result : 0;
         }
 
         public static bool ToBool(this string str)
@@ -133,15 +90,7 @@ namespace PMDCP.Updater.Linker
 
         public static DateTime? ToDate(this string date)
         {
-            DateTime tmpDate;
-            if (DateTime.TryParse(date, out tmpDate))
-            {
-                return tmpDate;
-            }
-            else
-            {
-                return null;
-            }
+            return DateTime.TryParse(date, out DateTime tmpDate) ? (DateTime?)tmpDate : null;
         }
     }
 }

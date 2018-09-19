@@ -47,9 +47,11 @@ namespace PMDCP.Updater
 
         public void Save(Stream stream)
         {
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.IndentChars = "   ";
-            settings.Indent = true;
+            XmlWriterSettings settings = new XmlWriterSettings
+            {
+                IndentChars = "   ",
+                Indent = true
+            };
             using (XmlWriter writer = XmlWriter.Create(stream, settings))
             {
                 writer.WriteStartDocument();

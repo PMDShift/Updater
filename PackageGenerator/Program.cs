@@ -226,9 +226,11 @@ namespace PMDCP.Updater.PackageGenerator
             Console.WriteLine("Generating configuration xml...");
             StringBuilder output = new StringBuilder();
             // Write a new xml document to the 'output' StringBuilder
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.IndentChars = "   ";
-            settings.Indent = true;
+            XmlWriterSettings settings = new XmlWriterSettings
+            {
+                IndentChars = "   ",
+                Indent = true
+            };
             using (XmlWriter writer = XmlWriter.Create(output, settings))
             {
                 writer.WriteStartDocument();
@@ -288,9 +290,11 @@ namespace PMDCP.Updater.PackageGenerator
                 description = commandLine["/desc"];
             }
 
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.IndentChars = "   ";
-            settings.Indent = true;
+            XmlWriterSettings settings = new XmlWriterSettings
+            {
+                IndentChars = "   ",
+                Indent = true
+            };
             using (XmlWriter writer = XmlWriter.Create(path, settings))
             {
                 writer.WriteStartDocument();

@@ -112,12 +112,12 @@ namespace Ionic.Zlib
         internal int end;                                 // one byte after sliding window
         internal int readAt;                              // window read pointer
         internal int writeAt;                             // window write pointer
-        internal System.Object checkfn;                   // check function
+        internal object checkfn;                   // check function
         internal uint check;                              // check on output
 
         internal InfTree inftree = new InfTree();
 
-        internal InflateBlocks(ZlibCodec codec, System.Object checkfn, int w)
+        internal InflateBlocks(ZlibCodec codec, object checkfn, int w)
         {
             _codec = codec;
             hufts = new int[MANY * 3];
@@ -205,7 +205,7 @@ namespace Ionic.Zlib
                                 int[] bd = new int[1];
                                 int[][] tl = new int[1][];
                                 int[][] td = new int[1][];
-                                InfTree.inflate_trees_fixed(bl, bd, tl, td, _codec);
+                                InfTree.Inflate_trees_fixed(bl, bd, tl, td, _codec);
                                 codes.Init(bl[0], bd[0], tl[0], 0, td[0], 0);
                                 b >>= 3; k -= 3;
                                 mode = InflateBlockMode.CODES;
@@ -416,7 +416,7 @@ namespace Ionic.Zlib
                         }
 
                         bb[0] = 7;
-                        t = inftree.inflate_trees_bits(blens, bb, tb, hufts, _codec);
+                        t = inftree.Inflate_trees_bits(blens, bb, tb, hufts, _codec);
                         if (t != ZlibConstants.Z_OK)
                         {
                             r = t;
@@ -548,7 +548,7 @@ namespace Ionic.Zlib
                             int[] td = new int[1];
 
                             t = table;
-                            t = inftree.inflate_trees_dynamic(257 + (t & 0x1f), 1 + ((t >> 5) & 0x1f), blens, bl, bd, tl, td, hufts, _codec);
+                            t = inftree.Inflate_trees_dynamic(257 + (t & 0x1f), 1 + ((t >> 5) & 0x1f), blens, bl, bd, tl, td, hufts, _codec);
 
                             if (t != ZlibConstants.Z_OK)
                             {

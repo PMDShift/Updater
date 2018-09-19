@@ -29,7 +29,7 @@ using System.IO;
 
 namespace Ionic.Zip
 {
-    internal class ZipSegmentedStream : System.IO.Stream, System.IDisposable
+    internal class ZipSegmentedStream : Stream, IDisposable
     {
         private int rw;
         private string _baseName;
@@ -39,7 +39,7 @@ namespace Ionic.Zip
         private uint _currentDiskNumber;
         private uint _maxDiskNumber;
         private int _maxSegmentSize;
-        private System.IO.Stream _innerStream;
+        private Stream _innerStream;
 
         private ZipSegmentedStream() : base()
         {

@@ -278,13 +278,13 @@ namespace Ionic.Zip
         /// and using the specified password.
         /// </summary>
         ///
-        /// <seealso cref="Ionic.Zip.ZipEntry.ExtractExistingFile"/>
-        /// <seealso cref="Ionic.Zip.ZipEntry.ExtractWithPassword(string, ExtractExistingFileAction, string)"/>
+        /// <seealso cref="ExtractExistingFile"/>
+        /// <seealso cref="ExtractWithPassword(string, ExtractExistingFileAction, string)"/>
         ///
         /// <remarks>
         /// <para> Existing entries in the filesystem will not be overwritten. If you would
         /// like to force the overwrite of existing files, see the <see
-        /// cref="Ionic.Zip.ZipEntry.ExtractExistingFile"/>property, or call <see
+        /// cref="ExtractExistingFile"/>property, or call <see
         /// cref="ExtractWithPassword(ExtractExistingFileAction,string)"/>.</para>
         ///
         /// <para>
@@ -374,7 +374,7 @@ namespace Ionic.Zip
         /// </para>
         ///
         /// <para>
-        /// The return value is a <see cref="Ionic.Zlib.CrcCalculatorStream"/>.  Use it
+        /// The return value is a <see cref="Zlib.CrcCalculatorStream"/>.  Use it
         /// as you would any stream for reading.  The data you get by calling <see
         /// cref="Stream.Read(byte[], int, int)"/> on that stream will be decrypted and
         /// decompressed.
@@ -383,7 +383,7 @@ namespace Ionic.Zip
         /// <para>
         /// CrcCalculatorStream adds one additional feature: it keeps a CRC32 checksum
         /// on the bytes of the stream as it is read.  The CRC value is available in the
-        /// <see cref="Ionic.Zlib.CrcCalculatorStream.Crc"/> property on the
+        /// <see cref="Zlib.CrcCalculatorStream.Crc"/> property on the
         /// <c>CrcCalculatorStream</c>.  When the read is complete, this CRC
         /// <em>should</em> be checked against the <see cref="ZipEntry.Crc"/> property
         /// on the <c>ZipEntry</c> to validate the content of the ZipEntry.  You don't
@@ -402,7 +402,7 @@ namespace Ionic.Zip
         ///
         /// <para>
         /// If you want to extract entry data into a stream that is already opened, like
-        /// a <see cref="System.IO.FileStream"/>, consider the <see
+        /// a <see cref="FileStream"/>, consider the <see
         /// cref="Extract(Stream)"/> method.
         /// </para>
         ///
@@ -453,9 +453,9 @@ namespace Ionic.Zip
         ///   End Using
         /// </code>
         /// </example>
-        /// <seealso cref="Ionic.Zip.ZipEntry.Extract(System.IO.Stream)"/>
+        /// <seealso cref="Extract(Stream)"/>
         /// <returns>The Stream for reading.</returns>
-        public Ionic.Zlib.CrcCalculatorStream OpenReader()
+        public Zlib.CrcCalculatorStream OpenReader()
         {
             // use the entry password if it is non-null, else use the zipfile password, which is possibly null
             return InternalOpenReader(this._Password ?? this._container.Password);
@@ -475,12 +475,12 @@ namespace Ionic.Zip
         ///
         /// <param name="password">The password to use for decrypting the entry.</param>
         /// <returns>The Stream for reading.</returns>
-        public Ionic.Zlib.CrcCalculatorStream OpenReader(string password)
+        public Zlib.CrcCalculatorStream OpenReader(string password)
         {
             return InternalOpenReader(password);
         }
 
-        internal Ionic.Zlib.CrcCalculatorStream InternalOpenReader(string password)
+        internal Zlib.CrcCalculatorStream InternalOpenReader(string password)
         {
             ValidateCompression();
             ValidateEncryption();
@@ -498,14 +498,14 @@ namespace Ionic.Zip
                 ? this._CompressedFileDataSize
                 : this.UncompressedSize;
 
-            Stream input = this.ArchiveStream;
+            Stream input = ArchiveStream;
 
-            this.ArchiveStream.Seek(this.FileDataPosition, SeekOrigin.Begin);
+            ArchiveStream.Seek(FileDataPosition, SeekOrigin.Begin);
 
             _inputDecryptorStream = GetExtractDecryptor(input);
             Stream input3 = GetExtractDecompressor(_inputDecryptorStream);
 
-            return new Ionic.Zlib.CrcCalculatorStream(input3, LeftToRead);
+            return new Zlib.CrcCalculatorStream(input3, LeftToRead);
         }
 
         private void OnExtractProgress(Int64 bytesWritten, Int64 totalBytesToWrite)
@@ -673,7 +673,7 @@ namespace Ionic.Zip
                         // actual time on the entry in the zip archive.
 
                         // String.Contains is not available on .NET CF 2.0
-                        if (this.FileName.IndexOf('/') != -1)
+                        if (FileName.IndexOf('/') != -1)
                         {
                             string dirname = Path.GetDirectoryName(this.FileName);
                             if (this._container.ZipFile[dirname] == null)
@@ -780,7 +780,7 @@ namespace Ionic.Zip
 #else
             if (ActualCrc32 != _Crc32)
                 throw new BadCrcException("CRC error: the file being extracted appears to be corrupted. " +
-                                          String.Format("Expected 0x{0:X8}, Actual 0x{1:X8}", _Crc32, ActualCrc32));
+                                          string.Format("Expected 0x{0:X8}, Actual 0x{1:X8}", _Crc32, ActualCrc32));
 #endif
         }
 
@@ -834,10 +834,10 @@ namespace Ionic.Zip
 
         private Int32 _ExtractOne(Stream output)
         {
-            Stream input = this.ArchiveStream;
+            Stream input = ArchiveStream;
 
             // change for workitem 8098
-            input.Seek(this.FileDataPosition, SeekOrigin.Begin);
+            input.Seek(FileDataPosition, SeekOrigin.Begin);
 
             // to validate the CRC.
             Int32 CrcResult = 0;
@@ -850,8 +850,8 @@ namespace Ionic.Zip
             // and take the proper action in all cases.
 
             Int64 LeftToRead = (_CompressionMethod_FromZipFile == (short)CompressionMethod.Deflate)
-                ? this.UncompressedSize
-                : this._CompressedFileDataSize;
+                ? UncompressedSize
+                : _CompressedFileDataSize;
 
             // Get a stream that either decrypts or not.
             _inputDecryptorStream = GetExtractDecryptor(input);
@@ -898,7 +898,7 @@ namespace Ionic.Zip
             // Using the above, now we get a stream that either decompresses or not.
             Stream input3 = (_CompressionMethod_FromZipFile == (short)CompressionMethod.None)
                 ? input2
-                : new Ionic.Zlib.DeflateStream(input2, Ionic.Zlib.CompressionMode.Decompress, true);
+                : new Zlib.DeflateStream(input2, Zlib.CompressionMode.Decompress, true);
             return input3;
         }
 
@@ -967,7 +967,7 @@ namespace Ionic.Zip
                 else
                 {
                     // workitem 6191
-                    DateTime AdjustedLastModified = Ionic.Zip.SharedUtilities.AdjustTime_Reverse(LastModified);
+                    DateTime AdjustedLastModified = SharedUtilities.AdjustTime_Reverse(LastModified);
 
 #if NETCF
                     int rc = NetCfFile.SetLastWriteTime(fileOrDirectory, AdjustedLastModified);
@@ -985,7 +985,7 @@ namespace Ionic.Zip
 #endif
                 }
             }
-            catch (System.IO.IOException ioexc1)
+            catch (IOException ioexc1)
             {
                 WriteStatus("failed to set time on {0}: {1}", fileOrDirectory, ioexc1.Message);
             }

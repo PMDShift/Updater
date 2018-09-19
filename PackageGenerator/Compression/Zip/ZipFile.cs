@@ -52,14 +52,14 @@ namespace Ionic.Zip
     ///   included with DotNetZip in the classes in the Ionic.Zlib namespace.
     /// </summary>
 
-    [Interop.GuidAttribute("ebc25cf6-9120-4283-b972-0e5520d00005")]
+    [Interop.Guid("ebc25cf6-9120-4283-b972-0e5520d00005")]
     [Interop.ComVisible(true)]
 #if !NETCF
     [Interop.ClassInterface(Interop.ClassInterfaceType.AutoDispatch)]
 #endif
     public partial class ZipFile :
     System.Collections.IEnumerable,
-    System.Collections.Generic.IEnumerable<ZipEntry>,
+    IEnumerable<ZipEntry>,
     IDisposable
     {
         #region public properties
@@ -2025,9 +2025,11 @@ namespace Ionic.Zip
             if (_JustSaved)
             {
                 // read in the just-saved zip archive
-                ZipFile x = new ZipFile();
-                x._name = this._name;
-                x.ProvisionalAlternateEncoding = this.ProvisionalAlternateEncoding;
+                ZipFile x = new ZipFile
+                {
+                    _name = this._name,
+                    ProvisionalAlternateEncoding = ProvisionalAlternateEncoding
+                };
                 ReadIntoInstance(x);
                 // copy the contents of the entries.
                 // cannot just replace the entries - the app may be holding them

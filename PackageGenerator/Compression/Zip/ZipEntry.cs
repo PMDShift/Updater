@@ -662,13 +662,7 @@ namespace Ionic.Zip
         ///
         /// <seealso cref="EmitTimesInWindowsFormatWhenSaving"/>
         /// <seealso cref="EmitTimesInUnixFormatWhenSaving"/>
-        public ZipEntryTimestamp Timestamp
-        {
-            get
-            {
-                return _timestamp;
-            }
-        }
+        public ZipEntryTimestamp Timestamp { get; private set; }
 
         /// <summary>
         ///   The file attributes for the entry.
@@ -839,7 +833,7 @@ namespace Ionic.Zip
                     throw new ZipException("Cannot rename ZipEntry; not supported in ZipOutputStream/ZipInputStream.");
 
                 // rename the entry!
-                if (String.IsNullOrEmpty(value)) throw new ZipException("The FileName must be non empty and non-null.");
+                if (string.IsNullOrEmpty(value)) throw new ZipException("The FileName must be non empty and non-null.");
 
                 var filename = ZipEntry.NameInArchive(value, null);
                 // workitem 8180
@@ -881,7 +875,7 @@ namespace Ionic.Zip
         /// </para>
         ///
         /// <para>
-        ///   To avoid this, call <see cref="ZipFile.AddEntry(String, OpenDelegate,
+        ///   To avoid this, call <see cref="ZipFile.AddEntry(string, OpenDelegate,
         ///   CloseDelegate)"/> and specify delegates that open and close the stream at
         ///   the time of Save.
         /// </para>
@@ -890,8 +884,8 @@ namespace Ionic.Zip
         /// <para>
         ///   Setting the value of this property when the entry was not added from a
         ///   stream (for example, when the <c>ZipEntry</c> was added with <see
-        ///   cref="ZipFile.AddFile(String)"/> or <see
-        ///   cref="ZipFile.AddDirectory(String)"/>, or when the entry was added by
+        ///   cref="ZipFile.AddFile(string)"/> or <see
+        ///   cref="ZipFile.AddDirectory(string)"/>, or when the entry was added by
         ///   reading an existing zip archive) will throw an exception.
         /// </para>
         ///
@@ -906,7 +900,7 @@ namespace Ionic.Zip
                 if (this._Source != ZipEntrySource.Stream)
                     throw new ZipException("You must not set the input stream for this ZipEntry.");
 
-                _sourceWasJitProvided = true;
+                InputStreamWasJitProvided = true;
                 _sourceStream = value;
             }
         }
@@ -920,7 +914,7 @@ namespace Ionic.Zip
         /// <para>
         ///   When creating a zip archive, an application can obtain content for one or
         ///   more of the <c>ZipEntry</c> instances from streams, using the <see
-        ///   cref="ZipFile.AddEntry(string, System.IO.Stream)"/> method.  At the time
+        ///   cref="ZipFile.AddEntry(string, Stream)"/> method.  At the time
         ///   of calling that method, the application can supply null as the value of
         ///   the stream parameter.  By doing so, the application indicates to the
         ///   library that it will provide a stream for the entry on a just-in-time
@@ -945,10 +939,7 @@ namespace Ionic.Zip
         ///
         /// </remarks>
         /// <seealso cref="InputStream"/>
-        public bool InputStreamWasJitProvided
-        {
-            get { return _sourceWasJitProvided; }
-        }
+        public bool InputStreamWasJitProvided { get; private set; }
 
         /// <summary>
         /// An enum indicating the source of the ZipEntry.
@@ -1105,13 +1096,7 @@ namespace Ionic.Zip
         ///
         /// </remarks>
         /// <seealso cref="OutputUsedZip64"/>
-        public Nullable<bool> RequiresZip64
-        {
-            get
-            {
-                return _entryRequiresZip64;
-            }
-        }
+        public Nullable<bool> RequiresZip64 { get; private set; }
 
         /// <summary>
         ///   Indicates whether the entry actually used ZIP64 extensions, as it was most
@@ -1136,10 +1121,7 @@ namespace Ionic.Zip
         /// </para>
         /// </remarks>
         /// <seealso cref="RequiresZip64"/>
-        public Nullable<bool> OutputUsedZip64
-        {
-            get { return _OutputUsesZip64; }
-        }
+        public Nullable<bool> OutputUsedZip64 { get; private set; }
 
         /// <summary>
         /// The bitfield for the entry as defined in the zip spec. You probably never need to look at this.
@@ -1341,10 +1323,10 @@ namespace Ionic.Zip
 
                 _CompressionMethod = (Int16)value;
 
-                if (_CompressionMethod == (Int16)Ionic.Zip.CompressionMethod.None)
-                    _CompressionLevel = Ionic.Zlib.CompressionLevel.None;
-                else if (CompressionLevel == Ionic.Zlib.CompressionLevel.None)
-                    _CompressionLevel = Ionic.Zlib.CompressionLevel.Default;
+                if (_CompressionMethod == (Int16)CompressionMethod.None)
+                    _CompressionLevel = Zlib.CompressionLevel.None;
+                else if (CompressionLevel == Zlib.CompressionLevel.None)
+                    _CompressionLevel = Zlib.CompressionLevel.Default;
 
                 _container.ZipFile.NotifyEntryChanged();
                 _restreamRequiredOnSave = true;
@@ -1388,7 +1370,7 @@ namespace Ionic.Zip
         /// </remarks>
         ///
         /// <seealso cref="CompressionMethod"/>
-        public Ionic.Zlib.CompressionLevel CompressionLevel
+        public Zlib.CompressionLevel CompressionLevel
         {
             get
             {
@@ -1397,14 +1379,14 @@ namespace Ionic.Zip
             set
             {
                 //if (value == _CompressionLevel) return; // nothing to do
-                if (value == Ionic.Zlib.CompressionLevel.Default && _CompressionMethod == (short)CompressionMethod.Deflate) return; // nothing to do
+                if (value == Zlib.CompressionLevel.Default && _CompressionMethod == (short)CompressionMethod.Deflate) return; // nothing to do
                 _CompressionLevel = value;
-                if (value == Ionic.Zlib.CompressionLevel.None && _CompressionMethod == (short)CompressionMethod.None)
+                if (value == Zlib.CompressionLevel.None && _CompressionMethod == (short)CompressionMethod.None)
                     return; // nothing more to do
 
                 _CompressionMethod = (short)((_CompressionLevel == Ionic.Zlib.CompressionLevel.None)
-                    ? Ionic.Zip.CompressionMethod.None
-                    : Ionic.Zip.CompressionMethod.Deflate);
+                    ? CompressionMethod.None
+                    : CompressionMethod.Deflate);
 
                 if (_container.ZipFile != null) _container.ZipFile.NotifyEntryChanged();
                 _restreamRequiredOnSave = true;
@@ -1421,7 +1403,7 @@ namespace Ionic.Zip
         ///   creating.
         /// </remarks>
         ///
-        /// <seealso cref="Ionic.Zip.ZipEntry.UncompressedSize"/>
+        /// <seealso cref="UncompressedSize"/>
         public Int64 CompressedSize
         {
             get { return _CompressedSize; }
@@ -1436,7 +1418,7 @@ namespace Ionic.Zip
         ///   <c>ZipFile</c> that contains the ZipEntry.
         /// </remarks>
         ///
-        /// <seealso cref="Ionic.Zip.ZipEntry.CompressedSize"/>
+        /// <seealso cref="CompressedSize"/>
         public Int64 UncompressedSize
         {
             get { return _UncompressedSize; }
@@ -1507,10 +1489,7 @@ namespace Ionic.Zip
         /// True if the entry is a directory (not a file).
         /// This is a readonly property on the entry.
         /// </summary>
-        public bool IsDirectory
-        {
-            get { return _IsDirectory; }
-        }
+        public bool IsDirectory { get; private set; }
 
         /// <summary>
         /// A derived property that is <c>true</c> if the entry uses encryption.
@@ -1680,8 +1659,8 @@ namespace Ionic.Zip
         /// Thrown in the setter if EncryptionAlgorithm.Unsupported is specified.
         /// </exception>
         ///
-        /// <seealso cref="Ionic.Zip.ZipEntry.Password">ZipEntry.Password</seealso>
-        /// <seealso cref="Ionic.Zip.ZipFile.Encryption">ZipFile.Encryption</seealso>
+        /// <seealso cref="Password">ZipEntry.Password</seealso>
+        /// <seealso cref="ZipFile.Encryption">ZipFile.Encryption</seealso>
         public EncryptionAlgorithm Encryption
         {
             get
@@ -1841,8 +1820,8 @@ namespace Ionic.Zip
         ///
         /// </example>
         ///
-        /// <seealso cref="Ionic.Zip.ZipEntry.Encryption"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.Password">ZipFile.Password</seealso>
+        /// <seealso cref="Encryption"/>
+        /// <seealso cref="ZipFile.Password">ZipFile.Password</seealso>
         public string Password
         {
             set
@@ -1905,7 +1884,7 @@ namespace Ionic.Zip
         ///   </para>
         ///
         /// </remarks>
-        /// <seealso cref="Ionic.Zip.ZipFile.ExtractExistingFile"/>
+        /// <seealso cref="ZipFile.ExtractExistingFile"/>
         ///
         /// <example>
         ///   This example shows how to set the <c>ExtractExistingFile</c> property in
@@ -1983,8 +1962,8 @@ namespace Ionic.Zip
         ///  </para>
         ///
         /// </remarks>
-        /// <seealso cref="Ionic.Zip.ZipFile.ZipErrorAction"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.ZipError"/>
+        /// <seealso cref="ZipFile.ZipErrorAction"/>
+        /// <seealso cref="ZipFile.ZipError"/>
         public ZipErrorAction ZipErrorAction
         {
             get;
@@ -2053,11 +2032,11 @@ namespace Ionic.Zip
         {
             get
             {
-                return _provisionalAlternateEncoding == System.Text.Encoding.GetEncoding("UTF-8");
+                return ProvisionalAlternateEncoding == System.Text.Encoding.GetEncoding("UTF-8");
             }
             set
             {
-                _provisionalAlternateEncoding = (value) ? System.Text.Encoding.GetEncoding("UTF-8") : Ionic.Zip.ZipFile.DefaultEncoding;
+                ProvisionalAlternateEncoding = (value) ? System.Text.Encoding.GetEncoding("UTF-8") : ZipFile.DefaultEncoding;
             }
         }
 
@@ -2113,17 +2092,7 @@ namespace Ionic.Zip
         /// </para>
         ///
         /// </remarks>
-        public System.Text.Encoding ProvisionalAlternateEncoding
-        {
-            get
-            {
-                return _provisionalAlternateEncoding;
-            }
-            set
-            {
-                _provisionalAlternateEncoding = value;
-            }
-        }
+        public System.Text.Encoding ProvisionalAlternateEncoding { get; set; } = System.Text.Encoding.GetEncoding("IBM437");
 
         /// <summary>
         /// The text encoding actually used for this ZipEntry.
@@ -2154,13 +2123,7 @@ namespace Ionic.Zip
         /// </remarks>
         ///
         /// <seealso cref="ZipFile.ProvisionalAlternateEncoding" />
-        public System.Text.Encoding ActualEncoding
-        {
-            get
-            {
-                return _actualEncoding;
-            }
-        }
+        public System.Text.Encoding ActualEncoding { get; private set; }
 
         internal static string NameInArchive(String filename, string directoryPathInArchive)
         {
@@ -2220,7 +2183,7 @@ namespace Ionic.Zip
         private static ZipEntry Create(string nameInArchive, ZipEntrySource source, Object arg1, Object arg2)
         {
             if (String.IsNullOrEmpty(nameInArchive))
-                throw new Ionic.Zip.ZipException("The entry name must be non-null and non-empty.");
+                throw new ZipException("The entry name must be non-null and non-empty.");
 
             ZipEntry entry = new ZipEntry
             {
@@ -2259,7 +2222,7 @@ namespace Ionic.Zip
                 String filename = (arg1 as String);   // must not be null
 
                 if (String.IsNullOrEmpty(filename))
-                    throw new Ionic.Zip.ZipException("The filename must be non-null and non-empty.");
+                    throw new ZipException("The filename must be non-null and non-empty.");
 
                 // The named file may or may not exist at this time.  For example, when
                 // adding a directory by name.  We test existence when necessary:
@@ -2304,7 +2267,7 @@ namespace Ionic.Zip
 
         internal void MarkAsDirectory()
         {
-            _IsDirectory = true;
+            IsDirectory = true;
             // workitem 6279
             if (!_FileNameInArchive.EndsWith("/"))
                 _FileNameInArchive += "/";
@@ -2354,12 +2317,9 @@ namespace Ionic.Zip
         /// End Using
         /// </code>
         /// </example>
-        public bool IsText
-        {
+        public bool IsText {
             // workitem 7801
-            get { return _IsText; }
-            set { _IsText = value; }
-        }
+            get; set; }
 
         /// <summary>Provides a string representation of the instance.</summary>
         /// <returns>a string representation of the instance.</returns>
@@ -2404,11 +2364,11 @@ namespace Ionic.Zip
                 this.ArchiveStream.Seek(this._RelativeOffsetOfLocalHeader, SeekOrigin.Begin);
                 //this._zipfile.SeekFromOrigin(this._RelativeOffsetOfLocalHeader);
             }
-            catch (System.IO.IOException exc1)
+            catch (IOException exc1)
             {
                 string description = String.Format("Exception seeking  entry({0}) offset(0x{1:X8}) len(0x{2:X8})",
-                                                   this.FileName, this._RelativeOffsetOfLocalHeader,
-                                                   this.ArchiveStream.Length);
+                                                   FileName, this._RelativeOffsetOfLocalHeader,
+                                                   ArchiveStream.Length);
                 throw new BadStateException(description, exc1);
             }
 
@@ -2425,19 +2385,19 @@ namespace Ionic.Zip
             // Console.WriteLine("  pos  0x{0:X8} ({0})", this.ArchiveStream.Position);
             // Console.WriteLine("  seek 0x{0:X8} ({0})", filenameLength + extraFieldLength);
 
-            this.ArchiveStream.Seek(filenameLength + extraFieldLength, SeekOrigin.Current);
-            this._LengthOfHeader = 30 + extraFieldLength + filenameLength +
+            ArchiveStream.Seek(filenameLength + extraFieldLength, SeekOrigin.Current);
+            _LengthOfHeader = 30 + extraFieldLength + filenameLength +
                 GetLengthOfCryptoHeaderBytes(_Encryption_FromZipFile);
 
             // Console.WriteLine("  ROLH  0x{0:X8} ({0})", _RelativeOffsetOfLocalHeader);
             // Console.WriteLine("  LOH   0x{0:X8} ({0})", _LengthOfHeader);
             // workitem 8098: ok (arithmetic)
-            this.__FileDataPosition = _RelativeOffsetOfLocalHeader + _LengthOfHeader;
+            __FileDataPosition = _RelativeOffsetOfLocalHeader + _LengthOfHeader;
             // Console.WriteLine("  FDP   0x{0:X8} ({0})", __FileDataPosition);
 
             // restore file position:
             // workitem 8098: ok (restore)
-            this.ArchiveStream.Seek(origPosition, SeekOrigin.Begin);
+            ArchiveStream.Seek(origPosition, SeekOrigin.Begin);
         }
 
 #if AESCRYPTO
@@ -2510,9 +2470,8 @@ namespace Ionic.Zip
         internal Int16 _BitField;
         internal Int16 _CompressionMethod;
         private Int16 _CompressionMethod_FromZipFile;
-        private Ionic.Zlib.CompressionLevel _CompressionLevel;
+        private Zlib.CompressionLevel _CompressionLevel;
         internal string _Comment;
-        private bool _IsDirectory;
         private byte[] _CommentBytes;
         internal Int64 _CompressedSize;
         internal Int64 _CompressedFileDataSize; // CompressedSize less 12 bytes for the encryption header, if any
@@ -2528,9 +2487,6 @@ namespace Ionic.Zip
         private UInt32 _diskNumber;
 
         private static System.Text.Encoding ibm437 = System.Text.Encoding.GetEncoding("IBM437");
-        private System.Text.Encoding _provisionalAlternateEncoding = System.Text.Encoding.GetEncoding("IBM437");
-        private System.Text.Encoding _actualEncoding;
-
         internal ZipContainer _container;
 
         internal long __FileDataPosition = -1;
@@ -2551,17 +2507,11 @@ namespace Ionic.Zip
         internal Stream _archiveStream;
         private Stream _sourceStream;
         private Nullable<Int64> _sourceStreamOriginalPosition;
-        private bool _sourceWasJitProvided;
         private bool _ioOperationCanceled;
         private bool _presumeZip64;
-        private Nullable<bool> _entryRequiresZip64;
-        private Nullable<bool> _OutputUsesZip64;
-        private bool _IsText; // workitem 7801
-        private ZipEntryTimestamp _timestamp;
-
-        private static System.DateTime _unixEpoch = new System.DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        private static System.DateTime _win32Epoch = System.DateTime.FromFileTimeUtc(0L);
-        private static System.DateTime _zeroHour = new System.DateTime(1, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        private static DateTime _unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        private static DateTime _win32Epoch = DateTime.FromFileTimeUtc(0L);
+        private static DateTime _zeroHour = new DateTime(1, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         private WriteDelegate _WriteDelegate;
         private OpenDelegate _OpenDelegate;

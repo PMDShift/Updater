@@ -593,11 +593,11 @@ namespace Ionic.Zlib
         /// </summary>
         ///
         /// <remarks>
-        ///   Uncompress it with <see cref="DeflateStream.UncompressString(byte[])"/>.
+        ///   Uncompress it with <see cref="UncompressString(byte[])"/>.
         /// </remarks>
         ///
-        /// <seealso cref="DeflateStream.UncompressString(byte[])"/>
-        /// <seealso cref="DeflateStream.CompressBuffer(byte[])"/>
+        /// <seealso cref="UncompressString(byte[])"/>
+        /// <seealso cref="CompressBuffer(byte[])"/>
         ///
         /// <param name="s">
         ///   A string to compress. The string will first be encoded
@@ -605,7 +605,7 @@ namespace Ionic.Zlib
         /// </param>
         ///
         /// <returns>The string in compressed form</returns>
-        public static byte[] CompressString(String s)
+        public static byte[] CompressString(string s)
         {
             using (var ms = new System.IO.MemoryStream())
             {
@@ -621,11 +621,11 @@ namespace Ionic.Zlib
         /// </summary>
         ///
         /// <remarks>
-        ///   Uncompress it with <see cref="DeflateStream.UncompressBuffer(byte[])"/>.
+        ///   Uncompress it with <see cref="UncompressBuffer(byte[])"/>.
         /// </remarks>
         ///
-        /// <seealso cref="DeflateStream.CompressString(string)"/>
-        /// <seealso cref="DeflateStream.UncompressBuffer(byte[])"/>
+        /// <seealso cref="CompressString(string)"/>
+        /// <seealso cref="UncompressBuffer(byte[])"/>
         ///
         /// <param name="b">
         ///   A buffer to compress.
@@ -648,8 +648,8 @@ namespace Ionic.Zlib
         ///   Uncompress a DEFLATE'd byte array into a single string.
         /// </summary>
         ///
-        /// <seealso cref="DeflateStream.CompressString(String)"/>
-        /// <seealso cref="DeflateStream.UncompressBuffer(byte[])"/>
+        /// <seealso cref="CompressString(string)"/>
+        /// <seealso cref="UncompressBuffer(byte[])"/>
         ///
         /// <param name="compressed">
         ///   A buffer containing GZIP-compressed data.
@@ -671,8 +671,8 @@ namespace Ionic.Zlib
         ///   Uncompress a DEFLATE'd byte array into a byte array.
         /// </summary>
         ///
-        /// <seealso cref="DeflateStream.CompressBuffer(byte[])"/>
-        /// <seealso cref="DeflateStream.UncompressString(byte[])"/>
+        /// <seealso cref="CompressBuffer(byte[])"/>
+        /// <seealso cref="UncompressString(byte[])"/>
         ///
         /// <param name="compressed">
         ///   A buffer containing data that has been compressed with DEFLATE.

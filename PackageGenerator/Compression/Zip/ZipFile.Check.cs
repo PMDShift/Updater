@@ -69,8 +69,7 @@ namespace Ionic.Zip
         /// <seealso cref="CheckZip(string,bool,out System.Collections.ObjectModel.ReadOnlyCollection&lt;String&gt;)"/>
         public static bool CheckZip(string zipFileName)
         {
-            System.Collections.ObjectModel.ReadOnlyCollection<String> ignoredMessages;
-            return CheckZip(zipFileName, false, out ignoredMessages);
+            return CheckZip(zipFileName, false, out System.Collections.ObjectModel.ReadOnlyCollection<string> ignoredMessages);
         }
 
         /// <summary>
@@ -122,11 +121,13 @@ namespace Ionic.Zip
             bool isOk = true;
             try
             {
-                zip1 = new ZipFile();
-                zip1.FullScan = true;
+                zip1 = new ZipFile
+                {
+                    FullScan = true
+                };
                 zip1.Initialize(zipFileName);
 
-                zip2 = ZipFile.Read(zipFileName);
+                zip2 = Read(zipFileName);
 
                 foreach (var e1 in zip1)
                 {
@@ -182,7 +183,7 @@ namespace Ionic.Zip
                 if (!isOk && fixIfNecessary)
                 {
                     string newFileName = Path.GetFileNameWithoutExtension(zipFileName);
-                    newFileName = System.String.Format("{0}_fixed.zip", newFileName);
+                    newFileName = string.Format("{0}_fixed.zip", newFileName);
                     zip1.Save(newFileName);
                 }
             }

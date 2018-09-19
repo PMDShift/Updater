@@ -305,7 +305,7 @@ namespace Ionic.Zip
         //}
 
         // private fields for the crypto stuff:
-        private UInt32[] _Keys = { 0x12345678, 0x23456789, 0x34567890 };
+        private readonly UInt32[] _Keys = { 0x12345678, 0x23456789, 0x34567890 };
 
         private Zlib.CRC32 crc32 = new Zlib.CRC32();
     }
@@ -324,7 +324,7 @@ namespace Ionic.Zip
     {
         private ZipCrypto _cipher;
         private System.IO.Stream _s;
-        private CryptoMode _mode;
+        private readonly CryptoMode _mode;
 
         /// <summary>
         /// The  constructor.

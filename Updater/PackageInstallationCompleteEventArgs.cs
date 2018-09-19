@@ -20,23 +20,14 @@ namespace PMDCP.Updater
 {
     public class PackageInstallationCompleteEventArgs : EventArgs
     {
-        private IPackageInfo package;
-        private int packageIndex;
+        public IPackageInfo Package { get; }
 
-        public IPackageInfo Package
-        {
-            get { return package; }
-        }
-
-        public int PackageIndex
-        {
-            get { return packageIndex; }
-        }
+        public int PackageIndex { get; }
 
         public PackageInstallationCompleteEventArgs(IPackageInfo package, int packageIndex)
         {
-            this.package = package;
-            this.packageIndex = packageIndex;
+            Package = package;
+            PackageIndex = packageIndex;
         }
     }
 }

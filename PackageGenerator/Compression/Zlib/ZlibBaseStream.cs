@@ -31,7 +31,7 @@ namespace Ionic.Zlib
 {
     internal enum ZlibStreamFlavor { ZLIB = 1950, DEFLATE = 1951, GZIP = 1952 }
 
-    internal class ZlibBaseStream : System.IO.Stream
+    internal class ZlibBaseStream : Stream
     {
         protected internal ZlibCodec _z = null; // deferred init... new ZlibCodec();
 
@@ -58,7 +58,7 @@ namespace Ionic.Zlib
 
         internal int Crc32 { get { if (crc == null) return 0; return crc.Crc32Result; } }
 
-        public ZlibBaseStream(System.IO.Stream stream,
+        public ZlibBaseStream(Stream stream,
                               CompressionMode compressionMode,
                               CompressionLevel level,
                               ZlibStreamFlavor flavor,
@@ -87,7 +87,7 @@ namespace Ionic.Zlib
             }
         }
 
-        private ZlibCodec z
+        private ZlibCodec Z
         {
             get
             {
@@ -109,7 +109,7 @@ namespace Ionic.Zlib
             }
         }
 
-        private byte[] workingBuffer
+        private byte[] WorkingBuffer
         {
             get
             {
@@ -135,13 +135,13 @@ namespace Ionic.Zlib
                 return;
 
             // first reference of z property will initialize the private var _z
-            z.InputBuffer = buffer;
+            Z.InputBuffer = buffer;
             _z.NextIn = offset;
             _z.AvailableBytesIn = count;
             bool done = false;
             do
             {
-                _z.OutputBuffer = workingBuffer;
+                _z.OutputBuffer = WorkingBuffer;
                 _z.NextOut = 0;
                 _z.AvailableBytesOut = _workingBuffer.Length;
                 int rc = (_wantCompress)
@@ -162,7 +162,7 @@ namespace Ionic.Zlib
             while (!done);
         }
 
-        private void finish()
+        private void Finish()
         {
             if (_z == null) return;
 
@@ -171,7 +171,7 @@ namespace Ionic.Zlib
                 bool done = false;
                 do
                 {
-                    _z.OutputBuffer = workingBuffer;
+                    _z.OutputBuffer = WorkingBuffer;
                     _z.NextOut = 0;
                     _z.AvailableBytesOut = _workingBuffer.Length;
                     int rc = (_wantCompress)
@@ -271,9 +271,9 @@ namespace Ionic.Zlib
             }
         }
 
-        private void end()
+        private void End()
         {
-            if (z == null)
+            if (Z == null)
                 return;
             if (_wantCompress)
             {
@@ -291,11 +291,11 @@ namespace Ionic.Zlib
             if (_stream == null) return;
             try
             {
-                finish();
+                Finish();
             }
             finally
             {
-                end();
+                End();
                 if (!_leaveOpen) _stream.Close();
                 _stream = null;
             }
@@ -306,13 +306,13 @@ namespace Ionic.Zlib
             _stream.Flush();
         }
 
-        public override System.Int64 Seek(System.Int64 offset, System.IO.SeekOrigin origin)
+        public override long Seek(long offset, SeekOrigin origin)
         {
             throw new NotImplementedException();
             //_outStream.Seek(offset, origin);
         }
 
-        public override void SetLength(System.Int64 value)
+        public override void SetLength(long value)
         {
             _stream.SetLength(value);
         }
@@ -396,7 +396,7 @@ namespace Ionic.Zlib
             return totalBytesRead;
         }
 
-        public override System.Int32 Read(System.Byte[] buffer, System.Int32 offset, System.Int32 count)
+        public override int Read(byte[] buffer, int offset, int count)
         {
             // According to MS documentation, any implementation of the IO.Stream.Read function must:
             // (a) throw an exception if offset & count reference an invalid part of the buffer,
@@ -411,7 +411,7 @@ namespace Ionic.Zlib
                 _streamMode = StreamMode.Reader;
                 // (The first reference to _z goes through the private accessor which
                 // may initialize it.)
-                z.AvailableBytesIn = 0;
+                Z.AvailableBytesIn = 0;
                 if (_flavor == ZlibStreamFlavor.GZIP)
                 {
                     _gzipHeaderByteCount = _ReadAndValidateGzipHeader();
@@ -441,7 +441,7 @@ namespace Ionic.Zlib
             // This is necessary in case _workingBuffer has been resized. (new byte[])
             // (The first reference to _workingBuffer goes through the private accessor which
             // may initialize it.)
-            _z.InputBuffer = workingBuffer;
+            _z.InputBuffer = WorkingBuffer;
 
             do
             {
@@ -505,7 +505,7 @@ namespace Ionic.Zlib
             return rc;
         }
 
-        public override System.Boolean CanRead
+        public override bool CanRead
         {
             get { return this._stream.CanRead; }
         }

@@ -20,23 +20,14 @@ namespace PMDCP.Updater
 {
     public class PackageUninstaller : MarshalByRefObject, IPackageUninstaller
     {
-        private IPackageInfo packageInfo;
-        private IPackageFileList packageFileList;
+        public IPackageInfo Package { get; }
 
-        public IPackageInfo Package
-        {
-            get { return packageInfo; }
-        }
-
-        public IPackageFileList FileList
-        {
-            get { return packageFileList; }
-        }
+        public IPackageFileList FileList { get; }
 
         public PackageUninstaller(IPackageInfo packageInfo, IPackageFileList packageFileList)
         {
-            this.packageInfo = packageInfo;
-            this.packageFileList = packageFileList;
+            Package = packageInfo;
+            FileList = packageFileList;
         }
 
         public void DeleteFile(string filePath, bool relative)
@@ -50,9 +41,9 @@ namespace PMDCP.Updater
 
         public void BasicUninstall()
         {
-            for (int i = 0; i < packageFileList.Count; i++)
+            for (int i = 0; i < FileList.Count; i++)
             {
-                DeleteFile(packageFileList[i]);
+                DeleteFile(FileList[i]);
             }
         }
     }

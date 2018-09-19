@@ -85,8 +85,8 @@ namespace Ionic.Zip
                     .Append(string.Format("  Timeblob: 0x{0:X8} ({1})\n", this._TimeBlob,
                                           SharedUtilities.PackedToDateTime(this._TimeBlob)))
                     .Append(string.Format("  CRC: 0x{0:X8}\n", this._Crc32))
-                    .Append(string.Format("  Is Text?: {0}\n", this._IsText))
-                    .Append(string.Format("  Is Directory?: {0}\n", this._IsDirectory))
+                    .Append(string.Format("  Is Text?: {0}\n", this.IsText))
+                    .Append(string.Format("  Is Directory?: {0}\n", this.IsDirectory))
                     .Append(string.Format("  Is Zip64?: {0}\n", this._InputUsesZip64));
                 if (!string.IsNullOrEmpty(this._Comment))
                 {
@@ -111,7 +111,7 @@ namespace Ionic.Zip
             System.IO.Stream s = zf.ReadStream;
             System.Text.Encoding expectedEncoding = zf.ProvisionalAlternateEncoding;
 
-            int signature = Ionic.Zip.SharedUtilities.ReadSignature(s);
+            int signature = SharedUtilities.ReadSignature(s);
             // return null if this is not a local file header signature
             if (IsNotValidZipDirEntrySig(signature))
             {
@@ -138,9 +138,11 @@ namespace Ionic.Zip
             if (n != block.Length) return null;
 
             int i = 0;
-            ZipEntry zde = new ZipEntry();
-            zde._Source = ZipEntrySource.ZipFile;
-            zde._container = new ZipContainer(zf);
+            ZipEntry zde = new ZipEntry
+            {
+                _Source = ZipEntrySource.ZipFile,
+                _container = new ZipContainer(zf)
+            };
 
             unchecked
             {
@@ -150,7 +152,7 @@ namespace Ionic.Zip
                 zde._CompressionMethod = (short)(block[i++] + block[i++] * 256);
                 zde._TimeBlob = block[i++] + block[i++] * 256 + block[i++] * 256 * 256 + block[i++] * 256 * 256 * 256;
                 zde._LastModified = SharedUtilities.PackedToDateTime(zde._TimeBlob);
-                zde._timestamp |= ZipEntryTimestamp.DOS;
+                zde.Timestamp |= ZipEntryTimestamp.DOS;
 
                 zde._Crc32 = block[i++] + block[i++] * 256 + block[i++] * 256 * 256 + block[i++] * 256 * 256 * 256;
                 zde._CompressedSize = (uint)(block[i++] + block[i++] * 256 + block[i++] * 256 * 256 + block[i++] * 256 * 256 * 256);

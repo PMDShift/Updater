@@ -21,11 +21,8 @@ namespace PMDCP.Updater
 
     public class UpdateCheckResult : MarshalByRefObject, IUpdateCheckResult
     {
-        #region Fields
 
-        private string updateURI;
-        private string updateDirectory;
-        private List<IPackageInfo> packagesToUpdate;
+        #region Fields
 
         #endregion Fields
 
@@ -33,31 +30,21 @@ namespace PMDCP.Updater
 
         public UpdateCheckResult(string updateURI, string updateDirectory)
         {
-            this.updateURI = updateURI;
-            this.updateDirectory = updateDirectory;
-            packagesToUpdate = new List<IPackageInfo>();
+            this.UpdateURI = updateURI;
+            this.UpdateDirectory = updateDirectory;
+            PackagesToUpdate = new List<IPackageInfo>();
         }
 
         #endregion Constructors
 
         #region Properties
 
-        public string UpdateURI
-        {
-            get { return updateURI; }
-        }
+        public string UpdateURI { get; }
 
         #endregion Properties
 
-        public List<IPackageInfo> PackagesToUpdate
-        {
-            get { return packagesToUpdate; }
-            set { packagesToUpdate = value; }
-        }
+        public List<IPackageInfo> PackagesToUpdate { get; set; }
 
-        public string UpdateDirectory
-        {
-            get { return updateDirectory; }
-        }
+        public string UpdateDirectory { get; }
     }
 }

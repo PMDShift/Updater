@@ -27,7 +27,7 @@ namespace PMDCP.Updater.PackageGenerator.Security
             if (!File.Exists(filePath))
                 return string.Empty;
 
-            System.Security.Cryptography.HashAlgorithm hasher;
+            HashAlgorithm hasher;
             switch (type)
             {
                 case HashType.SHA1:
@@ -61,7 +61,7 @@ namespace PMDCP.Updater.PackageGenerator.Security
                 using (FileStream f = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 8192))
                 {
                     hasher.ComputeHash(f);
-                    foreach (Byte hashByte in hasher.Hash)
+                    foreach (byte hashByte in hasher.Hash)
                     {
                         buff.Append(string.Format("{0:x2}", hashByte));
                     }
@@ -69,7 +69,7 @@ namespace PMDCP.Updater.PackageGenerator.Security
             }
             catch
             {
-                return "Error reading file." + new System.Random(DateTime.Now.Second * DateTime.Now.Millisecond).Next().ToString();
+                return "Error reading file." + new Random(DateTime.Now.Second * DateTime.Now.Millisecond).Next().ToString();
             }
             return buff.ToString();
         }

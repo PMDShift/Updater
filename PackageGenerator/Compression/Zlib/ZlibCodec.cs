@@ -501,8 +501,10 @@ namespace Ionic.Zlib
         private int _InternalInitializeDeflate(bool wantRfc1950Header)
         {
             if (istate != null) throw new ZlibException("You may not call InitializeDeflate() after calling InitializeInflate().");
-            dstate = new DeflateManager();
-            dstate.WantRfc1950HeaderBytes = wantRfc1950Header;
+            dstate = new DeflateManager
+            {
+                WantRfc1950HeaderBytes = wantRfc1950Header
+            };
 
             return dstate.Initialize(this, this.CompressLevel, this.WindowBits, this.Strategy);
         }
@@ -648,7 +650,7 @@ namespace Ionic.Zlib
         // through this function so some applications may wish to modify it
         // to avoid allocating a large strm->next_out buffer and copying into it.
         // (See also read_buf()).
-        internal void flush_pending()
+        internal void Flush_pending()
         {
             int len = dstate.pendingCount;
 
@@ -684,7 +686,7 @@ namespace Ionic.Zlib
         // this function so some applications may wish to modify it to avoid
         // allocating a large strm->next_in buffer and copying from it.
         // (See also flush_pending()).
-        internal int read_buf(byte[] buf, int start, int size)
+        internal int Read_buf(byte[] buf, int start, int size)
         {
             int len = AvailableBytesIn;
 

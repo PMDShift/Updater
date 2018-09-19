@@ -48,7 +48,7 @@ namespace Ionic.Zip
         /// <para>
         ///   The name of the item may be a relative path or a fully-qualified
         ///   path. Remember, the items contained in <c>ZipFile</c> instance get written
-        ///   to the disk only when you call <see cref="ZipFile.Save()"/> or a similar
+        ///   to the disk only when you call <see cref="Save()"/> or a similar
         ///   save method.
         /// </para>
         ///
@@ -69,9 +69,9 @@ namespace Ionic.Zip
         ///
         /// </remarks>
         ///
-        /// <seealso cref="Ionic.Zip.ZipFile.AddFile(string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.AddDirectory(string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.UpdateItem(string)"/>
+        /// <seealso cref="AddFile(string)"/>
+        /// <seealso cref="AddDirectory(string)"/>
+        /// <seealso cref="UpdateItem(string)"/>
         ///
         /// <overloads>This method has two overloads.</overloads>
         /// <param name="fileOrDirectoryName">
@@ -122,7 +122,7 @@ namespace Ionic.Zip
         ///
         /// </remarks>
         ///
-        /// <exception cref="System.IO.FileNotFoundException">
+        /// <exception cref="FileNotFoundException">
         ///   Thrown if the file or directory passed in does not exist.
         /// </exception>
         ///
@@ -138,9 +138,9 @@ namespace Ionic.Zip
         ///   insert the item at the root path within the archive.
         /// </param>
         ///
-        /// <seealso cref="Ionic.Zip.ZipFile.AddFile(string, string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.AddDirectory(string, string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.UpdateItem(string, string)"/>
+        /// <seealso cref="AddFile(string, string)"/>
+        /// <seealso cref="AddDirectory(string, string)"/>
+        /// <seealso cref="UpdateItem(string, string)"/>
         ///
         /// <example>
         ///   This example shows how to zip up a set of files into a flat hierarchy,
@@ -197,7 +197,7 @@ namespace Ionic.Zip
         /// </code>
         /// </example>
         /// <returns>The <c>ZipEntry</c> added.</returns>
-        public ZipEntry AddItem(String fileOrDirectoryName, String directoryPathInArchive)
+        public ZipEntry AddItem(string fileOrDirectoryName, string directoryPathInArchive)
         {
             if (File.Exists(fileOrDirectoryName))
                 return AddFile(fileOrDirectoryName, directoryPathInArchive);
@@ -205,7 +205,7 @@ namespace Ionic.Zip
             if (Directory.Exists(fileOrDirectoryName))
                 return AddDirectory(fileOrDirectoryName, directoryPathInArchive);
 
-            throw new FileNotFoundException(String.Format("That file or directory ({0}) does not exist!",
+            throw new FileNotFoundException(string.Format("That file or directory ({0}) does not exist!",
                                                           fileOrDirectoryName));
         }
 
@@ -279,9 +279,9 @@ namespace Ionic.Zip
         ///
         /// <overloads>This method has two overloads.</overloads>
         ///
-        /// <seealso cref="Ionic.Zip.ZipFile.AddItem(string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.AddDirectory(string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.UpdateFile(string)"/>
+        /// <seealso cref="AddItem(string)"/>
+        /// <seealso cref="AddDirectory(string)"/>
+        /// <seealso cref="UpdateFile(string)"/>
         ///
         /// <param name="fileName">
         ///   The name of the file to add. It should refer to a file in the filesystem.
@@ -374,9 +374,9 @@ namespace Ionic.Zip
         /// </code>
         /// </example>
         ///
-        /// <seealso cref="Ionic.Zip.ZipFile.AddItem(string,string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.AddDirectory(string, string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.UpdateFile(string,string)"/>
+        /// <seealso cref="AddItem(string,string)"/>
+        /// <seealso cref="AddDirectory(string, string)"/>
+        /// <seealso cref="UpdateFile(string,string)"/>
         ///
         /// <param name="fileName">
         ///   The name of the file to add.  The name of the file may be a relative path
@@ -393,7 +393,7 @@ namespace Ionic.Zip
         /// </param>
         ///
         /// <returns>The <c>ZipEntry</c> corresponding to the file added.</returns>
-        public ZipEntry AddFile(string fileName, String directoryPathInArchive)
+        public ZipEntry AddFile(string fileName, string directoryPathInArchive)
         {
             string nameInArchive = ZipEntry.NameInArchive(fileName, directoryPathInArchive);
             ZipEntry ze = ZipEntry.CreateFromFile(fileName, nameInArchive);
@@ -413,13 +413,13 @@ namespace Ionic.Zip
         ///   that ICollection to this method.
         /// </param>
         ///
-        /// <seealso cref="Ionic.Zip.ZipFile.SelectEntries(String)" />
-        /// <seealso cref="Ionic.Zip.ZipFile.RemoveSelectedEntries(String)" />
+        /// <seealso cref="SelectEntries(string)" />
+        /// <seealso cref="RemoveSelectedEntries(string)" />
         public void RemoveEntries(System.Collections.Generic.ICollection<ZipEntry> entriesToRemove)
         {
             foreach (ZipEntry e in entriesToRemove)
             {
-                this.RemoveEntry(e);
+                RemoveEntry(e);
             }
         }
 
@@ -433,8 +433,8 @@ namespace Ionic.Zip
         ///   that provide the names of entries to be removed.
         /// </param>
         ///
-        /// <seealso cref="Ionic.Zip.ZipFile.SelectEntries(String)" />
-        /// <seealso cref="Ionic.Zip.ZipFile.RemoveSelectedEntries(String)" />
+        /// <seealso cref="SelectEntries(string)" />
+        /// <seealso cref="RemoveSelectedEntries(string)" />
         public void RemoveEntries(System.Collections.Generic.ICollection<String> entriesToRemove)
         {
             foreach (String e in entriesToRemove)
@@ -497,7 +497,7 @@ namespace Ionic.Zip
         /// </code>
         /// </example>
         ///
-        /// <seealso cref="Ionic.Zip.ZipFile.AddSelectedFiles(String, String)" />
+        /// <seealso cref="AddSelectedFiles(string, string)" />
         public void AddFiles(System.Collections.Generic.IEnumerable<String> fileNames)
         {
             this.AddFiles(fileNames, null);
@@ -574,7 +574,7 @@ namespace Ionic.Zip
         ///   archive.
         /// </param>
         ///
-        /// <seealso cref="Ionic.Zip.ZipFile.AddSelectedFiles(String, String)" />
+        /// <seealso cref="AddSelectedFiles(string, string)" />
         public void AddFiles(System.Collections.Generic.IEnumerable<String> fileNames, String directoryPathInArchive)
         {
             AddFiles(fileNames, false, directoryPathInArchive);
@@ -633,7 +633,7 @@ namespace Ionic.Zip
         ///   with <paramref name="preserveDirHierarchy"/> = <c>true</c> will result in the
         ///   full direcory paths being included in the entries added to the ZipFile.
         /// </param>
-        /// <seealso cref="Ionic.Zip.ZipFile.AddSelectedFiles(String, String)" />
+        /// <seealso cref="AddSelectedFiles(string, string)" />
         public void AddFiles(System.Collections.Generic.IEnumerable<String> fileNames,
                              bool preserveDirHierarchy,
                              String directoryPathInArchive)
@@ -647,16 +647,16 @@ namespace Ionic.Zip
                     {
                         //string s = SharedUtilities.NormalizePath(Path.Combine(directoryPathInArchive, Path.GetDirectoryName(f)));
                         string s = Path.GetFullPath(Path.Combine(directoryPathInArchive, Path.GetDirectoryName(f)));
-                        this.AddFile(f, s);
+                        AddFile(f, s);
                     }
                     else
-                        this.AddFile(f, null);
+                        AddFile(f, null);
                 }
             }
             else
             {
                 foreach (var f in fileNames)
-                    this.AddFile(f, directoryPathInArchive);
+                    AddFile(f, directoryPathInArchive);
             }
             OnAddCompleted();
         }
@@ -699,12 +699,12 @@ namespace Ionic.Zip
         ///   archive.
         /// </param>
         ///
-        /// <seealso cref="Ionic.Zip.ZipFile.AddSelectedFiles(String, String)" />
+        /// <seealso cref="AddSelectedFiles(string, string)" />
         public void UpdateFiles(System.Collections.Generic.IEnumerable<String> fileNames, String directoryPathInArchive)
         {
             OnAddStarted();
             foreach (var f in fileNames)
-                this.UpdateFile(f, directoryPathInArchive);
+                UpdateFile(f, directoryPathInArchive);
             OnAddCompleted();
         }
 
@@ -777,9 +777,9 @@ namespace Ionic.Zip
         /// </code>
         /// </example>
         ///
-        /// <seealso cref="Ionic.Zip.ZipFile.AddFile(string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.UpdateDirectory(string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.UpdateItem(string)"/>
+        /// <seealso cref="AddFile(string)"/>
+        /// <seealso cref="UpdateDirectory(string)"/>
+        /// <seealso cref="UpdateItem(string)"/>
         ///
         /// <param name="fileName">
         ///   The name of the file to add or update. It should refer to a file in the
@@ -828,9 +828,9 @@ namespace Ionic.Zip
         /// </para>
         /// </remarks>
         ///
-        /// <seealso cref="Ionic.Zip.ZipFile.AddFile(string,string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.UpdateDirectory(string,string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.UpdateItem(string,string)"/>
+        /// <seealso cref="AddFile(string,string)"/>
+        /// <seealso cref="UpdateDirectory(string,string)"/>
+        /// <seealso cref="UpdateItem(string,string)"/>
         ///
         /// <param name="fileName">
         ///   The name of the file to add or update. It should refer to a file in the
@@ -874,9 +874,9 @@ namespace Ionic.Zip
         ///   contents and the new files.
         /// </remarks>
         ///
-        /// <seealso cref="Ionic.Zip.ZipFile.UpdateFile(string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.AddDirectory(string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.UpdateItem(string)"/>
+        /// <seealso cref="UpdateFile(string)"/>
+        /// <seealso cref="AddDirectory(string)"/>
+        /// <seealso cref="UpdateItem(string)"/>
         ///
         /// <param name="directoryName">
         ///   The path to the directory to be added to the zip archive, or updated in
@@ -906,9 +906,9 @@ namespace Ionic.Zip
         ///   contents and the new files.
         /// </remarks>
         ///
-        /// <seealso cref="Ionic.Zip.ZipFile.UpdateFile(string,string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.AddDirectory(string,string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.UpdateItem(string,string)"/>
+        /// <seealso cref="UpdateFile(string,string)"/>
+        /// <seealso cref="AddDirectory(string,string)"/>
+        /// <seealso cref="UpdateItem(string,string)"/>
         ///
         /// <param name="directoryName">
         ///   The path to the directory to be added to the zip archive, or updated in the
@@ -930,7 +930,7 @@ namespace Ionic.Zip
         /// </returns>
         public ZipEntry UpdateDirectory(string directoryName, String directoryPathInArchive)
         {
-            return this.AddOrUpdateDirectoryImpl(directoryName, directoryPathInArchive, AddOrUpdateAction.AddOrUpdate);
+            return AddOrUpdateDirectoryImpl(directoryName, directoryPathInArchive, AddOrUpdateAction.AddOrUpdate);
         }
 
         /// <summary>
@@ -956,9 +956,9 @@ namespace Ionic.Zip
         /// </para>
         /// </remarks>
         ///
-        /// <seealso cref="Ionic.Zip.ZipFile.AddItem(string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.UpdateFile(string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.UpdateDirectory(string)"/>
+        /// <seealso cref="AddItem(string)"/>
+        /// <seealso cref="UpdateFile(string)"/>
+        /// <seealso cref="UpdateDirectory(string)"/>
         ///
         /// <param name="itemName">the path to the file or directory to be added or updated.</param>
         public void UpdateItem(string itemName)
@@ -997,9 +997,9 @@ namespace Ionic.Zip
         /// </para>
         /// </remarks>
         ///
-        /// <seealso cref="Ionic.Zip.ZipFile.AddItem(string, string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.UpdateFile(string, string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.UpdateDirectory(string, string)"/>
+        /// <seealso cref="AddItem(string, string)"/>
+        /// <seealso cref="UpdateFile(string, string)"/>
+        /// <seealso cref="UpdateDirectory(string, string)"/>
         ///
         /// <param name="itemName">The path for the File or Directory to be added or updated.</param>
         /// <param name="directoryPathInArchive">
@@ -1018,7 +1018,7 @@ namespace Ionic.Zip
             else if (Directory.Exists(itemName))
                 UpdateDirectory(itemName, directoryPathInArchive);
             else
-                throw new FileNotFoundException(String.Format("That file or directory ({0}) does not exist!", itemName));
+                throw new FileNotFoundException(string.Format("That file or directory ({0}) does not exist!", itemName));
         }
 
         /// <summary>
@@ -1100,7 +1100,7 @@ namespace Ionic.Zip
         ///   If you wish to create within a zip file a file entry with Unicode-encoded
         ///   content that includes a byte-order-mark, you can convert your string to a
         ///   byte array using the appropriate <see
-        ///   cref="System.Text.Encoding.GetBytes(String)">System.Text.Encoding.GetBytes()</see>
+        ///   cref="System.Text.Encoding.GetBytes(string)">System.Text.Encoding.GetBytes()</see>
         ///   method, then prepend to that byte array the output of <see
         ///   cref="System.Text.Encoding.GetPreamble()">System.Text.Encoding.GetPreamble()</see>,
         ///   and use the <see cref="AddEntry(string,byte[])"/> method, to add the
@@ -1148,7 +1148,7 @@ namespace Ionic.Zip
         ///
         /// <para>
         ///   The application can provide an open, readable stream; in this case it will
-        ///   be read during the call to <see cref="ZipFile.Save()"/> or one of its
+        ///   be read during the call to <see cref="Save()"/> or one of its
         ///   overloads.
         /// </para>
         ///
@@ -1203,7 +1203,7 @@ namespace Ionic.Zip
         /// </code>
         /// </example>
         ///
-        /// <seealso cref="Ionic.Zip.ZipFile.UpdateEntry(string, System.IO.Stream)"/>
+        /// <seealso cref="UpdateEntry(string, Stream)"/>
         ///
         /// <param name="entryName">
         ///   The name, including any path, which is shown in the zip file for the added
@@ -1569,8 +1569,8 @@ namespace Ionic.Zip
         ///
         /// </remarks>
         ///
-        /// <seealso cref="Ionic.Zip.ZipFile.AddEntry(string, System.IO.Stream)"/>
-        /// <seealso cref="Ionic.Zip.ZipEntry.InputStream"/>
+        /// <seealso cref="AddEntry(string, Stream)"/>
+        /// <seealso cref="ZipEntry.InputStream"/>
         ///
         /// <param name="entryName">
         ///   The name, including any path, to use within the archive for the entry.
@@ -1589,7 +1589,7 @@ namespace Ionic.Zip
             string key = ZipEntry.NameInArchive(entryName, directoryPathInArchive);
 
             if (this[key] != null)
-                this.RemoveEntry(key);
+                RemoveEntry(key);
 
             return AddEntry(entryName, stream);
         }
@@ -1691,10 +1691,10 @@ namespace Ionic.Zip
         ///
         /// </remarks>
         ///
-        /// <seealso cref="Ionic.Zip.ZipFile.AddItem(string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.AddFile(string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.UpdateDirectory(string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.AddDirectory(string, string)"/>
+        /// <seealso cref="AddItem(string)"/>
+        /// <seealso cref="AddFile(string)"/>
+        /// <seealso cref="UpdateDirectory(string)"/>
+        /// <seealso cref="AddDirectory(string, string)"/>
         ///
         /// <overloads>This method has 2 overloads.</overloads>
         ///
@@ -1753,9 +1753,9 @@ namespace Ionic.Zip
         /// </code>
         /// </example>
         ///
-        /// <seealso cref="Ionic.Zip.ZipFile.AddItem(string, string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.AddFile(string, string)"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.UpdateDirectory(string, string)"/>
+        /// <seealso cref="AddItem(string, string)"/>
+        /// <seealso cref="AddFile(string, string)"/>
+        /// <seealso cref="UpdateDirectory(string, string)"/>
         ///
         /// <param name="directoryName">The name of the directory to add.</param>
         ///
@@ -1892,9 +1892,9 @@ namespace Ionic.Zip
 #if NETCF
                 FileAttributes fileAttrs = (FileAttributes) NetCfFile.GetAttributes(dir);
 #else
-                FileAttributes fileAttrs = System.IO.File.GetAttributes(dir);
+                FileAttributes fileAttrs = File.GetAttributes(dir);
 #endif
-                if (this.AddDirectoryWillTraverseReparsePoints ||
+                if (AddDirectoryWillTraverseReparsePoints ||
                     ((fileAttrs & FileAttributes.ReparsePoint) == 0))
                     AddOrUpdateDirectoryImpl(dir, rootDirectoryPathInArchive, action, level + 1);
             }

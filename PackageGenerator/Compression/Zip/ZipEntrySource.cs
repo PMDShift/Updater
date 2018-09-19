@@ -39,8 +39,8 @@ namespace Ionic.Zip
         FileSystem,
 
         /// <summary>
-        /// The entry was instantiated via <see cref="Ionic.Zip.ZipFile.AddEntry(string,string)"/> or
-        /// <see cref="Ionic.Zip.ZipFile.AddEntry(string,System.IO.Stream)"/> .
+        /// The entry was instantiated via <see cref="Zip.ZipFile.AddEntry(string,string)"/> or
+        /// <see cref="Zip.ZipFile.AddEntry(string,System.IO.Stream)"/> .
         /// </summary>
         Stream,
 
@@ -56,7 +56,7 @@ namespace Ionic.Zip
 
         /// <summary>
         /// The content for the ZipEntry will be obtained from the stream dispensed by the <c>OpenDelegate</c>.
-        /// The entry was instantiated via <see cref="Ionic.Zip.ZipFile.AddEntry(string,OpenDelegate,CloseDelegate)"/>.
+        /// The entry was instantiated via <see cref="Zip.ZipFile.AddEntry(string,OpenDelegate,CloseDelegate)"/>.
         /// </summary>
         JitStream,
 

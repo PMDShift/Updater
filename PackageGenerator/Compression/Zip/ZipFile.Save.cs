@@ -472,8 +472,7 @@ namespace Ionic.Zip
             // that data into the directory, and finally, write the directory to the
             // output stream.
 
-            var output = s as CountingStream;
-            long Finish = (output != null) ? output.ComputedPosition : s.Position;  // BytesWritten
+            long Finish = (s is CountingStream output) ? output.ComputedPosition : s.Position;  // BytesWritten
             long Start = Finish - a.Length;
 
             // need to know which segment the EOCD record starts in

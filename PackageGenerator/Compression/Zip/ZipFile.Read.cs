@@ -65,7 +65,7 @@ namespace Ionic.Zip
         ///
         public static ZipFile Read(string fileName)
         {
-            return ZipFile.Read(fileName, null, DefaultEncoding);
+            return Read(fileName, null, DefaultEncoding);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace Ionic.Zip
         ///
         public static ZipFile Read(string fileName, EventHandler<ReadProgressEventArgs> readProgress)
         {
-            return ZipFile.Read(fileName, null, DefaultEncoding, readProgress);
+            return Read(fileName, null, DefaultEncoding, readProgress);
         }
 
         /// <summary>
@@ -421,10 +421,12 @@ namespace Ionic.Zip
                                    System.Text.Encoding encoding,
                                    EventHandler<ReadProgressEventArgs> readProgress)
         {
-            ZipFile zf = new ZipFile();
-            zf.ProvisionalAlternateEncoding = encoding;
-            zf._StatusMessageTextWriter = statusMessageWriter;
-            zf._name = fileName;
+            ZipFile zf = new ZipFile
+            {
+                ProvisionalAlternateEncoding = encoding,
+                _StatusMessageTextWriter = statusMessageWriter,
+                _name = fileName
+            };
             if (readProgress != null)
                 zf.ReadProgress = readProgress;
 
@@ -826,8 +828,10 @@ namespace Ionic.Zip
             if (zipStream == null)
                 throw new ArgumentException("The stream must be non-null", "zipStream");
 
-            ZipFile zf = new ZipFile();
-            zf._provisionalAlternateEncoding = encoding;
+            ZipFile zf = new ZipFile
+            {
+                _provisionalAlternateEncoding = encoding
+            };
             if (readProgress != null)
                 zf.ReadProgress += readProgress;
             zf._StatusMessageTextWriter = statusMessageWriter;
@@ -939,11 +943,13 @@ namespace Ionic.Zip
         ///
         public static ZipFile Read(byte[] buffer, TextWriter statusMessageWriter, System.Text.Encoding encoding)
         {
-            ZipFile zf = new ZipFile();
-            zf._StatusMessageTextWriter = statusMessageWriter;
-            zf._provisionalAlternateEncoding = encoding;
-            zf._readstream = new MemoryStream(buffer);
-            zf._ReadStreamIsOurs = true;
+            ZipFile zf = new ZipFile
+            {
+                _StatusMessageTextWriter = statusMessageWriter,
+                _provisionalAlternateEncoding = encoding,
+                _readstream = new MemoryStream(buffer),
+                _ReadStreamIsOurs = true
+            };
             if (zf.Verbose) zf._StatusMessageTextWriter.WriteLine("reading from byte[]...");
 
             ReadIntoInstance(zf);

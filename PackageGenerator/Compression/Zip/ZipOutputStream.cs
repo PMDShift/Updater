@@ -1254,8 +1254,7 @@ namespace Ionic.Zip
                                                                                      Comment,
                                                                                      ProvisionalAlternateEncoding);
                     Stream wrappedStream = null;
-                    CountingStream cs = _outputStream as CountingStream;
-                    if (cs != null)
+                    if (_outputStream is CountingStream cs)
                     {
                         wrappedStream = cs.WrappedStream;
 #if NETCF

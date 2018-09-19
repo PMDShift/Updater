@@ -26,8 +26,8 @@ namespace PMDCP.Updater
         #region Fields
 
         private BackgroundWorker downloadBWorker;
-        private string downloadURI;
-        private string filePath;
+        private readonly string downloadURI;
+        private readonly string filePath;
 
         #endregion Fields
 
@@ -54,9 +54,9 @@ namespace PMDCP.Updater
         public void Download()
         {
             downloadBWorker = new BackgroundWorker();
-            downloadBWorker.DoWork += new DoWorkEventHandler(downloadBWorker_DoWork);
+            downloadBWorker.DoWork += new DoWorkEventHandler(DownloadBWorker_DoWork);
             downloadBWorker.WorkerReportsProgress = true;
-            downloadBWorker.ProgressChanged += new ProgressChangedEventHandler(downloadBWorker_ProgressChanged);
+            downloadBWorker.ProgressChanged += new ProgressChangedEventHandler(DownloadBWorker_ProgressChanged);
             FileStream stream = new FileStream(filePath + ".tmp", FileMode.Create, FileAccess.Write);
             downloadBWorker.RunWorkerAsync(new object[] { downloadURI, stream });
 
@@ -66,7 +66,7 @@ namespace PMDCP.Updater
             //webClient.DownloadFileAsync(new Uri(downloadURI), filePath + ".tmp");
         }
 
-        private void webClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+        private void WebClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
             if (File.Exists(filePath))
             {
@@ -74,22 +74,18 @@ namespace PMDCP.Updater
             }
             File.Move(filePath + ".tmp", filePath);
 
-            if (DownloadComplete != null)
-                DownloadComplete(this, new FileDownloadingEventArgs(0, filePath, 100, 0));
+            DownloadComplete?.Invoke(this, new FileDownloadingEventArgs(0, filePath, 100, 0));
         }
 
-        private void webClient_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        private void WebClient_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
 #if DEBUG
             Console.WriteLine(e.BytesReceived + "/" + e.TotalBytesToReceive);
 #endif
-            if (DownloadUpdate != null)
-            {
-                DownloadUpdate(this, new FileDownloadingEventArgs(e.TotalBytesToReceive, filePath, e.ProgressPercentage, e.BytesReceived));
-            }
+            DownloadUpdate?.Invoke(this, new FileDownloadingEventArgs(e.TotalBytesToReceive, filePath, e.ProgressPercentage, e.BytesReceived));
         }
 
-        private void downloadBWorker_DoWork(object sender, DoWorkEventArgs e)
+        private void DownloadBWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             bool downloadComplete = false;
 
@@ -167,7 +163,7 @@ namespace PMDCP.Updater
             }
         }
 
-        private void downloadBWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void DownloadBWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             object[] data = e.UserState as object[];
             switch ((string)data[0])
@@ -175,23 +171,20 @@ namespace PMDCP.Updater
                 case "downloading":
                     {
                         FileDownloadingEventArgs downloadInfo = data[1] as FileDownloadingEventArgs;
-                        if (DownloadUpdate != null)
-                            DownloadUpdate(this, downloadInfo);
+                        DownloadUpdate?.Invoke(this, downloadInfo);
                     }
                     break;
 
                 case "done":
                     {
                         FileDownloadingEventArgs downloadInfo = data[1] as FileDownloadingEventArgs;
-                        if (DownloadComplete != null)
-                            DownloadComplete(this, downloadInfo);
+                        DownloadComplete?.Invoke(this, downloadInfo);
                     }
                     break;
 
                 case "error":
                     {
-                        Exception ex = data[1] as Exception;
-                        if (ex != null)
+                        if (data[1] is Exception ex)
                         {
                             System.Windows.Forms.MessageBox.Show(ex.ToString());
                         }

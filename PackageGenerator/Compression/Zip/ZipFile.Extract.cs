@@ -49,7 +49,7 @@ namespace Ionic.Zip
         /// property on the <c>ZipFile</c> instance, the entry will not be extracted,
         /// the existing file will not be overwritten and an exception will be
         /// thrown. To change this, set the property, or use the <see
-        /// cref="ZipFile.ExtractAll(string, Ionic.Zip.ExtractExistingFileAction)" />
+        /// cref="ExtractAll(string, ExtractExistingFileAction)" />
         /// overload that allows you to specify an ExtractExistingFileAction parameter.
         /// </para>
         ///
@@ -127,8 +127,8 @@ namespace Ionic.Zip
         /// </code>
         /// </example>
         ///
-        /// <seealso cref="Ionic.Zip.ZipFile.ExtractProgress"/>
-        /// <seealso cref="Ionic.Zip.ZipFile.ExtractExistingFile"/>
+        /// <seealso cref="ExtractProgress"/>
+        /// <seealso cref="ExtractExistingFile"/>
         ///
         /// <param name="path">
         /// The path to which the contents of the zipfile will be extracted.
@@ -240,7 +240,7 @@ namespace Ionic.Zip
                     e.Password = _Password;  // this may be null
                     OnExtractEntry(n, true, e, path);
                     if (overrideExtractExistingProperty)
-                        e.ExtractExistingFile = this.ExtractExistingFile;
+                        e.ExtractExistingFile = ExtractExistingFile;
                     e.Extract(path);
                     n++;
                     OnExtractEntry(n, false, e, path);

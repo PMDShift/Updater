@@ -22,20 +22,16 @@ namespace PMDCP.Updater
 {
     public class PackageInstaller : MarshalByRefObject, IPackageInstaller
     {
-        private string packagePath;
-        private string basePath;
+        private readonly string basePath;
         private ZipFile packageZip;
-        private IPackageInfo package;
-        private string packageDataDirectory;
-        private IPackageLoader loader;
 
         public PackageInstaller(string packagePath, string packageDataDirectory, string basePath, IPackageInfo package, IPackageLoader loader)
         {
-            this.packagePath = packagePath;
-            this.packageDataDirectory = packageDataDirectory;
+            this.PackagePath = packagePath;
+            this.PackageDataDirectory = packageDataDirectory;
             this.basePath = basePath;
-            this.package = package;
-            this.loader = loader;
+            this.Package = package;
+            this.Loader = loader;
             packageZip = new ZipFile(packagePath);
         }
 
@@ -102,10 +98,7 @@ namespace PMDCP.Updater
             return basePath + filePath;
         }
 
-        public string PackagePath
-        {
-            get { return packagePath; }
-        }
+        public string PackagePath { get; }
 
         public void ExtractFile(string file)
         {
@@ -174,19 +167,10 @@ namespace PMDCP.Updater
             return false;
         }
 
-        public string PackageDataDirectory
-        {
-            get { return packageDataDirectory; }
-        }
+        public string PackageDataDirectory { get; }
 
-        public IPackageInfo Package
-        {
-            get { return package; }
-        }
+        public IPackageInfo Package { get; }
 
-        public IPackageLoader Loader
-        {
-            get { return loader; }
-        }
+        public IPackageLoader Loader { get; }
     }
 }

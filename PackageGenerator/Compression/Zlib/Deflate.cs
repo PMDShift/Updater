@@ -437,7 +437,7 @@ namespace Ionic.Zlib
         // exchanging a node with the smallest of its two sons if necessary, stopping
         // when the heap property is re-established (each father smaller than its
         // two sons).
-        internal void pqdownheap(short[] tree, int k)
+        internal void Pqdownheap(short[] tree, int k)
         {
             int v = heap[k];
             int j = k << 1; // left son of k
@@ -469,7 +469,7 @@ namespace Ionic.Zlib
 
         // Scan a literal or distance tree to determine the frequencies of the codes
         // in the bit length tree.
-        internal void scan_tree(short[] tree, int max_code)
+        internal void Scan_tree(short[] tree, int max_code)
         {
             int n; // iterates over all tree elements
             int prevlen = -1; // last emitted length
@@ -528,13 +528,13 @@ namespace Ionic.Zlib
 
         // Construct the Huffman tree for the bit lengths and return the index in
         // bl_order of the last bit length code to send.
-        internal int build_bl_tree()
+        internal int Build_bl_tree()
         {
             int max_blindex; // index of last bit length code of non zero freq
 
             // Determine the bit length frequencies for literal and distance trees
-            scan_tree(dyn_ltree, treeLiterals.max_code);
-            scan_tree(dyn_dtree, treeDistances.max_code);
+            Scan_tree(dyn_ltree, treeLiterals.max_code);
+            Scan_tree(dyn_dtree, treeDistances.max_code);
 
             // Build the bit length tree:
             treeBitLengths.build_tree(this);
@@ -558,24 +558,24 @@ namespace Ionic.Zlib
         // Send the header for a block using dynamic Huffman trees: the counts, the
         // lengths of the bit length codes, the literal tree and the distance tree.
         // IN assertion: lcodes >= 257, dcodes >= 1, blcodes >= 4.
-        internal void send_all_trees(int lcodes, int dcodes, int blcodes)
+        internal void Send_all_trees(int lcodes, int dcodes, int blcodes)
         {
             int rank; // index in bl_order
 
-            send_bits(lcodes - 257, 5); // not +255 as stated in appnote.txt
-            send_bits(dcodes - 1, 5);
-            send_bits(blcodes - 4, 4); // not -3 as stated in appnote.txt
+            Send_bits(lcodes - 257, 5); // not +255 as stated in appnote.txt
+            Send_bits(dcodes - 1, 5);
+            Send_bits(blcodes - 4, 4); // not -3 as stated in appnote.txt
             for (rank = 0; rank < blcodes; rank++)
             {
-                send_bits(bl_tree[Tree.bl_order[rank] * 2 + 1], 3);
+                Send_bits(bl_tree[Tree.bl_order[rank] * 2 + 1], 3);
             }
-            send_tree(dyn_ltree, lcodes - 1); // literal tree
-            send_tree(dyn_dtree, dcodes - 1); // distance tree
+            Send_tree(dyn_ltree, lcodes - 1); // literal tree
+            Send_tree(dyn_dtree, dcodes - 1); // distance tree
         }
 
         // Send a literal or distance tree in compressed form, using the codes in
         // bl_tree.
-        internal void send_tree(short[] tree, int max_code)
+        internal void Send_tree(short[] tree, int max_code)
         {
             int n;                           // iterates over all tree elements
             int prevlen = -1;              // last emitted length
@@ -601,7 +601,7 @@ namespace Ionic.Zlib
                 {
                     do
                     {
-                        send_code(curlen, bl_tree);
+                        Send_code(curlen, bl_tree);
                     }
                     while (--count != 0);
                 }
@@ -609,20 +609,20 @@ namespace Ionic.Zlib
                 {
                     if (curlen != prevlen)
                     {
-                        send_code(curlen, bl_tree); count--;
+                        Send_code(curlen, bl_tree); count--;
                     }
-                    send_code(InternalConstants.REP_3_6, bl_tree);
-                    send_bits(count - 3, 2);
+                    Send_code(InternalConstants.REP_3_6, bl_tree);
+                    Send_bits(count - 3, 2);
                 }
                 else if (count <= 10)
                 {
-                    send_code(InternalConstants.REPZ_3_10, bl_tree);
-                    send_bits(count - 3, 3);
+                    Send_code(InternalConstants.REPZ_3_10, bl_tree);
+                    Send_bits(count - 3, 3);
                 }
                 else
                 {
-                    send_code(InternalConstants.REPZ_11_138, bl_tree);
-                    send_bits(count - 11, 7);
+                    Send_code(InternalConstants.REPZ_11_138, bl_tree);
+                    Send_bits(count - 11, 7);
                 }
                 count = 0; prevlen = curlen;
                 if (nextlen == 0)
@@ -642,7 +642,7 @@ namespace Ionic.Zlib
 
         // Output a block of bytes on the stream.
         // IN assertion: there is enough room in pending_buf.
-        private void put_bytes(byte[] p, int start, int len)
+        private void Put_bytes(byte[] p, int start, int len)
         {
             Array.Copy(p, start, pending, pendingCount, len);
             pendingCount += len;
@@ -671,13 +671,13 @@ namespace Ionic.Zlib
         }
 #endif
 
-        internal void send_code(int c, short[] tree)
+        internal void Send_code(int c, short[] tree)
         {
             int c2 = c * 2;
-            send_bits((tree[c2] & 0xffff), (tree[c2 + 1] & 0xffff));
+            Send_bits((tree[c2] & 0xffff), (tree[c2 + 1] & 0xffff));
         }
 
-        internal void send_bits(int value, int length)
+        internal void Send_bits(int value, int length)
         {
             int len = length;
             unchecked
@@ -715,10 +715,10 @@ namespace Ionic.Zlib
         // on one bit only.
         internal void _tr_align()
         {
-            send_bits(STATIC_TREES << 1, 3);
-            send_code(END_BLOCK, StaticTree.lengthAndLiteralsTreeCodes);
+            Send_bits(STATIC_TREES << 1, 3);
+            Send_code(END_BLOCK, StaticTree.lengthAndLiteralsTreeCodes);
 
-            bi_flush();
+            Bi_flush();
 
             // Of the 10 bits for the empty block, we have already sent
             // (10 - bi_valid) bits. The lookahead for the last real code (before
@@ -726,9 +726,9 @@ namespace Ionic.Zlib
             // of the EOB plus what we have just sent of the empty static block.
             if (1 + last_eob_len + 10 - bi_valid < 9)
             {
-                send_bits(STATIC_TREES << 1, 3);
-                send_code(END_BLOCK, StaticTree.lengthAndLiteralsTreeCodes);
-                bi_flush();
+                Send_bits(STATIC_TREES << 1, 3);
+                Send_code(END_BLOCK, StaticTree.lengthAndLiteralsTreeCodes);
+                Bi_flush();
             }
             last_eob_len = 7;
         }
@@ -779,7 +779,7 @@ namespace Ionic.Zlib
         }
 
         // Send the block data compressed using the given Huffman trees
-        internal void send_compressed_block(short[] ltree, short[] dtree)
+        internal void Send_compressed_block(short[] ltree, short[] dtree)
         {
             int distance; // distance of matched string
             int lc;       // match length or unmatched char (if dist == 0)
@@ -799,7 +799,7 @@ namespace Ionic.Zlib
 
                     if (distance == 0)
                     {
-                        send_code(lc, ltree); // send a literal byte
+                        Send_code(lc, ltree); // send a literal byte
                     }
                     else
                     {
@@ -808,26 +808,26 @@ namespace Ionic.Zlib
                         code = Tree.LengthCode[lc];
 
                         // send the length code
-                        send_code(code + InternalConstants.LITERALS + 1, ltree);
+                        Send_code(code + InternalConstants.LITERALS + 1, ltree);
                         extra = Tree.ExtraLengthBits[code];
                         if (extra != 0)
                         {
                             // send the extra length bits
                             lc -= Tree.LengthBase[code];
-                            send_bits(lc, extra);
+                            Send_bits(lc, extra);
                         }
                         distance--; // dist is now the match distance - 1
                         code = Tree.DistanceCode(distance);
 
                         // send the distance code
-                        send_code(code, dtree);
+                        Send_code(code, dtree);
 
                         extra = Tree.ExtraDistanceBits[code];
                         if (extra != 0)
                         {
                             // send the extra distance bits
                             distance -= Tree.DistanceBase[code];
-                            send_bits(distance, extra);
+                            Send_bits(distance, extra);
                         }
                     }
 
@@ -836,7 +836,7 @@ namespace Ionic.Zlib
                 while (lx < last_lit);
             }
 
-            send_code(END_BLOCK, ltree);
+            Send_code(END_BLOCK, ltree);
             last_eob_len = ltree[END_BLOCK * 2 + 1];
         }
 
@@ -844,7 +844,7 @@ namespace Ionic.Zlib
         // binary if more than 20% of the bytes are <= 6 or >= 128, ascii otherwise.
         // IN assertion: the fields freq of dyn_ltree are set and the total of all
         // frequencies does not exceed 64K (to fit in an int on 16 bit machines).
-        internal void set_data_type()
+        internal void Set_data_type()
         {
             int n = 0;
             int ascii_freq = 0;
@@ -865,7 +865,7 @@ namespace Ionic.Zlib
         }
 
         // Flush the bit buffer, keeping at most 7 bits in it.
-        internal void bi_flush()
+        internal void Bi_flush()
         {
             if (bi_valid == 16)
             {
@@ -884,7 +884,7 @@ namespace Ionic.Zlib
         }
 
         // Flush the bit buffer and align the output on a byte boundary
-        internal void bi_windup()
+        internal void Bi_windup()
         {
             if (bi_valid > 8)
             {
@@ -902,9 +902,9 @@ namespace Ionic.Zlib
 
         // Copy a stored block, storing first the length and its
         // one's complement if requested.
-        internal void copy_block(int buf, int len, bool header)
+        internal void Copy_block(int buf, int len, bool header)
         {
-            bi_windup(); // align on byte boundary
+            Bi_windup(); // align on byte boundary
             last_eob_len = 8; // enough lookahead for inflate
 
             if (header)
@@ -918,14 +918,14 @@ namespace Ionic.Zlib
                     pending[pendingCount++] = (byte)(~len >> 8);
                 }
 
-            put_bytes(window, buf, len);
+            Put_bytes(window, buf, len);
         }
 
-        internal void flush_block_only(bool eof)
+        internal void Flush_block_only(bool eof)
         {
             _tr_flush_block(block_start >= 0 ? block_start : -1, strstart - block_start, eof);
             block_start = strstart;
-            _codec.flush_pending();
+            _codec.Flush_pending();
         }
 
         // Copy without compression as much as possible from the input stream, return
@@ -972,7 +972,7 @@ namespace Ionic.Zlib
                     lookahead = (int)(strstart - max_start);
                     strstart = (int)max_start;
 
-                    flush_block_only(false);
+                    Flush_block_only(false);
                     if (_codec.AvailableBytesOut == 0)
                         return BlockState.NeedMore;
                 }
@@ -981,13 +981,13 @@ namespace Ionic.Zlib
                 // negative and the data will be gone:
                 if (strstart - block_start >= w_size - MIN_LOOKAHEAD)
                 {
-                    flush_block_only(false);
+                    Flush_block_only(false);
                     if (_codec.AvailableBytesOut == 0)
                         return BlockState.NeedMore;
                 }
             }
 
-            flush_block_only(flush == FlushType.Finish);
+            Flush_block_only(flush == FlushType.Finish);
             if (_codec.AvailableBytesOut == 0)
                 return (flush == FlushType.Finish) ? BlockState.FinishStarted : BlockState.NeedMore;
 
@@ -997,8 +997,8 @@ namespace Ionic.Zlib
         // Send a stored block
         internal void _tr_stored_block(int buf, int stored_len, bool eof)
         {
-            send_bits((STORED_BLOCK << 1) + (eof ? 1 : 0), 3); // send block type
-            copy_block(buf, stored_len, true); // with header
+            Send_bits((STORED_BLOCK << 1) + (eof ? 1 : 0), 3); // send block type
+            Copy_block(buf, stored_len, true); // with header
         }
 
         // Determine the best encoding for the current block: dynamic trees, static
@@ -1013,7 +1013,7 @@ namespace Ionic.Zlib
             {
                 // Check if the file is ascii or binary
                 if (data_type == Z_UNKNOWN)
-                    set_data_type();
+                    Set_data_type();
 
                 // Construct the literal and distance trees
                 treeLiterals.build_tree(this);
@@ -1025,7 +1025,7 @@ namespace Ionic.Zlib
 
                 // Build the bit length tree for the above two trees, and get the index
                 // in bl_order of the last bit length code to send.
-                max_blindex = build_bl_tree();
+                max_blindex = Build_bl_tree();
 
                 // Determine the best encoding. Compute first the block length in bytes
                 opt_lenb = (opt_len + 3 + 7) >> 3;
@@ -1051,14 +1051,14 @@ namespace Ionic.Zlib
             }
             else if (static_lenb == opt_lenb)
             {
-                send_bits((STATIC_TREES << 1) + (eof ? 1 : 0), 3);
-                send_compressed_block(StaticTree.lengthAndLiteralsTreeCodes, StaticTree.distTreeCodes);
+                Send_bits((STATIC_TREES << 1) + (eof ? 1 : 0), 3);
+                Send_compressed_block(StaticTree.lengthAndLiteralsTreeCodes, StaticTree.distTreeCodes);
             }
             else
             {
-                send_bits((DYN_TREES << 1) + (eof ? 1 : 0), 3);
-                send_all_trees(treeLiterals.max_code + 1, treeDistances.max_code + 1, max_blindex + 1);
-                send_compressed_block(dyn_ltree, dyn_dtree);
+                Send_bits((DYN_TREES << 1) + (eof ? 1 : 0), 3);
+                Send_all_trees(treeLiterals.max_code + 1, treeDistances.max_code + 1, max_blindex + 1);
+                Send_compressed_block(dyn_ltree, dyn_dtree);
             }
 
             // The above check is made mod 2^32, for files larger than 512 MB
@@ -1068,7 +1068,7 @@ namespace Ionic.Zlib
 
             if (eof)
             {
-                bi_windup();
+                Bi_windup();
             }
         }
 
@@ -1153,7 +1153,7 @@ namespace Ionic.Zlib
                 // Otherwise, window_size == 2*WSIZE so more >= 2.
                 // If there was sliding, more >= WSIZE. So in all cases, more >= 2.
 
-                n = _codec.read_buf(window, strstart + lookahead, more);
+                n = _codec.Read_buf(window, strstart + lookahead, more);
                 lookahead += n;
 
                 // Initialize the hash value now that we have some input:
@@ -1218,7 +1218,7 @@ namespace Ionic.Zlib
                     // of the string with itself at the start of the input file).
                     if (compressionStrategy != CompressionStrategy.HuffmanOnly)
                     {
-                        match_length = longest_match(hash_head);
+                        match_length = Longest_match(hash_head);
                     }
                     // longest_match() sets match_start
                 }
@@ -1272,13 +1272,13 @@ namespace Ionic.Zlib
                 }
                 if (bflush)
                 {
-                    flush_block_only(false);
+                    Flush_block_only(false);
                     if (_codec.AvailableBytesOut == 0)
                         return BlockState.NeedMore;
                 }
             }
 
-            flush_block_only(flush == FlushType.Finish);
+            Flush_block_only(flush == FlushType.Finish);
             if (_codec.AvailableBytesOut == 0)
             {
                 if (flush == FlushType.Finish)
@@ -1342,7 +1342,7 @@ namespace Ionic.Zlib
 
                     if (compressionStrategy != CompressionStrategy.HuffmanOnly)
                     {
-                        match_length = longest_match(hash_head);
+                        match_length = Longest_match(hash_head);
                     }
                     // longest_match() sets match_start
 
@@ -1390,7 +1390,7 @@ namespace Ionic.Zlib
 
                     if (bflush)
                     {
-                        flush_block_only(false);
+                        Flush_block_only(false);
                         if (_codec.AvailableBytesOut == 0)
                             return BlockState.NeedMore;
                     }
@@ -1405,7 +1405,7 @@ namespace Ionic.Zlib
 
                     if (bflush)
                     {
-                        flush_block_only(false);
+                        Flush_block_only(false);
                     }
                     strstart++;
                     lookahead--;
@@ -1428,7 +1428,7 @@ namespace Ionic.Zlib
                 bflush = _tr_tally(0, window[strstart - 1] & 0xff);
                 match_available = 0;
             }
-            flush_block_only(flush == FlushType.Finish);
+            Flush_block_only(flush == FlushType.Finish);
 
             if (_codec.AvailableBytesOut == 0)
             {
@@ -1441,7 +1441,7 @@ namespace Ionic.Zlib
             return flush == FlushType.Finish ? BlockState.FinishDone : BlockState.BlockDone;
         }
 
-        internal int longest_match(int cur_match)
+        internal int Longest_match(int cur_match)
         {
             int chain_length = config.MaxChainLength; // max hash chain length
             int scan = strstart;              // current string
@@ -1778,7 +1778,7 @@ namespace Ionic.Zlib
             // Flush as much pending output as possible
             if (pendingCount != 0)
             {
-                _codec.flush_pending();
+                _codec.Flush_pending();
                 if (_codec.AvailableBytesOut == 0)
                 {
                     //System.out.println("  avail_out==0");
@@ -1861,7 +1861,7 @@ namespace Ionic.Zlib
                                 head[i] = 0;
                         }
                     }
-                    _codec.flush_pending();
+                    _codec.Flush_pending();
                     if (_codec.AvailableBytesOut == 0)
                     {
                         last_flush = -1; // avoid BUF_ERROR at next call, see above
@@ -1884,7 +1884,7 @@ namespace Ionic.Zlib
             //putShortMSB((int)(SharedUtils.URShift(_codec._Adler32, 16)));
             //putShortMSB((int)(_codec._Adler32 & 0xffff));
 
-            _codec.flush_pending();
+            _codec.Flush_pending();
 
             // If avail_out is zero, the application will call deflate again
             // to flush the rest.

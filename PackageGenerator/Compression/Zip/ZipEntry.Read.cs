@@ -99,7 +99,7 @@ namespace Ionic.Zip
             ze._TimeBlob = block[i++] + block[i++] * 256 + block[i++] * 256 * 256 + block[i++] * 256 * 256 * 256;
             // transform the time data into something usable (a DateTime)
             ze._LastModified = Ionic.Zip.SharedUtilities.PackedToDateTime(ze._TimeBlob);
-            ze._timestamp |= ZipEntryTimestamp.DOS;
+            ze.Timestamp |= ZipEntryTimestamp.DOS;
 
             if ((ze._BitField & 0x01) == 0x01)
             {
@@ -130,12 +130,12 @@ namespace Ionic.Zip
             bytesRead += n;
 
             // if the UTF8 bit is set for this entry, override the encoding the application requested.
-            ze._actualEncoding = ((ze._BitField & 0x0800) == 0x0800)
+            ze.ActualEncoding = ((ze._BitField & 0x0800) == 0x0800)
                 ? System.Text.Encoding.UTF8
                 : defaultEncoding;
 
             // need to use this form of GetString() for .NET CF
-            ze._FileNameInArchive = ze._actualEncoding.GetString(block, 0, block.Length);
+            ze._FileNameInArchive = ze.ActualEncoding.GetString(block, 0, block.Length);
 
             // when creating an entry by reading, the LocalFileName is the same as the FileNameInArchive
             // No, on second thought, I think it should be empty (null).
@@ -333,10 +333,12 @@ namespace Ionic.Zip
             Stream s = zc.ReadStream;
 
             System.Text.Encoding defaultEncoding = zc.ProvisionalAlternateEncoding;
-            ZipEntry entry = new ZipEntry();
-            entry._Source = ZipEntrySource.ZipFile;
-            entry._container = zc;
-            entry._archiveStream = s;
+            ZipEntry entry = new ZipEntry
+            {
+                _Source = ZipEntrySource.ZipFile,
+                _container = zc,
+                _archiveStream = s
+            };
             if (zf != null)
                 zf.OnReadEntry(true, null);
 
@@ -625,7 +627,7 @@ namespace Ionic.Zip
             this._Ctime = DateTime.UtcNow;
 
             _ntfsTimesAreSet = true;
-            _timestamp |= ZipEntryTimestamp.InfoZip1; return j;
+            Timestamp |= ZipEntryTimestamp.InfoZip1; return j;
         }
 
         private int ProcessExtraFieldUnixTimes(byte[] Buffer, int j, Int16 DataSize, long posn)
@@ -670,7 +672,7 @@ namespace Ionic.Zip
                     else
                         this._Ctime = DateTime.UtcNow;
 
-                    _timestamp |= ZipEntryTimestamp.Unix;
+                    Timestamp |= ZipEntryTimestamp.Unix;
                     _ntfsTimesAreSet = true;
                     _emitUnixTimes = true;
                 }
@@ -737,7 +739,7 @@ namespace Ionic.Zip
                     j += 8;
 
                     _ntfsTimesAreSet = true;
-                    _timestamp |= ZipEntryTimestamp.Windows;
+                    Timestamp |= ZipEntryTimestamp.Windows;
                     _emitNtfsTimes = true;
                 }
             }

@@ -20,30 +20,17 @@ namespace PMDCP.Updater
 {
     public class PackageFileListItem : MarshalByRefObject, IPackageFileListItem
     {
-        private string path;
-        private string name;
-        private string relativePath;
+        public string FullPath { get; }
 
-        public string FullPath
-        {
-            get { return path; }
-        }
+        public string Name { get; }
 
-        public string Name
-        {
-            get { return name; }
-        }
-
-        public string RelativePath
-        {
-            get { return relativePath; }
-        }
+        public string RelativePath { get; }
 
         public PackageFileListItem(string baseDirectory, string relativePath)
         {
-            this.path = baseDirectory + relativePath;
-            this.relativePath = relativePath;
-            this.name = System.IO.Path.GetFileName(this.path);
+            FullPath = baseDirectory + relativePath;
+            RelativePath = relativePath;
+            Name = System.IO.Path.GetFileName(this.FullPath);
         }
     }
 }

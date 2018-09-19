@@ -525,8 +525,10 @@ namespace Ionic.Zip
         /// <param name="flavor">Indicates whether a Winforms or Console self-extractor is desired.</param>
         public void SaveSelfExtractor(string exeToGenerate, SelfExtractorFlavor flavor)
         {
-            SelfExtractorSaveOptions options = new SelfExtractorSaveOptions();
-            options.Flavor = flavor;
+            SelfExtractorSaveOptions options = new SelfExtractorSaveOptions
+            {
+                Flavor = flavor
+            };
             SaveSelfExtractor(exeToGenerate, options);
         }
 

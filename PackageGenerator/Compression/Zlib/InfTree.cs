@@ -112,7 +112,7 @@ namespace Ionic.Zlib
         internal int[] u = null; // table stack
         internal int[] x = null; // bit offsets, then code stack
 
-        private int huft_build(int[] b, int bindex, int n, int s, int[] d, int[] e, int[] t, int[] m, int[] hp, int[] hn, int[] v)
+        private int Huft_build(int[] b, int bindex, int n, int s, int[] d, int[] e, int[] t, int[] m, int[] hp, int[] hn, int[] v)
         {
             // Given a list of code lengths and a maximum table size, make a set of
             // tables to decode that set of codes.  Return Z_OK on success, Z_BUF_ERROR
@@ -326,12 +326,12 @@ namespace Ionic.Zlib
             return y != 0 && g != 1 ? Z_BUF_ERROR : Z_OK;
         }
 
-        internal int inflate_trees_bits(int[] c, int[] bb, int[] tb, int[] hp, ZlibCodec z)
+        internal int Inflate_trees_bits(int[] c, int[] bb, int[] tb, int[] hp, ZlibCodec z)
         {
             int result;
-            initWorkArea(19);
+            InitWorkArea(19);
             hn[0] = 0;
-            result = huft_build(c, 0, 19, 19, null, null, tb, bb, hp, hn, v);
+            result = Huft_build(c, 0, 19, 19, null, null, tb, bb, hp, hn, v);
 
             if (result == Z_DATA_ERROR)
             {
@@ -345,14 +345,14 @@ namespace Ionic.Zlib
             return result;
         }
 
-        internal int inflate_trees_dynamic(int nl, int nd, int[] c, int[] bl, int[] bd, int[] tl, int[] td, int[] hp, ZlibCodec z)
+        internal int Inflate_trees_dynamic(int nl, int nd, int[] c, int[] bl, int[] bd, int[] tl, int[] td, int[] hp, ZlibCodec z)
         {
             int result;
 
             // build literal/length tree
-            initWorkArea(288);
+            InitWorkArea(288);
             hn[0] = 0;
-            result = huft_build(c, 0, nl, 257, cplens, cplext, tl, bl, hp, hn, v);
+            result = Huft_build(c, 0, nl, 257, cplens, cplext, tl, bl, hp, hn, v);
             if (result != Z_OK || bl[0] == 0)
             {
                 if (result == Z_DATA_ERROR)
@@ -368,8 +368,8 @@ namespace Ionic.Zlib
             }
 
             // build distance tree
-            initWorkArea(288);
-            result = huft_build(c, nl, nd, 0, cpdist, cpdext, td, bd, hp, hn, v);
+            InitWorkArea(288);
+            result = Huft_build(c, nl, nd, 0, cpdist, cpdext, td, bd, hp, hn, v);
 
             if (result != Z_OK || (bd[0] == 0 && nl > 257))
             {
@@ -393,7 +393,7 @@ namespace Ionic.Zlib
             return Z_OK;
         }
 
-        internal static int inflate_trees_fixed(int[] bl, int[] bd, int[][] tl, int[][] td, ZlibCodec z)
+        internal static int Inflate_trees_fixed(int[] bl, int[] bd, int[][] tl, int[][] td, ZlibCodec z)
         {
             bl[0] = fixed_bl;
             bd[0] = fixed_bd;
@@ -402,7 +402,7 @@ namespace Ionic.Zlib
             return Z_OK;
         }
 
-        private void initWorkArea(int vsize)
+        private void InitWorkArea(int vsize)
         {
             if (hn == null)
             {

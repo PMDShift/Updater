@@ -144,8 +144,8 @@ namespace Ionic.Zip
             return SimplifyFwdSlashPath(pathName);
         }
 
-        private static System.Text.Encoding ibm437 = System.Text.Encoding.GetEncoding("IBM437");
-        private static System.Text.Encoding utf8 = System.Text.Encoding.GetEncoding("UTF-8");
+        private static readonly System.Text.Encoding ibm437 = System.Text.Encoding.GetEncoding("IBM437");
+        private static readonly System.Text.Encoding utf8 = System.Text.Encoding.GetEncoding("UTF-8");
 
         internal static byte[] StringToByteArray(string value, System.Text.Encoding encoding)
         {
@@ -626,7 +626,7 @@ namespace Ionic.Zip
     /// </summary>
     internal class CountingStream : Stream
     {
-        private long _initialOffset;
+        private readonly long _initialOffset;
 
         /// <summary>
         /// The  constructor.

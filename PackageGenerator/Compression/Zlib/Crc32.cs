@@ -55,13 +55,7 @@ namespace Ionic.Zlib
         /// indicates the total number of bytes read on the CRC stream.
         /// This is used when writing the ZipDirEntry when compressing files.
         /// </summary>
-        public Int64 TotalBytesRead
-        {
-            get
-            {
-                return _TotalBytesRead;
-            }
-        }
+        public Int64 TotalBytesRead { get; private set; }
 
         /// <summary>
         /// Indicates the current CRC for all blocks slurped in.
@@ -104,16 +98,16 @@ namespace Ionic.Zlib
                 byte[] buffer = new byte[BUFFER_SIZE];
                 int readSize = BUFFER_SIZE;
 
-                _TotalBytesRead = 0;
+                TotalBytesRead = 0;
                 int count = input.Read(buffer, 0, readSize);
                 if (output != null) output.Write(buffer, 0, count);
-                _TotalBytesRead += count;
+                TotalBytesRead += count;
                 while (count > 0)
                 {
                     SlurpBlock(buffer, 0, count);
                     count = input.Read(buffer, 0, readSize);
                     if (output != null) output.Write(buffer, 0, count);
-                    _TotalBytesRead += count;
+                    TotalBytesRead += count;
                 }
 
                 return (Int32)(~_RunningCrc32Result);
@@ -154,7 +148,7 @@ namespace Ionic.Zlib
                 int x = offset + i;
                 _RunningCrc32Result = ((_RunningCrc32Result) >> 8) ^ crc32Table[(block[x]) ^ ((_RunningCrc32Result) & 0x000000FF)];
             }
-            _TotalBytesRead += count;
+            TotalBytesRead += count;
         }
 
         // pre-initialize the crc table for speed of lookup.
@@ -192,7 +186,7 @@ namespace Ionic.Zlib
             }
         }
 
-        private uint gf2_matrix_times(uint[] matrix, uint vec)
+        private uint Gf2_matrix_times(uint[] matrix, uint vec)
         {
             uint sum = 0;
             int i = 0;
@@ -206,10 +200,10 @@ namespace Ionic.Zlib
             return sum;
         }
 
-        private void gf2_matrix_square(uint[] square, uint[] mat)
+        private void Gf2_matrix_square(uint[] square, uint[] mat)
         {
             for (int i = 0; i < 32; i++)
-                square[i] = gf2_matrix_times(mat, mat[i]);
+                square[i] = Gf2_matrix_times(mat, mat[i]);
         }
 
         /// <summary>
@@ -243,10 +237,10 @@ namespace Ionic.Zlib
             }
 
             // put operator for two zero bits in even
-            gf2_matrix_square(even, odd);
+            Gf2_matrix_square(even, odd);
 
             // put operator for four zero bits in odd
-            gf2_matrix_square(odd, even);
+            Gf2_matrix_square(odd, even);
 
             uint len2 = (uint)length;
 
@@ -255,19 +249,19 @@ namespace Ionic.Zlib
             do
             {
                 // apply zeros operator for this bit of len2
-                gf2_matrix_square(even, odd);
+                Gf2_matrix_square(even, odd);
 
                 if ((len2 & 1) == 1)
-                    crc1 = gf2_matrix_times(even, crc1);
+                    crc1 = Gf2_matrix_times(even, crc1);
                 len2 >>= 1;
 
                 if (len2 == 0)
                     break;
 
                 // another iteration of the loop with odd and even swapped
-                gf2_matrix_square(odd, even);
+                Gf2_matrix_square(odd, even);
                 if ((len2 & 1) == 1)
-                    crc1 = gf2_matrix_times(odd, crc1);
+                    crc1 = Gf2_matrix_times(odd, crc1);
                 len2 >>= 1;
             } while (len2 != 0);
 
@@ -278,9 +272,6 @@ namespace Ionic.Zlib
             //return (int) crc1;
             return;
         }
-
-        // private member vars
-        private Int64 _TotalBytesRead;
 
         private static readonly UInt32[] crc32Table;
         private const int BUFFER_SIZE = 8192;
@@ -306,14 +297,13 @@ namespace Ionic.Zlib
     /// DotNetZip library.
     /// </para>
     /// </remarks>
-    public class CrcCalculatorStream : System.IO.Stream, System.IDisposable
+    public class CrcCalculatorStream : System.IO.Stream, IDisposable
     {
         private static readonly Int64 UnsetLengthLimit = -99;
 
         internal System.IO.Stream _innerStream;
         private CRC32 _Crc32;
-        private Int64 _lengthLimit = -99;
-        private bool _leaveOpen;
+        private readonly long _lengthLimit = -99;
 
         /// <summary>
         /// Gets the total number of bytes run through the CRC32 calculator.
@@ -337,7 +327,7 @@ namespace Ionic.Zlib
         /// </remarks>
         /// <param name="stream">The underlying stream</param>
         public CrcCalculatorStream(System.IO.Stream stream)
-            : this(true, CrcCalculatorStream.UnsetLengthLimit, stream)
+            : this(true, UnsetLengthLimit, stream)
         {
         }
 
@@ -349,7 +339,7 @@ namespace Ionic.Zlib
         /// <param name="leaveOpen">true to leave the underlying stream
         /// open upon close of the CrcCalculatorStream.; false otherwise.</param>
         public CrcCalculatorStream(System.IO.Stream stream, bool leaveOpen)
-            : this(leaveOpen, CrcCalculatorStream.UnsetLengthLimit, stream)
+            : this(leaveOpen, UnsetLengthLimit, stream)
         {
         }
 
@@ -395,7 +385,7 @@ namespace Ionic.Zlib
             _innerStream = stream;
             _Crc32 = new CRC32();
             _lengthLimit = length;
-            _leaveOpen = leaveOpen;
+            LeaveOpen = leaveOpen;
         }
 
         /// <summary>
@@ -410,11 +400,7 @@ namespace Ionic.Zlib
         /// Indicates whether the underlying stream will be left open when the
         /// CrcCalculatorStream is Closed.
         /// </summary>
-        public bool LeaveOpen
-        {
-            get { return _leaveOpen; }
-            set { _leaveOpen = value; }
-        }
+        public bool LeaveOpen { get; set; }
 
         /// <summary>
         /// Read from the stream
@@ -435,7 +421,7 @@ namespace Ionic.Zlib
             // calling ReadToEnd() on it, We can "over-read" the zip data and get a
             // corrupt string.  The length limits that, prevents that problem.
 
-            if (_lengthLimit != CrcCalculatorStream.UnsetLengthLimit)
+            if (_lengthLimit != UnsetLengthLimit)
             {
                 if (_Crc32.TotalBytesRead >= _lengthLimit) return 0; // EOF
                 Int64 bytesRemaining = _lengthLimit - _Crc32.TotalBytesRead;
@@ -497,7 +483,7 @@ namespace Ionic.Zlib
         {
             get
             {
-                if (_lengthLimit == CrcCalculatorStream.UnsetLengthLimit)
+                if (_lengthLimit == UnsetLengthLimit)
                     return _innerStream.Length;
                 else return _lengthLimit;
             }
@@ -543,7 +529,7 @@ namespace Ionic.Zlib
         public override void Close()
         {
             base.Close();
-            if (!_leaveOpen)
+            if (!LeaveOpen)
                 _innerStream.Close();
         }
     }

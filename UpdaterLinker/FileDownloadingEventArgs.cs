@@ -19,12 +19,8 @@ namespace PMDCP.Updater.Linker
 
     public class FileDownloadingEventArgs : EventArgs
     {
-        #region Fields
 
-        private string fileName;
-        private long fileSize;
-        private int percent;
-        private long position;
+        #region Fields
 
         #endregion Fields
 
@@ -32,35 +28,23 @@ namespace PMDCP.Updater.Linker
 
         public FileDownloadingEventArgs(long fileSize, string filePath, int percent, long position)
         {
-            this.fileSize = fileSize;
-            this.fileName = System.IO.Path.GetFileName(filePath).Replace(".tmp", "");
-            this.percent = percent;
-            this.position = position;
+            this.FileSize = fileSize;
+            this.FileName = System.IO.Path.GetFileName(filePath).Replace(".tmp", "");
+            this.Percent = percent;
+            this.Position = position;
         }
 
         #endregion Constructors
 
         #region Properties
 
-        public string FileName
-        {
-            get { return fileName; }
-        }
+        public string FileName { get; }
 
-        public long FileSize
-        {
-            get { return fileSize; }
-        }
+        public long FileSize { get; }
 
-        public int Percent
-        {
-            get { return percent; }
-        }
+        public int Percent { get; }
 
-        public long Position
-        {
-            get { return position; }
-        }
+        public long Position { get; }
 
         #endregion Properties
     }

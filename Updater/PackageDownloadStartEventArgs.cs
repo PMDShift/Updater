@@ -20,23 +20,14 @@ namespace PMDCP.Updater
 {
     public class PackageDownloadStartEventArgs : EventArgs
     {
-        private IPackageInfo package;
-        private IFileDownload download;
-
         public PackageDownloadStartEventArgs(IPackageInfo package, IFileDownload download)
         {
-            this.package = package;
-            this.download = download;
+            Package = package;
+            Download = download;
         }
 
-        public IPackageInfo Package
-        {
-            get { return package; }
-        }
+        public IPackageInfo Package { get; }
 
-        public IFileDownload Download
-        {
-            get { return download; }
-        }
+        public IFileDownload Download { get; }
     }
 }
