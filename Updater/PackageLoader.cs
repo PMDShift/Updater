@@ -74,7 +74,7 @@ namespace PMDCP.Updater
             if (packageAppDomain != null) {
                 Unload();
             }
-            this.assemblyPath = assemblyPath;
+            
             string fileNamespace = packageInfo.FullID;
             string dir = Path.GetDirectoryName(assemblyPath);
 
